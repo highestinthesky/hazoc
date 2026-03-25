@@ -39,3 +39,4 @@
 - Schedule page now has a direct-to-hazoc request textbox with inline replies / clarifying questions.
 - Scheduled events are now separated from tasks: dedicated `mission-control/data/events.json`, event API/routes, event-first schedule calendar, and a separate Events page with archiving.
 - Longer-term schedule plan still pending: support 4 schedule profiles (hazoc, haolun, and two more users), allow one request to place an event onto another user's schedule too, and eventually connect profiles to Google Calendar plus Discord/Telegram reminders.
+- Tomorrow's likely next build target: market-moving news digest system using bounded public sources, impact scoring, affected-stock inference, and interval-based delivery instead of ticker-specific passive monitoring. Start from `skills/market-watch/references/market_digest_plan.md` and mission-control task `task-market-moving-news-digest`.

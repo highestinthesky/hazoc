@@ -31,6 +31,7 @@ _Learn about the person you're helping. Update this as you go._
 - Important tasks and requests that happen in Discord, especially in `#control-center`, should be copied back into main project memory (the website task board and relevant workspace notes) so Discord acts like an extension, not a separate self.
 - Telegram should be treated the same way for away-from-computer use: direct Telegram conversations are an extension channel, and important requests/follow-ups there should also be copied into main project memory.
 - Current build preference: start local-only, but design it so it can later become LAN-accessible without a rewrite.
+- New requested direction: instead of ticker-specific stock watching, build toward a market-moving news digest system that gathers major public headlines, infers which sectors / important stocks are likely affected, and sends digest summaries to haolun at chosen intervals.
 
 
 ---

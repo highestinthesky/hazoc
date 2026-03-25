@@ -30,6 +30,15 @@
 - Planned integrations: link the user profiles to Google Calendar and let hazoc send reminders to each user through Discord and/or Telegram.
 - This is remembered product structure for later implementation, not something to build immediately.
 
+## Market-moving news digest direction
+
+- Preferred market-monitoring direction is not ticker-specific watchlists first.
+- Instead, the desired system should gather major public market-moving headlines, infer which sectors and important stocks are likely affected, and compile those into digest summaries.
+- The digest should emphasize why the headline matters, likely affected names/ETFs/sectors, and whether the impact is broad-market, sector-specific, or single-name.
+- Default source classes should stay public and bounded: news aggregators/RSS, financial news pages, official macro/government releases, SEC/company IR releases, and public market-data pages.
+- Avoid private logins, cookie harvesting, paywalled scraping, and sketchy rumor sources by default.
+- Delivery should happen at configurable intervals rather than as open-ended autonomous roaming.
+
 ## Current mission-control state
 
 - Reliable local URL: `http://127.0.0.1:4180/`.

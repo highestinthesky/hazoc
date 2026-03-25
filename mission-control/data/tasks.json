@@ -1,12 +1,21 @@
 [
   {
+    "id": "task-market-moving-news-digest",
+    "title": "Design market-moving news digest system",
+    "notes": "Build a bounded public-source digest that tracks major market-moving headlines, infers affected sectors/stocks, and delivers summaries at intervals \u2014 not a ticker-by-ticker passive watcher.",
+    "description": "Project memory\n\nGoal\n- Build a daily / interval-based market-moving news digest system for haolun.\n\nWhat is known\n- Haolun does not want ticker-specific monitoring as the main model.\n- The system should gather major public headlines that could significantly move markets.\n- It should infer which sectors and important stocks are likely affected by each headline.\n- It should later deliver digest summaries at chosen intervals.\n\nRecommended source tiers\n- Tier 1: official / primary sources (Fed, BLS, Treasury, SEC/EDGAR, company IR / press releases).\n- Tier 2: major public financial/news sources (Reuters public pages, Yahoo Finance, CNBC public pages, MarketWatch, public RSS / Google News).\n- Tier 3 later only if explicitly wanted: noisier public discussion sources.\n\nImportance scoring rules to implement\n- Macro impact (rates, inflation, jobs, war, regulation, energy, AI/chips, major earnings, M&A).\n- Surprise / novelty.\n- Breadth (broad market vs sector vs single-name).\n- Repeated multi-source confirmation.\n- Likely sensitivity of major stocks / ETFs / sectors.\n\nDigest format\n- Headline\n- Why it matters\n- Likely affected sectors / stocks / ETFs\n- Estimated impact scope (broad / sector / single-name)\n- Confidence / source quality\n\nDelivery plan\n- Interval-based digest rather than open-ended roaming.\n- Good defaults to consider: morning setup digest, midday update, evening wrap-up, plus optional urgent alerts later.\n\nWhat has been done\n- The high-level product direction has been written into curated memory, USER.md, active-state, and today's daily note.\n- A safer market skill base (`skills/market-watch`) already exists and can be extended.\n\nBlockers / unknowns\n- Exact final source allowlist still needs to be chosen.\n- Need the desired delivery destinations and cadence confirmed.\n- Need to decide whether the first version writes to files only, mission control only, or also pushes messages immediately.\n\nNext steps\n- Start with a bounded source list and digest scoring spec.\n- Add public-source fetch/parse scripts under `skills/market-watch`.\n- Store structured observations locally, then compile interval digests from that state.\n- Later connect digest delivery to the chosen channels.",
+    "lane": "workbench",
+    "createdAt": "2026-03-25T03:15:00.000Z",
+    "updatedAt": "2026-03-25T03:15:00.000Z"
+  },
+  {
     "id": "task-custom-market-watch-and-desktop-guard",
     "title": "Keep custom market-watch and desktop-guard skills ready for later use",
-    "notes": "Reviewed upstream ClawHub skills, rejected the risky/autonomous pieces, and built local hazoc-owned forks instead: `skills/market-watch` and `skills/desktop-guard`.",
+    "notes": "Reviewed upstream ClawHub skills, rejected the risky/autonomous pieces, and built local hazoc-owned forks instead: `skills/market-watch` and `skills/desktop-guard`. Next likely extension for market-watch is the bounded market-moving news digest pipeline.",
     "description": "Project memory\n\nGoal\n- Have local hazoc-owned versions of stock-analysis and desktop-control ready before haolun decides to use them.\n\nWhat was reviewed\n- `udiedrichsen/stock-analysis`\n- `matagul/desktop-control`\n\nVetting summary\n- `stock-analysis`: medium-high risk because the useful market tooling is mixed with Twitter/X token flows, rumor scanning, underspecified credential/storage behavior, and hidden home-directory persistence.\n- `desktop-control`: medium risk because it is honest about scope, but screenshots/clipboard/input control are inherently sensitive and the autonomous AI agent layer increases risk.\n\nWhat was built\n- `skills/market-watch`: safer public-data market snapshots + local watchlist, no cookie scraping, no social auth, no hidden ~/.clawdbot state.\n- `skills/desktop-guard`: guarded desktop primitives with dry-run-by-default mutating actions, no autonomous desktop agent layer.\n- Packaged artifacts: `market-watch.skill` and `desktop-guard.skill`.\n\nNext steps\n- Leave these parked until haolun says to use or extend them.\n- If needed later, flesh out features from the safer base instead of copying the upstream designs wholesale.",
     "lane": "parking",
     "createdAt": "2026-03-25T02:47:00.000Z",
-    "updatedAt": "2026-03-25T02:47:00.000Z"
+    "updatedAt": "2026-03-25T03:16:00.000Z"
   },
   {
     "id": "task-optimize-mission-control",
@@ -227,20 +236,20 @@
   {
     "id": "task-discord-digest",
     "title": "Configure Discord daily digests",
-    "notes": "Needed before the placeholder calendar can become hazoc's planned-task schedule.",
+    "notes": "Future delivery target for broader digest systems, including the planned market-moving news digest pipeline.",
     "description": "Project memory\n\nGoal\n- Configure Discord so hazoc can receive or synthesize daily digests that summarize what matters.\n\nWhy this exists\n- Haolun wants the website calendar to eventually represent hazoc's own planned tasks, not raw Google Calendar events.\n- One expected source for that future planning view is Discord daily digests.\n\nWhat is known right now\n- This work has not been configured yet.\n- It is a dependency for the later planned-task schedule.\n- It likely needs a clear digest format so hazoc can turn the digest into structured tasks or planning items.\n\nWhat has been done\n- Only the placeholder task and dependency tracking exist right now.\n- The website already has a task board where this work is recorded.\n\nBlockers / unknowns\n- Exact Discord setup flow is still unknown.\n- Need to decide whether the digest comes from a channel summary, bot message, cron job, or another workflow.\n\nNext steps\n- Configure the Discord side.\n- Decide digest structure.\n- Later connect that digest into hazoc's planning/calendar layer.",
     "lane": "parking",
     "createdAt": "2026-03-24T15:05:00.000Z",
-    "updatedAt": "2026-03-24T15:15:00.000Z"
+    "updatedAt": "2026-03-25T03:15:00.000Z"
   },
   {
     "id": "task-telegram-digest",
     "title": "Configure Telegram daily digests",
-    "notes": "Needed before the placeholder calendar can become hazoc's planned-task schedule.",
+    "notes": "Future delivery target for broader digest systems, including the planned market-moving news digest pipeline.",
     "description": "Project memory\n\nGoal\n- Configure Telegram so hazoc can use daily digests as another input into planning and task formation.\n\nWhy this exists\n- Haolun said the current website calendar is only a placeholder.\n- The future version should show hazoc's planned tasks, and Telegram digests are one of the planned sources.\n\nWhat is known right now\n- This is not configured yet.\n- It is parallel to the Discord digest work.\n- The important outcome is not just getting Telegram connected, but turning digest content into useful planning memory.\n\nWhat has been done\n- The dependency is recorded in the mission-control task board.\n- The placeholder calendar decision has been written into workspace memory.\n\nBlockers / unknowns\n- Need the exact Telegram digest workflow.\n- Need to decide how hazoc should parse and store digest-derived tasks.\n\nNext steps\n- Configure Telegram digest flow.\n- Define what counts as planning-worthy information.\n- Connect it later to the planned-task schedule.",
     "lane": "parking",
     "createdAt": "2026-03-24T15:05:00.000Z",
-    "updatedAt": "2026-03-24T15:15:00.000Z"
+    "updatedAt": "2026-03-25T03:15:00.000Z"
   },
   {
     "id": "task-planned-schedule",
