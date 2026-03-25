@@ -1,5 +1,14 @@
 [
   {
+    "id": "task-custom-market-watch-and-desktop-guard",
+    "title": "Keep custom market-watch and desktop-guard skills ready for later use",
+    "notes": "Reviewed upstream ClawHub skills, rejected the risky/autonomous pieces, and built local hazoc-owned forks instead: `skills/market-watch` and `skills/desktop-guard`.",
+    "description": "Project memory\n\nGoal\n- Have local hazoc-owned versions of stock-analysis and desktop-control ready before haolun decides to use them.\n\nWhat was reviewed\n- `udiedrichsen/stock-analysis`\n- `matagul/desktop-control`\n\nVetting summary\n- `stock-analysis`: medium-high risk because the useful market tooling is mixed with Twitter/X token flows, rumor scanning, underspecified credential/storage behavior, and hidden home-directory persistence.\n- `desktop-control`: medium risk because it is honest about scope, but screenshots/clipboard/input control are inherently sensitive and the autonomous AI agent layer increases risk.\n\nWhat was built\n- `skills/market-watch`: safer public-data market snapshots + local watchlist, no cookie scraping, no social auth, no hidden ~/.clawdbot state.\n- `skills/desktop-guard`: guarded desktop primitives with dry-run-by-default mutating actions, no autonomous desktop agent layer.\n- Packaged artifacts: `market-watch.skill` and `desktop-guard.skill`.\n\nNext steps\n- Leave these parked until haolun says to use or extend them.\n- If needed later, flesh out features from the safer base instead of copying the upstream designs wholesale.",
+    "lane": "parking",
+    "createdAt": "2026-03-25T02:47:00.000Z",
+    "updatedAt": "2026-03-25T02:47:00.000Z"
+  },
+  {
     "id": "task-optimize-mission-control",
     "title": "Optimize the mission-control website",
     "notes": "Mission control is LAN-accessible and structurally cleaner. Latest pass split user-scheduled events away from tasks: Schedule is now event-first, scheduled events have their own Events page with archiving, and clicking a scheduled event routes to event details instead of the task board.",
