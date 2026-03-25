@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   calendarCellKey,
+  compactTextPreview,
   dateKeyInZone,
   descriptionTemplate,
   formatDate,
@@ -30,8 +31,9 @@ function HeroCard({ label, title, children, primary = false }) {
 }
 
 function TasksView({
+  activeLaneId,
+  activeLaneTasks,
   error,
-  groupedTasks,
   loading,
   selectedTask,
   selectedTaskId,
@@ -48,19 +50,23 @@ function TasksView({
   detailScheduledEnd,
   setDetailScheduledEnd,
   detailSaving,
+  laneCounts,
   moveTask,
   saveTaskDetails,
+  setActiveLaneId,
   setSelectedTaskId,
   sortedTasks,
   unscheduledActiveTasks,
 }) {
+  const activeLaneMeta = laneMeta(activeLaneId)
+
   return (
     <section className="tasks-layout">
-      <div className="hero-row">
-        <HeroCard label="How this board works" title="Desk metaphors" primary>
-          Requests land in the tray, active work sits on the bench, delayed work waits in the lot, and finished things go on the shelf.
+      <div className="hero-row hero-row-tasks">
+        <HeroCard label="Task model" title="Dense task library" primary>
+          New requests should go straight into the real section they belong to. Workbench is for active work, On Hold is for parked context, and Archived keeps finished memory without bloating the live board.
         </HeroCard>
-        <HeroCard label="Open tasks" title={String(sortedTasks.filter((task) => task.lane !== 'archive').length)}>
+        <HeroCard label="Live tasks" title={String(sortedTasks.filter((task) => task.lane !== 'archive').length)}>
           Shared between haolun and hazoc.
         </HeroCard>
         <HeroCard label="Need scheduling" title={String(unscheduledActiveTasks.length)}>
@@ -68,67 +74,79 @@ function TasksView({
         </HeroCard>
       </div>
 
-      <section className="panel intake-panel">
-        <div className="panel-header">
+      <section className="panel task-sections-panel">
+        <div className="panel-header task-sections-header">
           <div>
-            <p className="panel-kicker">capture model</p>
-            <h2>Hazoc handles intake</h2>
+            <p className="panel-kicker">task sections</p>
+            <h2>Choose a subsection</h2>
           </div>
+          <p className="task-sections-note">Capture Tray is gone. Hazoc should route tasks directly into a useful section instead of letting them rot in a fake inbox.</p>
         </div>
-        <div className="intake-copy">
-          <p>New requests should arrive through conversation, then hazoc records them into the right lane and, when needed, onto the schedule.</p>
-          <ul>
-            <li><strong>Capture Tray</strong> for fresh requests</li>
-            <li><strong>Workbench</strong> for active work</li>
-            <li><strong>Parking Lot</strong> for postponed items</li>
-            <li><strong>Archive Shelf</strong> for finished context</li>
-          </ul>
+
+        <div className="lane-tabs" role="tablist" aria-label="Task sections">
+          {lanes.map((lane) => (
+            <button
+              key={lane.id}
+              type="button"
+              className={`lane-tab lane-${lane.id} ${activeLaneId === lane.id ? 'active' : ''}`}
+              onClick={() => setActiveLaneId(lane.id)}
+            >
+              <span className="lane-tab-kicker">{lane.title}</span>
+              <strong>{laneCounts.get(lane.id) || 0}</strong>
+              <small>{lane.analogy}</small>
+            </button>
+          ))}
         </div>
       </section>
 
       {error ? <div className="error-banner">{error}</div> : null}
 
-      <section className="workspace-grid">
-        <section className="board-grid">
-          {lanes.map((lane) => {
-            const laneTasks = groupedTasks.get(lane.id) || []
-            return (
-              <section key={lane.id} className={`lane panel lane-${lane.id}`}>
-                <div className="lane-header">
-                  <div>
-                    <h3>{lane.title}</h3>
-                    <p>{lane.analogy}</p>
-                  </div>
-                  <span className="lane-count">{laneTasks.length}</span>
-                </div>
+      <section className="workspace-grid tasks-workspace-grid">
+        <section className={`panel lane-detail-stack lane-${activeLaneId}`}>
+          <div className="lane-header lane-header-dense">
+            <div>
+              <p className="panel-kicker">{activeLaneMeta.title}</p>
+              <h2>{activeLaneMeta.analogy}</h2>
+            </div>
+            <span className="lane-count">{activeLaneTasks.length}</span>
+          </div>
 
-                <div className="task-list">
-                  {!loading && !laneTasks.length ? <div className="lane-empty">Nothing here yet.</div> : null}
-                  {laneTasks.map((task) => (
-                    <article
-                      key={task.id}
-                      className={`task-card ${selectedTaskId === task.id ? 'active' : ''}`}
-                      onClick={() => setSelectedTaskId(task.id)}
-                    >
-                      <div className="task-card-header">
-                        <strong>{task.title}</strong>
-                        <span>{formatDate(task.updatedAt || task.createdAt)}</span>
-                      </div>
-                      {task.notes ? <p>{task.notes}</p> : null}
-                      {task.scheduledStart ? <div className="task-badge">🗓 {formatDateTime(task.scheduledStart)}</div> : null}
-                      <div className="task-card-footer" onClick={(event) => event.stopPropagation()}>
-                        <select value={task.lane} onChange={(event) => moveTask(task.id, event.target.value)}>
-                          {lanes.map((option) => (
-                            <option key={option.id} value={option.id}>{option.title}</option>
-                          ))}
-                        </select>
-                      </div>
-                    </article>
-                  ))}
-                </div>
-              </section>
-            )
-          })}
+          <div className="task-list task-list-dense">
+            {!loading && !activeLaneTasks.length ? <div className="lane-empty">Nothing here right now.</div> : null}
+            {activeLaneTasks.map((task) => {
+              const preview = task.notes || compactTextPreview(task.description, 220)
+              return (
+                <article
+                  key={task.id}
+                  className={`task-card task-card-dense ${selectedTaskId === task.id ? 'active' : ''}`}
+                  onClick={() => setSelectedTaskId(task.id)}
+                >
+                  <div className="task-card-main">
+                    <div className="task-card-header">
+                      <strong>{task.title}</strong>
+                      <span>{formatDate(task.updatedAt || task.createdAt)}</span>
+                    </div>
+
+                    <div className="task-card-meta-row">
+                      <span className={`meta-chip lane-chip lane-${task.lane}`}>{laneMeta(task.lane).title}</span>
+                      {task.scheduledStart ? <span className="meta-chip">🗓 {formatDateTime(task.scheduledStart)}</span> : null}
+                      <span className="meta-chip">Updated {formatDate(task.updatedAt || task.createdAt)}</span>
+                    </div>
+
+                    {preview ? <p className="task-preview">{preview}</p> : null}
+                  </div>
+
+                  <div className="task-card-footer task-card-footer-dense" onClick={(event) => event.stopPropagation()}>
+                    <select value={task.lane} onChange={(event) => moveTask(task.id, event.target.value)}>
+                      {lanes.map((option) => (
+                        <option key={option.id} value={option.id}>{option.title}</option>
+                      ))}
+                    </select>
+                  </div>
+                </article>
+              )
+            })}
+          </div>
         </section>
 
         <aside className="detail-panel panel task-detail-panel">
@@ -160,7 +178,7 @@ function TasksView({
                       <input value={detailTitle} onChange={(event) => setDetailTitle(event.target.value)} />
                     </label>
                     <label className="field-block">
-                      <span>Lane</span>
+                      <span>Section</span>
                       <select value={detailLane} onChange={(event) => setDetailLane(event.target.value)}>
                         {lanes.map((lane) => (
                           <option key={lane.id} value={lane.id}>{lane.title}</option>
@@ -213,7 +231,7 @@ function TasksView({
                 </section>
 
                 <div className="detail-save-row">
-                  <div className="save-note">Save after updating title, lane, schedule, or project memory.</div>
+                  <div className="save-note">Save after updating title, section, schedule, or project memory.</div>
                   <button type="button" className="save-button" onClick={saveTaskDetails} disabled={detailSaving}>
                     {detailSaving ? 'Saving…' : 'Save task memory'}
                   </button>
@@ -456,11 +474,12 @@ export default function App() {
   const [detailSaving, setDetailSaving] = useState(false)
   const [error, setError] = useState('')
   const [selectedTaskId, setSelectedTaskId] = useState(() => readStorage(storageKeys.selectedTaskId, ''))
+  const [activeLaneId, setActiveLaneId] = useState(() => readStorage(storageKeys.activeTaskLane, 'workbench'))
   const [selectedMemoryId, setSelectedMemoryId] = useState(() => readStorage(storageKeys.selectedMemoryId, ''))
   const [detailTitle, setDetailTitle] = useState('')
   const [detailNotes, setDetailNotes] = useState('')
   const [detailDescription, setDetailDescription] = useState('')
-  const [detailLane, setDetailLane] = useState('capture')
+  const [detailLane, setDetailLane] = useState('workbench')
   const [detailScheduledStart, setDetailScheduledStart] = useState('')
   const [detailScheduledEnd, setDetailScheduledEnd] = useState('')
   const [calendarMonth, setCalendarMonth] = useState(() => {
@@ -522,6 +541,7 @@ export default function App() {
   }, [loadMemory, loadScheduleExtras, memoryLoaded, page, scheduleLoaded])
 
   useEffect(() => { writeStorage(storageKeys.selectedTaskId, selectedTaskId) }, [selectedTaskId])
+  useEffect(() => { writeStorage(storageKeys.activeTaskLane, activeLaneId) }, [activeLaneId])
   useEffect(() => { writeStorage(storageKeys.selectedMemoryId, selectedMemoryId) }, [selectedMemoryId])
   useEffect(() => { writeStorage(storageKeys.calendarMonth, calendarMonth.toISOString()) }, [calendarMonth])
 
@@ -542,19 +562,30 @@ export default function App() {
     setDetailTitle(selectedTask.title || '')
     setDetailNotes(selectedTask.notes || '')
     setDetailDescription(selectedTask.description || descriptionTemplate)
-    setDetailLane(selectedTask.lane || 'capture')
+    setDetailLane(selectedTask.lane || 'workbench')
     setDetailScheduledStart(toInputValueInZone(selectedTask.scheduledStart, scheduleTimeZone))
     setDetailScheduledEnd(toInputValueInZone(selectedTask.scheduledEnd, scheduleTimeZone))
   }, [selectedTask])
 
-  const groupedTasks = useMemo(() => {
-    const map = new Map(lanes.map((lane) => [lane.id, []]))
+  useEffect(() => {
+    if (!lanes.some((lane) => lane.id === activeLaneId)) setActiveLaneId('workbench')
+  }, [activeLaneId])
+
+  const laneCounts = useMemo(() => {
+    const map = new Map(lanes.map((lane) => [lane.id, 0]))
     for (const task of sortedTasks) {
-      if (!map.has(task.lane)) map.set(task.lane, [])
-      map.get(task.lane).push(task)
+      if (!map.has(task.lane)) continue
+      map.set(task.lane, (map.get(task.lane) || 0) + 1)
     }
     return map
   }, [sortedTasks])
+
+  const activeLaneTasks = useMemo(() => sortedTasks.filter((task) => task.lane === activeLaneId), [activeLaneId, sortedTasks])
+
+  useEffect(() => {
+    if (!activeLaneTasks.length) return
+    if (!activeLaneTasks.some((task) => task.id === selectedTaskId)) setSelectedTaskId(activeLaneTasks[0].id)
+  }, [activeLaneTasks, selectedTaskId])
 
   const scheduledTasks = useMemo(() => sortedTasks.filter((task) => task.scheduledStart && task.lane !== 'archive'), [sortedTasks])
   const unscheduledActiveTasks = useMemo(() => sortedTasks.filter((task) => !task.scheduledStart && task.lane !== 'archive'), [sortedTasks])
@@ -599,11 +630,12 @@ export default function App() {
         body: JSON.stringify({ lane }),
       })
       replaceTaskInState(result.task)
+      if (selectedTaskId === id) setActiveLaneId(result.task.lane)
     } catch (err) {
       setTasks(snapshot)
       setError(err.message)
     }
-  }, [replaceTaskInState, tasks])
+  }, [replaceTaskInState, selectedTaskId, tasks])
 
   const saveTaskDetails = useCallback(async () => {
     if (!selectedTask) return
@@ -624,6 +656,7 @@ export default function App() {
         }),
       })
       replaceTaskInState(result.task)
+      setActiveLaneId(result.task.lane)
     } catch (err) {
       setError(err.message)
     } finally {
@@ -632,9 +665,11 @@ export default function App() {
   }, [detailDescription, detailLane, detailNotes, detailScheduledEnd, detailScheduledStart, detailTitle, replaceTaskInState, selectedTask])
 
   const openTask = useCallback((taskId) => {
+    const task = tasks.find((item) => item.id === taskId)
+    if (task) setActiveLaneId(task.lane)
     setSelectedTaskId(taskId)
     setPage('tasks')
-  }, [])
+  }, [tasks])
 
   return (
     <div className="shell">
@@ -673,8 +708,9 @@ export default function App() {
 
         {page === 'tasks' ? (
           <TasksView
+            activeLaneId={activeLaneId}
+            activeLaneTasks={activeLaneTasks}
             error={error}
-            groupedTasks={groupedTasks}
             loading={loading}
             selectedTask={selectedTask}
             selectedTaskId={selectedTaskId}
@@ -691,8 +727,10 @@ export default function App() {
             detailScheduledEnd={detailScheduledEnd}
             setDetailScheduledEnd={setDetailScheduledEnd}
             detailSaving={detailSaving}
+            laneCounts={laneCounts}
             moveTask={moveTask}
             saveTaskDetails={saveTaskDetails}
+            setActiveLaneId={setActiveLaneId}
             setSelectedTaskId={setSelectedTaskId}
             sortedTasks={sortedTasks}
             unscheduledActiveTasks={unscheduledActiveTasks}

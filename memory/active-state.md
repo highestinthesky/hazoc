@@ -5,7 +5,7 @@
 - Use `http://127.0.0.1:4180/` for mission control right now; 4173 had stale/dev-server issues.
 
 ## What exists now
-- Tasks page with detailed task memory and lane management.
+- Tasks page with detailed task memory and section management across Workbench, On Hold, and Archived; the old Capture Tray has been removed.
 - Schedule page using task dates/times in `America/New_York`.
 - Memory page reading real workspace memory files.
 - Recurring duties visible on Schedule.

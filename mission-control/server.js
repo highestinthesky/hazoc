@@ -41,19 +41,20 @@ function getListenUrls(port, host) {
 }
 
 function normalizeTask(task) {
+  const incomingLane = String(task?.lane || 'workbench')
   const normalized = {
     id: String(task?.id || ''),
     title: String(task?.title || '').trim(),
     notes: String(task?.notes || '').trim(),
     description: String(task?.description || '').trim(),
-    lane: String(task?.lane || 'capture'),
+    lane: incomingLane === 'capture' ? 'workbench' : incomingLane,
     scheduledStart: typeof task?.scheduledStart === 'string' ? task.scheduledStart : '',
     scheduledEnd: typeof task?.scheduledEnd === 'string' ? task.scheduledEnd : '',
     createdAt: String(task?.createdAt || new Date().toISOString()),
     updatedAt: String(task?.updatedAt || task?.createdAt || new Date().toISOString()),
   }
 
-  if (!['capture', 'workbench', 'parking', 'archive'].includes(normalized.lane)) normalized.lane = 'capture'
+  if (!['workbench', 'parking', 'archive'].includes(normalized.lane)) normalized.lane = 'workbench'
 
   const startMs = normalized.scheduledStart ? Date.parse(normalized.scheduledStart) : Number.NaN
   const endMs = normalized.scheduledEnd ? Date.parse(normalized.scheduledEnd) : Number.NaN
@@ -189,7 +190,7 @@ app.post('/api/tasks', async (req, res) => {
   const title = typeof req.body?.title === 'string' ? req.body.title.trim() : ''
   const notes = typeof req.body?.notes === 'string' ? req.body.notes.trim() : ''
   const description = typeof req.body?.description === 'string' ? req.body.description.trim() : ''
-  const lane = typeof req.body?.lane === 'string' ? req.body.lane : 'capture'
+  const lane = typeof req.body?.lane === 'string' ? req.body.lane : 'workbench'
   const scheduledStart = typeof req.body?.scheduledStart === 'string' ? req.body.scheduledStart : ''
   const scheduledEnd = typeof req.body?.scheduledEnd === 'string' ? req.body.scheduledEnd : ''
   if (!title) return res.status(400).json({ ok: false, error: 'Task title is required.' })

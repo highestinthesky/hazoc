@@ -1,8 +1,7 @@
 export const lanes = [
-  { id: 'capture', title: 'Capture Tray', analogy: 'New requests that just landed on the desk.' },
-  { id: 'workbench', title: 'Workbench', analogy: 'Things hazoc is actively shaping right now.' },
-  { id: 'parking', title: 'Parking Lot', analogy: 'Postponed, blocked, or waiting for a later moment.' },
-  { id: 'archive', title: 'Archive Shelf', analogy: 'Done, settled, or remembered well enough to shelve.' },
+  { id: 'workbench', title: 'Workbench', analogy: 'Active work hazoc is shaping right now.' },
+  { id: 'parking', title: 'On Hold', analogy: 'Postponed, blocked, or waiting for a later moment.' },
+  { id: 'archive', title: 'Archived', analogy: 'Done, settled, or remembered well enough to shelve.' },
 ]
 
 export const descriptionTemplate = `Project memory\n\nGoal\n- \n\nWhat is known\n- \n\nWhat has been done\n- \n\nBlockers / unknowns\n- \n\nNext steps\n- `
@@ -11,6 +10,7 @@ export const scheduleTimeZone = 'America/New_York'
 export const storageKeys = {
   page: 'mission-control:page',
   selectedTaskId: 'mission-control:selected-task-id',
+  activeTaskLane: 'mission-control:active-task-lane',
   calendarMonth: 'mission-control:calendar-month',
   selectedMemoryId: 'mission-control:selected-memory-id',
 }
@@ -123,6 +123,13 @@ export function sortTasks(a, b) {
   if (aScheduled !== null) return -1
   if (bScheduled !== null) return 1
   return new Date(b.updatedAt || b.createdAt).getTime() - new Date(a.updatedAt || a.createdAt).getTime()
+}
+
+export function compactTextPreview(text, limit = 180) {
+  const clean = String(text || '').replace(/\s+/g, ' ').trim()
+  if (!clean) return ''
+  if (clean.length <= limit) return clean
+  return `${clean.slice(0, limit).trim()}…`
 }
 
 export function nextRecurringDue(item) {
