@@ -1,0 +1,22 @@
+{
+  "name": "mission-control",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 4173 --strictPort",
+    "dev:lan": "vite --host 0.0.0.0 --port 4173 --strictPort",
+    "build": "vite build",
+    "start": "HOST=0.0.0.0 PORT=4180 node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "concurrently": "^9.1.2",
+    "vite": "^5.4.10"
+  }
+}

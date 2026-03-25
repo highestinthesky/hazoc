@@ -1,0 +1,26 @@
+[
+  {
+    "id": "recurring-task-board-review",
+    "title": "Review and update the task board",
+    "summary": "Keep task descriptions and lane markings fresh while actively working.",
+    "cadence": "hourly",
+    "everyHours": 1,
+    "category": "workflow"
+  },
+  {
+    "id": "recurring-github-push",
+    "title": "Push meaningful changes to GitHub",
+    "summary": "When actively working and there are real changes worth preserving, push roughly every other hour.",
+    "cadence": "every 2 hours",
+    "everyHours": 2,
+    "category": "version-control"
+  },
+  {
+    "id": "recurring-site-uptime",
+    "title": "Keep mission control online",
+    "summary": "Watch the local site and restart it if it drops while hazoc is running.",
+    "cadence": "continuous",
+    "everyHours": 0,
+    "category": "operations"
+  }
+]

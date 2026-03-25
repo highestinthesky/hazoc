@@ -1,1 +1,10 @@
 .openclaw/
+.clawhub/lock.json
+.git-auto-sync.lock
+memory/workspace-graph-test/
+tmp/
+dist/
+mission-control/node_modules/
+mission-control/dist/
+mission-control/logs/
+mission-control/.keepalive.lock
