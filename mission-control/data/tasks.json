@@ -1,5 +1,14 @@
 [
   {
+    "id": "task-multi-user-schedule-architecture",
+    "title": "Design multi-user schedule intake and reminder architecture",
+    "notes": "Planned next stage: direct schedule-request textbox to hazoc, 4 schedule profiles, optional cross-posting to another user's schedule, later Google Calendar links, and Discord/Telegram reminders. Remembered but not to be implemented yet.",
+    "description": "Project memory\n\nGoal\n- Prepare the next-stage architecture for multi-user scheduling in mission control without building it immediately.\n\nWhat is known\n- Haolun wants a Schedule-page text box that sends directly to hazoc for schedule requests.\n- This should not be a generic manual event form; hazoc should interpret the request.\n- The future schedule model should support 4 profiles: hazoc, haolun, and 2 additional users.\n- A request may specify an event name, time, and optionally ask for the event to also be added to another user's schedule.\n- Longer-term plan: link the user profiles to Google Calendar and let hazoc send reminders to each user through Discord and/or Telegram.\n\nWhat has been done\n- Captured the structure in durable memory and added this task to the board.\n\nBlockers / unknowns\n- The exact UX, profile model, Google-account mapping, and reminder-routing rules still need design.\n- Haolun explicitly said not to implement this yet.\n\nNext steps\n- Leave this remembered and parked until haolun wants the build to begin.\n- When implementation starts, design the request parser, per-user schedule model, calendar sync mapping, and reminder delivery rules.",
+    "lane": "parking",
+    "createdAt": "2026-03-25T01:25:00.000Z",
+    "updatedAt": "2026-03-25T01:25:00.000Z"
+  },
+  {
     "id": "task-context-conservation",
     "title": "Optimize memory and task entries for context conservation",
     "notes": "Context-conservation rules are now written into AGENTS.md, USER.md, today's memory note, active-state, and MEMORY.md so fresh sessions can re-anchor from durable files instead of hauling old chat context.",

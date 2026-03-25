@@ -13,6 +13,8 @@ export const storageKeys = {
   activeTaskLane: 'mission-control:active-task-lane',
   calendarMonth: 'mission-control:calendar-month',
   selectedMemoryId: 'mission-control:selected-memory-id',
+  scheduleDraft: 'mission-control:schedule-draft',
+  scheduleMessages: 'mission-control:schedule-messages',
 }
 
 export function readStorage(key, fallback) {

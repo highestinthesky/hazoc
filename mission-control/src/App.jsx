@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   calendarCellKey,
   compactTextPreview,
@@ -250,11 +250,18 @@ function ScheduleView({
   calendarMonth,
   error,
   nextScheduledTask,
+  onScheduleDraftKeyDown,
   openTask,
   recurring,
+  scheduleDraft,
+  scheduleMessages,
+  scheduleSending,
+  scheduleThreadRef,
   scheduledTasks,
   scheduleLoaded,
+  sendScheduleRequest,
   setCalendarMonth,
+  setScheduleDraft,
   unscheduledActiveTasks,
 }) {
   const hasSchedule = scheduledTasks.length > 0
@@ -323,6 +330,47 @@ function ScheduleView({
         </section>
 
         <aside className="schedule-sidebar-grid">
+          <section className="panel schedule-side-panel schedule-side-panel-intake">
+            <div className="panel-header">
+              <div>
+                <p className="panel-kicker">direct to hazoc</p>
+                <h2>Schedule requests</h2>
+              </div>
+            </div>
+
+            <div className="schedule-intake-copy">
+              Type schedule requests here. If something is unclear, hazoc can answer in this panel and ask the minimum follow-up needed.
+            </div>
+
+            <div className="schedule-chat-thread" ref={scheduleThreadRef}>
+              {scheduleMessages.map((message) => (
+                <article key={message.id} className={`schedule-chat-bubble ${message.role === 'assistant' ? 'assistant' : 'user'}`}>
+                  <div className="schedule-chat-meta">{message.role === 'assistant' ? 'Hazoc' : 'You'}</div>
+                  <p>{message.text}</p>
+                </article>
+              ))}
+            </div>
+
+            <div className="schedule-intake-form">
+              <label className="field-block field-block-wide">
+                <span>Message to hazoc</span>
+                <textarea
+                  value={scheduleDraft}
+                  onChange={(event) => setScheduleDraft(event.target.value)}
+                  onKeyDown={onScheduleDraftKeyDown}
+                  rows={5}
+                  placeholder="e.g. put dinner with haolun tomorrow at 7:30 PM, and also add it to another user's schedule"
+                />
+              </label>
+              <div className="schedule-intake-actions">
+                <small>Send with Ctrl/Cmd + Enter if you want.</small>
+                <button type="button" className="save-button" onClick={sendScheduleRequest} disabled={scheduleSending || !scheduleDraft.trim()}>
+                  {scheduleSending ? 'Sending…' : 'Send to hazoc'}
+                </button>
+              </div>
+            </div>
+          </section>
+
           <section className="panel schedule-side-panel schedule-side-panel-upcoming">
             <div className="panel-header">
               <div>
@@ -463,6 +511,31 @@ function MemoryView({ error, loading, memoryEntries, memoryLoaded, selectedMemor
   )
 }
 
+function parseStoredMessages(raw) {
+  try {
+    const parsed = JSON.parse(raw)
+    return Array.isArray(parsed) ? parsed : null
+  } catch {
+    return null
+  }
+}
+
+function createScheduleMessage(role, text) {
+  return {
+    id: `${role}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`,
+    role,
+    text,
+  }
+}
+
+function stripReplyTag(text) {
+  return String(text || '').replace(/^\[\[[^\]]+\]\]\s*/, '').trim()
+}
+
+const defaultScheduleMessages = [
+  createScheduleMessage('assistant', 'Send schedule requests here. If anything is ambiguous, I’ll ask the minimum follow-up question in this panel before I act.'),
+]
+
 export default function App() {
   const [page, setPage] = useState(() => readStorage(storageKeys.page, 'tasks'))
   const [tasks, setTasks] = useState([])
@@ -482,6 +555,10 @@ export default function App() {
   const [detailLane, setDetailLane] = useState('workbench')
   const [detailScheduledStart, setDetailScheduledStart] = useState('')
   const [detailScheduledEnd, setDetailScheduledEnd] = useState('')
+  const [scheduleDraft, setScheduleDraft] = useState(() => readStorage(storageKeys.scheduleDraft, ''))
+  const [scheduleMessages, setScheduleMessages] = useState(() => parseStoredMessages(readStorage(storageKeys.scheduleMessages, '')) || defaultScheduleMessages)
+  const [scheduleSending, setScheduleSending] = useState(false)
+  const scheduleThreadRef = useRef(null)
   const [calendarMonth, setCalendarMonth] = useState(() => {
     const stored = readStorage(storageKeys.calendarMonth, '')
     return stored ? new Date(stored) : new Date()
@@ -543,6 +620,8 @@ export default function App() {
   useEffect(() => { writeStorage(storageKeys.selectedTaskId, selectedTaskId) }, [selectedTaskId])
   useEffect(() => { writeStorage(storageKeys.activeTaskLane, activeLaneId) }, [activeLaneId])
   useEffect(() => { writeStorage(storageKeys.selectedMemoryId, selectedMemoryId) }, [selectedMemoryId])
+  useEffect(() => { writeStorage(storageKeys.scheduleDraft, scheduleDraft) }, [scheduleDraft])
+  useEffect(() => { writeStorage(storageKeys.scheduleMessages, JSON.stringify(scheduleMessages)) }, [scheduleMessages])
   useEffect(() => { writeStorage(storageKeys.calendarMonth, calendarMonth.toISOString()) }, [calendarMonth])
 
   const sortedTasks = useMemo(() => [...tasks].sort(sortTasks), [tasks])
@@ -636,6 +715,48 @@ export default function App() {
       setError(err.message)
     }
   }, [replaceTaskInState, selectedTaskId, tasks])
+
+  const sendScheduleRequest = useCallback(async () => {
+    const message = scheduleDraft.trim()
+    if (!message) return
+
+    const userMessage = createScheduleMessage('user', message)
+    setScheduleMessages((current) => [...current, userMessage])
+    setScheduleDraft('')
+    setScheduleSending(true)
+    setError('')
+
+    try {
+      const result = await requestJson('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: `Mission-control schedule intake panel. Treat this as a schedule request from haolun. Reply briefly and specifically for schedule intake. If the request is ambiguous or missing something important, ask the minimum clarifying follow-up question. If the request is clear enough, confirm the schedule intent in plain language. Do not claim something was scheduled unless you actually updated the relevant task/schedule state. User request:\n\n${message}`,
+        }),
+      })
+
+      const assistantText = stripReplyTag(result.reply) || 'I read that, but I do not have a clean reply yet.'
+      setScheduleMessages((current) => [...current, createScheduleMessage('assistant', assistantText)])
+      await Promise.all([loadTasks(), loadScheduleExtras()])
+    } catch (err) {
+      setScheduleMessages((current) => [...current, createScheduleMessage('assistant', `I hit a snag sending that through the schedule panel: ${err.message}`)])
+      setError(err.message)
+    } finally {
+      setScheduleSending(false)
+    }
+  }, [loadScheduleExtras, loadTasks, scheduleDraft])
+
+  const onScheduleDraftKeyDown = useCallback((event) => {
+    if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') {
+      event.preventDefault()
+      sendScheduleRequest()
+    }
+  }, [sendScheduleRequest])
+
+  useEffect(() => {
+    const node = scheduleThreadRef.current
+    if (node) node.scrollTop = node.scrollHeight
+  }, [scheduleMessages])
 
   const saveTaskDetails = useCallback(async () => {
     if (!selectedTask) return
@@ -743,11 +864,18 @@ export default function App() {
             calendarMonth={calendarMonth}
             error={error}
             nextScheduledTask={nextScheduledTask}
+            onScheduleDraftKeyDown={onScheduleDraftKeyDown}
             openTask={openTask}
             recurring={recurring}
+            scheduleDraft={scheduleDraft}
+            scheduleMessages={scheduleMessages}
+            scheduleSending={scheduleSending}
+            scheduleThreadRef={scheduleThreadRef}
             scheduledTasks={scheduledTasks}
             scheduleLoaded={scheduleLoaded}
+            sendScheduleRequest={sendScheduleRequest}
             setCalendarMonth={setCalendarMonth}
+            setScheduleDraft={setScheduleDraft}
             unscheduledActiveTasks={unscheduledActiveTasks}
           />
         ) : null}

@@ -110,6 +110,12 @@ button { cursor: pointer; }
 .schedule-layout-grid { grid-template-columns: minmax(0, 1.5fr) minmax(320px, 0.8fr); align-items: start; }
 .schedule-sidebar-grid { display: grid; gap: 16px; align-content: start; }
 .schedule-side-panel { min-height: 0; }
+.schedule-side-panel-intake {
+  background:
+    radial-gradient(circle at 14% 18%, rgba(238, 198, 111, 0.18), transparent 28%),
+    radial-gradient(circle at 84% 84%, rgba(118, 160, 149, 0.14), transparent 30%),
+    linear-gradient(180deg, rgba(255, 248, 235, 0.06) 0%, rgba(255, 248, 235, 0.03) 100%);
+}
 .schedule-side-panel-upcoming {
   background:
     radial-gradient(circle at 88% 14%, rgba(226, 182, 96, 0.16), transparent 28%),
@@ -371,6 +377,58 @@ button { cursor: pointer; }
   background: rgba(255, 248, 235, 0.06); color: #fff8ec; font-size: 0.82rem;
 }
 .calendar-more { color: #cebfa8; font-size: 0.78rem; }
+.schedule-intake-copy {
+  margin-bottom: 14px;
+  color: #d7c7b1;
+  line-height: 1.5;
+}
+.schedule-chat-thread {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 280px;
+  overflow: auto;
+  margin-bottom: 14px;
+  padding-right: 4px;
+}
+.schedule-chat-bubble {
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(212, 184, 133, 0.1);
+  background: rgba(255, 248, 235, 0.04);
+}
+.schedule-chat-bubble.assistant {
+  background: linear-gradient(180deg, rgba(255, 248, 235, 0.07) 0%, rgba(255, 248, 235, 0.03) 100%);
+}
+.schedule-chat-bubble.user {
+  background: linear-gradient(180deg, rgba(155, 102, 47, 0.24) 0%, rgba(255, 248, 235, 0.04) 100%);
+}
+.schedule-chat-meta {
+  margin-bottom: 6px;
+  color: #baa88f;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.schedule-chat-bubble p {
+  margin: 0;
+  color: #f2e8da;
+  white-space: pre-wrap;
+}
+.schedule-intake-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.schedule-intake-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.schedule-intake-actions small {
+  color: #bca992;
+}
 .upcoming-list { display: flex; flex-direction: column; gap: 12px; }
 .upcoming-card {
   padding: 14px; border-radius: 16px; background: radial-gradient(circle at top right, rgba(229, 191, 117, 0.12), transparent 34%), linear-gradient(180deg, rgba(255, 248, 235, 0.07) 0%, rgba(255, 248, 235, 0.03) 100%);
@@ -403,8 +461,9 @@ button { cursor: pointer; }
   .topbar, .tasks-layout { padding-left: 14px; padding-right: 14px; }
 }
 @media (max-width: 720px) {
-  .topbar, .task-form-row, .task-card-header, .detail-meta, .calendar-toolbar, .calendar-toolbar-actions, .detail-save-row, .task-card-dense { flex-direction: column; }
+  .topbar, .task-form-row, .task-card-header, .detail-meta, .calendar-toolbar, .calendar-toolbar-actions, .detail-save-row, .task-card-dense, .schedule-intake-actions { flex-direction: column; }
   .task-card-dense { display: flex; }
   .task-list-dense { max-height: none; }
+  .schedule-chat-thread { max-height: none; }
   .search-pill { min-width: 0; width: 100%; }
 }
