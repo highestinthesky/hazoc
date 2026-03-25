@@ -35,4 +35,5 @@
 - LAN bridge was added on Windows so the current Wi-Fi/LAN URL should be `http://192.168.12.190:4180/`.
 - Schedule page now has clearer separation: calendar, upcoming tasks, recurring duties, and unscheduled work each have their own area.
 - New feedback from haolun: the site now works on Mac over LAN, but the current UI still feels visually ugly/clunky and needs another polish pass.
-- New remembered plan for the Schedule page: later add a direct-to-hazoc request textbox for schedule input, support 4 schedule profiles (hazoc, haolun, and two more users), allow one request to place an event onto another user's schedule too, and eventually connect profiles to Google Calendar plus Discord/Telegram reminders. Do not implement this yet.
+- Schedule page now has a direct-to-hazoc request textbox with inline replies / clarifying questions.
+- Longer-term schedule plan still pending: support 4 schedule profiles (hazoc, haolun, and two more users), allow one request to place an event onto another user's schedule too, and eventually connect profiles to Google Calendar plus Discord/Telegram reminders.

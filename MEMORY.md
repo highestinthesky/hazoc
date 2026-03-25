@@ -23,7 +23,7 @@
 - The important surfaces are: task tracking, hazoc's planned schedule, memory/journal, and end-of-session continuity.
 - The calendar should represent hazoc's planned work rather than Google Calendar events.
 - The build should start local-only, but the architecture should be ready to become LAN-accessible later without a rewrite.
-- Planned next-stage schedule architecture: the Schedule page should eventually include a text box that sends directly to hazoc for schedule requests, not a generic manual event form.
+- The Schedule page now includes a text box that sends directly to hazoc for schedule requests, with inline hazoc replies for confirmations and clarifying questions.
 - Planned schedule-user model: 4 schedule profiles total — hazoc, haolun, and two additional users.
 - Planned request structure: a schedule request may specify an event name, time, and optionally ask for the event to also be added to another user's schedule.
 - Planned integrations: link the user profiles to Google Calendar and let hazoc send reminders to each user through Discord and/or Telegram.
