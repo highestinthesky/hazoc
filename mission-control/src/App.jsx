@@ -6,6 +6,7 @@ import {
   descriptionTemplate,
   formatDate,
   formatDateTime,
+  formatTime,
   fromInputValueInZone,
   laneMeta,
   lanes,
@@ -312,17 +313,21 @@ function ScheduleView({
             {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => <span key={day}>{day}</span>)}
           </div>
 
-          <div className="calendar-grid">
+          <div className="calendar-grid calendar-grid-large">
             {calendarDays.map((day) => (
-              <article key={day.key} className={`calendar-cell ${day.inMonth ? '' : 'muted'} ${day.isToday ? 'today' : ''}`}>
-                <div className="calendar-date">{day.date.getDate()}</div>
+              <article key={day.key} className={`calendar-cell ${day.inMonth ? '' : 'muted'} ${day.isToday ? 'today' : ''} ${day.entries.length ? 'has-events' : ''}`}>
+                <div className="calendar-date-row">
+                  <div className="calendar-date">{day.date.getDate()}</div>
+                  {day.entries.length ? <div className="calendar-date-count">{day.entries.length}</div> : null}
+                </div>
                 <div className="calendar-events">
-                  {day.entries.slice(0, 3).map((task) => (
+                  {day.entries.slice(0, 4).map((task) => (
                     <button key={task.id} type="button" className={`calendar-pill lane-${task.lane}`} onClick={() => openTask(task.id)}>
-                      {task.title}
+                      <span className="calendar-pill-time">{formatTime(task.scheduledStart)}</span>
+                      <span className="calendar-pill-title">{task.title}</span>
                     </button>
                   ))}
-                  {day.entries.length > 3 ? <span className="calendar-more">+{day.entries.length - 3} more</span> : null}
+                  {day.entries.length > 4 ? <span className="calendar-more">+{day.entries.length - 4} more</span> : null}
                 </div>
               </article>
             ))}

@@ -1,5 +1,25 @@
 [
   {
+    "id": "task-mn5dl4fc-yzlha",
+    "title": "Speech Revision",
+    "notes": "Scheduled for haolun tomorrow at 8:00 PM America/New_York via mission-control schedule intake.",
+    "description": "Project memory\n\nGoal\n- Hold time for Speech Revision for haolun.\n\nWhat is known\n- Schedule request: \"schedule tomorrow at 8 pm for haolun - Speech Revision\".\n- Interpret this as a one-off scheduled item in America/New_York.\n\nWhat has been done\n- Added this scheduled task to mission control.\n\nBlockers / unknowns\n- No blocker right now.\n\nNext steps\n- Be ready for Speech Revision at the scheduled time.",
+    "lane": "workbench",
+    "scheduledStart": "2026-03-26T00:00:00.000Z",
+    "scheduledEnd": "2026-03-26T00:00:00.000Z",
+    "createdAt": "2026-03-25T01:39:15.239Z",
+    "updatedAt": "2026-03-25T01:39:15.239Z"
+  },
+  {
+    "id": "task-optimize-mission-control",
+    "title": "Optimize the mission-control website",
+    "notes": "Mission control is LAN-accessible and structurally cleaner. Latest pass refit the Tasks page around three real sections, added a direct Schedule-page request panel to hazoc, polished the schedule-intake textbox, and enlarged the Schedule calendar so scheduled items read more clearly with stronger day/event treatment.",
+    "description": "Project memory\n\nGoal\n- Keep improving mission control so it feels cleaner, more reliable, more LAN-friendly, and easier to use as the shared workspace.\n\nWhat is known\n- The current app now uses a stable single-server runtime on port 4180 instead of the earlier fragile split-origin setup.\n- WSL-only binding was not enough for Wi-Fi/LAN access, so Windows needed a portproxy bridge and inbound firewall allowance.\n- Haolun wanted the schedule and tasks to feel more clearly separated, with recurring duties shown as their own distinct box rather than blended into a generic side stack.\n\nWhat has been done\n- Refactored the frontend into cleaner view sections with shared mission-control utility helpers.\n- Optimized calendar rendering by grouping scheduled tasks by day instead of re-filtering for every calendar cell.\n- Reworked the schedule page so the calendar, upcoming scheduled tasks, recurring duties, and unscheduled work each have a clearer dedicated area.\n- Cleaned up the toolbar/button styling and tightened the page structure.\n- Switched the stable runtime to HOST=0.0.0.0 on port 4180.\n- Updated the watchdog to monitor and restart the 4180 single-server runtime.\n- Added a Windows portproxy from 0.0.0.0:4180 to the WSL address and added a private-profile firewall rule for TCP 4180.\n\nBlockers / unknowns\n- If the Windows LAN IP changes later, the portproxy target address may need to be refreshed if the WSL IP also changes.\n- Real-world testing from another Wi-Fi device is still worth doing, even though Windows-local LAN-IP access now succeeds.\n\nNext steps\n- Test from another device on the same Wi-Fi using the Windows LAN IP URL.\n- If the LAN IP changes later, refresh the reported URL and verify the bridge still works.\n- Keep polishing based on real usage friction rather than abstract cleanup.\n\nVisual polish feedback\n- Haolun said the current UI works on Mac now, but still looks a bit ugly.\n- The detail panel/header treatment feels visually heavy and needs refinement.\n\nNext polish targets\n- Improve typography hierarchy and spacing.\n- Reduce bulky dark blocks and harsh panel framing.\n- Make the task detail view feel more elegant and integrated with the rest of the page.\n\n\nLatest task-board refit\n- Haolun said the Capture Tray had effectively gone unused and should be removed.\n- Reworked the Tasks page into selectable subsections for Workbench, On Hold, and Archived.\n- Swapped the old multi-column lane board for a denser single-section list plus detail panel so more tasks can stay visible at once while keeping long-form memory on the right.\n\nCalendar polish update\n- Haolun wanted the Schedule calendar to reflect scheduled events more clearly and to have more space.\n- Enlarged the calendar area relative to the sidebar.\n- Increased cell size and made scheduled days visually stronger.\n- Event pills now show time + title so calendar entries read like actual scheduled items instead of tiny generic chips.\n",
+    "lane": "workbench",
+    "createdAt": "2026-03-24T19:10:00.000Z",
+    "updatedAt": "2026-03-25T01:46:00.000Z"
+  },
+  {
     "id": "task-multi-user-schedule-architecture",
     "title": "Design multi-user schedule intake and reminder architecture",
     "notes": "Direct Schedule-page textbox to hazoc is now implemented with inline replies/clarifying questions. Broader multi-user profiles, cross-posting, Google Calendar linking, and Discord/Telegram reminders remain planned for later.",
@@ -7,15 +27,6 @@
     "lane": "workbench",
     "createdAt": "2026-03-25T01:25:00.000Z",
     "updatedAt": "2026-03-25T01:31:00.000Z"
-  },
-  {
-    "id": "task-optimize-mission-control",
-    "title": "Optimize the mission-control website",
-    "notes": "Mission control is LAN-accessible and structurally cleaner. Latest pass refit the Tasks page around three real sections, added a direct Schedule-page request panel to hazoc, and polished the schedule-intake textbox so it matches the site aesthetic instead of using a raw browser textarea.",
-    "description": "Project memory\n\nGoal\n- Keep improving mission control so it feels cleaner, more reliable, more LAN-friendly, and easier to use as the shared workspace.\n\nWhat is known\n- The current app now uses a stable single-server runtime on port 4180 instead of the earlier fragile split-origin setup.\n- WSL-only binding was not enough for Wi-Fi/LAN access, so Windows needed a portproxy bridge and inbound firewall allowance.\n- Haolun wanted the schedule and tasks to feel more clearly separated, with recurring duties shown as their own distinct box rather than blended into a generic side stack.\n\nWhat has been done\n- Refactored the frontend into cleaner view sections with shared mission-control utility helpers.\n- Optimized calendar rendering by grouping scheduled tasks by day instead of re-filtering for every calendar cell.\n- Reworked the schedule page so the calendar, upcoming scheduled tasks, recurring duties, and unscheduled work each have a clearer dedicated area.\n- Cleaned up the toolbar/button styling and tightened the page structure.\n- Switched the stable runtime to HOST=0.0.0.0 on port 4180.\n- Updated the watchdog to monitor and restart the 4180 single-server runtime.\n- Added a Windows portproxy from 0.0.0.0:4180 to the WSL address and added a private-profile firewall rule for TCP 4180.\n\nBlockers / unknowns\n- If the Windows LAN IP changes later, the portproxy target address may need to be refreshed if the WSL IP also changes.\n- Real-world testing from another Wi-Fi device is still worth doing, even though Windows-local LAN-IP access now succeeds.\n\nNext steps\n- Test from another device on the same Wi-Fi using the Windows LAN IP URL.\n- If the LAN IP changes later, refresh the reported URL and verify the bridge still works.\n- Keep polishing based on real usage friction rather than abstract cleanup.\n\nVisual polish feedback\n- Haolun said the current UI works on Mac now, but still looks a bit ugly.\n- The detail panel/header treatment feels visually heavy and needs refinement.\n\nNext polish targets\n- Improve typography hierarchy and spacing.\n- Reduce bulky dark blocks and harsh panel framing.\n- Make the task detail view feel more elegant and integrated with the rest of the page.\n\n\nLatest task-board refit\n- Haolun said the Capture Tray had effectively gone unused and should be removed.\n- Reworked the Tasks page into selectable subsections for Workbench, On Hold, and Archived.\n- Swapped the old multi-column lane board for a denser single-section list plus detail panel so more tasks can stay visible at once while keeping long-form memory on the right.\n",
-    "lane": "workbench",
-    "createdAt": "2026-03-24T19:10:00.000Z",
-    "updatedAt": "2026-03-25T01:35:00.000Z"
   },
   {
     "id": "task-message-triage-loop",

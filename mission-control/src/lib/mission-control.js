@@ -70,6 +70,15 @@ export function formatDateTime(dateString) {
   }).format(new Date(dateString))
 }
 
+export function formatTime(dateString) {
+  if (!dateString) return 'No time set'
+  return new Intl.DateTimeFormat([], {
+    timeZone: scheduleTimeZone,
+    hour: 'numeric',
+    minute: '2-digit',
+  }).format(new Date(dateString))
+}
+
 export function toInputValueInZone(dateString, timeZone) {
   if (!dateString) return ''
   const parts = getTimeZoneParts(dateString, timeZone)
