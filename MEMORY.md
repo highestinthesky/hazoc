@@ -38,7 +38,7 @@
 - For each meaningful message from haolun: identify the implied task/follow-up, create or update it in the mission-control task board, and keep the lane marking current.
 - Review/update the task board roughly hourly while actively working.
 - Keep the local mission-control site up while hazoc is actively running.
-- Push meaningful workspace changes to GitHub roughly every other hour while active.
+- Push meaningful workspace changes to GitHub every half hour while active, aligned to :00 / :30.
 - A visible recurring duty does not count as done by itself; it only counts after a real commit/push or a verified clean/no-change check.
 
 ## Default memory workflow

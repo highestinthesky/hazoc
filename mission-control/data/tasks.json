@@ -12,10 +12,10 @@
     "id": "task-recurring-duties-schedule",
     "title": "Track recurring duties on the schedule page",
     "notes": "Added recurring duties to the schedule page, including hourly task-board review, GitHub push rhythm, and mission-control uptime duty.",
-    "description": "Project memory\n\nGoal\n- Make recurring operational duties visible on the schedule page so hazoc does not neglect them.\n\nWhat is known\n- Haolun noticed GitHub pushes were not happening on the requested cadence.\n- Recurring duties like hourly task-board review and periodic GitHub pushes should be visible in the schedule so they are harder to forget.\n\nWhat has been done\n- Added a recurring duties data source and API response.\n- Added recurring cards to the schedule page.\n- Seeded the schedule with hourly task-board review, GitHub push rhythm, and mission-control uptime duties.\n\nBlockers / unknowns\n- No blocker right now.\n\nNext steps\n- Keep the recurring list aligned with real operating rules as they evolve.",
+    "description": "Project memory\n\nGoal\n- Make recurring operational duties visible on the schedule page so hazoc does not neglect them.\n\nWhat is known\n- Haolun noticed GitHub pushes were not happening on the requested cadence.\n- Recurring duties like hourly task-board review and periodic GitHub pushes should be visible in the schedule so they are harder to forget, and the current cadence is every 30 minutes.\n\nWhat has been done\n- Added a recurring duties data source and API response.\n- Added recurring cards to the schedule page.\n- Seeded the schedule with hourly task-board review, GitHub push rhythm, and mission-control uptime duties.\n\nBlockers / unknowns\n- No blocker right now.\n\nNext steps\n- Keep the recurring list aligned with real operating rules as they evolve.",
     "lane": "archive",
     "createdAt": "2026-03-24T19:38:00.000Z",
-    "updatedAt": "2026-03-24T19:41:00.000Z"
+    "updatedAt": "2026-03-25T01:04:00.000Z"
   },
   {
     "id": "task-memory-page",
@@ -145,12 +145,12 @@
   },
   {
     "id": "task-github-push-rhythm",
-    "title": "Push workspace changes to GitHub every other hour while active",
-    "notes": "Now backed by scripts/git-auto-sync.sh plus an OpenClaw cron job (`workspace-git-autosync`) that runs every two hours; the duty only counts after a real commit/push or a verified clean/no-change check.",
-    "description": "Project memory\n\nGoal\n- Keep workspace changes backed up to GitHub at a regular cadence while active work is happening.\n\nWhat is known\n- Haolun explicitly wants GitHub pushes roughly every other hour while hazoc is in use.\n- This should apply when there are real changes worth preserving, not as an empty ritual.\n\nWhat has been done\n- The rule has been written into AGENTS.md, USER.md, and today's daily memory note.\n- Added scripts/git-auto-sync.sh to perform guarded fetch/status/commit/push automation.\n- Added an OpenClaw cron job named `workspace-git-autosync` scheduled every two hours at :52 America/New_York.\n- This todo has been added to the mission-control task board.\n\nBlockers / unknowns\n- Automatic sync deliberately refuses to push when the remote branch is ahead/diverged or when fetch/push fails; those cases still need intervention.\n\nNext steps\n- Let the automated two-hour sync handle normal commit/push cadence.\n- If the script reports a blocker, resolve the git state and resume the cadence.",
+    "title": "Push workspace changes to GitHub every half hour while active",
+    "notes": "Now backed by scripts/git-auto-sync.sh plus an OpenClaw cron job (`workspace-git-autosync`) that runs every 30 minutes on :00 / :30; the duty only counts after a real commit/push or a verified clean/no-change check.",
+    "description": "Project memory\n\nGoal\n- Keep workspace changes backed up to GitHub at a regular cadence while active work is happening.\n\nWhat is known\n- Haolun explicitly wants GitHub pushes every half hour while hazoc is in use, aligned to :00 / :30.\n- This should apply when there are real changes worth preserving, not as an empty ritual.\n\nWhat has been done\n- The rule has been written into AGENTS.md, USER.md, and today's daily memory note.\n- Added scripts/git-auto-sync.sh to perform guarded fetch/status/commit/push automation.\n- Added an OpenClaw cron job named `workspace-git-autosync` scheduled every 30 minutes at :00 / :30 in America/New_York.\n- This todo has been added to the mission-control task board.\n\nBlockers / unknowns\n- Automatic sync deliberately refuses to push when the remote branch is ahead/diverged or when fetch/push fails; those cases still need intervention.\n\nNext steps\n- Let the automated half-hour sync handle normal commit/push cadence.\n- If the script reports a blocker, resolve the git state and resume the cadence.",
     "lane": "workbench",
     "createdAt": "2026-03-24T16:27:00.000Z",
-    "updatedAt": "2026-03-25T00:53:00.000Z"
+    "updatedAt": "2026-03-25T01:04:00.000Z"
   },
   {
     "id": "task-elite-memory-skill-review",
