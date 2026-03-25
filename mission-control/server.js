@@ -16,6 +16,7 @@ const SESSION_ID = 'mission-control-local'
 const WORKSPACE = '/home/haolun/.openclaw/workspace'
 const SCHEDULE_TIME_ZONE = 'America/New_York'
 const TASKS_PATH = path.join(WORKSPACE, 'mission-control/data/tasks.json')
+const EVENTS_PATH = path.join(WORKSPACE, 'mission-control/data/events.json')
 const RECURRING_PATH = path.join(WORKSPACE, 'mission-control/data/recurring.json')
 const MEMORY_DIR = path.join(WORKSPACE, 'memory')
 const DIST_DIR = path.join(__dirname, 'dist')
@@ -78,6 +79,44 @@ function sortTasks(tasks) {
   })
 }
 
+function normalizeEvent(event) {
+  const normalized = {
+    id: String(event?.id || ''),
+    title: String(event?.title || '').trim(),
+    notes: String(event?.notes || '').trim(),
+    description: String(event?.description || '').trim(),
+    owner: String(event?.owner || 'haolun').trim() || 'haolun',
+    status: String(event?.status || 'active'),
+    scheduledStart: typeof event?.scheduledStart === 'string' ? event.scheduledStart : '',
+    scheduledEnd: typeof event?.scheduledEnd === 'string' ? event.scheduledEnd : '',
+    createdAt: String(event?.createdAt || new Date().toISOString()),
+    updatedAt: String(event?.updatedAt || event?.createdAt || new Date().toISOString()),
+  }
+
+  if (!['active', 'archived'].includes(normalized.status)) normalized.status = 'active'
+
+  const startMs = normalized.scheduledStart ? Date.parse(normalized.scheduledStart) : Number.NaN
+  const endMs = normalized.scheduledEnd ? Date.parse(normalized.scheduledEnd) : Number.NaN
+  if (normalized.scheduledStart && Number.isNaN(startMs)) normalized.scheduledStart = ''
+  if (normalized.scheduledEnd && Number.isNaN(endMs)) normalized.scheduledEnd = ''
+  if (normalized.scheduledStart && normalized.scheduledEnd && !Number.isNaN(startMs) && !Number.isNaN(endMs) && endMs < startMs) {
+    normalized.scheduledEnd = normalized.scheduledStart
+  }
+
+  return normalized
+}
+
+function sortEvents(events) {
+  return [...events].sort((a, b) => {
+    const aScheduled = a.scheduledStart ? Date.parse(a.scheduledStart) : Number.NaN
+    const bScheduled = b.scheduledStart ? Date.parse(b.scheduledStart) : Number.NaN
+    if (!Number.isNaN(aScheduled) && !Number.isNaN(bScheduled) && aScheduled !== bScheduled) return aScheduled - bScheduled
+    if (!Number.isNaN(aScheduled)) return -1
+    if (!Number.isNaN(bScheduled)) return 1
+    return Date.parse(b.updatedAt) - Date.parse(a.updatedAt)
+  })
+}
+
 async function runJsonCommand(command, args) {
   const { stdout } = await execFileAsync(command, args, {
     cwd: WORKSPACE,
@@ -103,6 +142,15 @@ async function readTasks() {
 
 async function writeTasks(tasks) {
   await fs.writeFile(TASKS_PATH, `${JSON.stringify(tasks.map(normalizeTask), null, 2)}\n`, 'utf8')
+}
+
+async function readEvents() {
+  const raw = await fs.readFile(EVENTS_PATH, 'utf8')
+  return sortEvents(JSON.parse(raw).map(normalizeEvent))
+}
+
+async function writeEvents(events) {
+  await fs.writeFile(EVENTS_PATH, `${JSON.stringify(events.map(normalizeEvent), null, 2)}\n`, 'utf8')
 }
 
 async function readTextIfExists(filePath) {
@@ -159,9 +207,18 @@ app.get('/api/health', (_req, res) => {
 
 app.get('/api/schedule', async (_req, res) => {
   try {
-    const [tasks, recurring] = await Promise.all([readTasks(), readJsonFile(RECURRING_PATH, [])])
-    const scheduled = tasks.filter((task) => task.scheduledStart && task.lane !== 'archive')
-    res.json({ ok: true, timeZone: SCHEDULE_TIME_ZONE, scheduled, needsScheduling: tasks.filter((task) => !task.scheduledStart && task.lane !== 'archive'), recurring, fetchedAt: new Date().toISOString() })
+    const [tasks, events, recurring] = await Promise.all([readTasks(), readEvents(), readJsonFile(RECURRING_PATH, [])])
+    const scheduledTasks = tasks.filter((task) => task.scheduledStart && task.lane !== 'archive')
+    const scheduledEvents = events.filter((event) => event.scheduledStart && event.status !== 'archived')
+    res.json({
+      ok: true,
+      timeZone: SCHEDULE_TIME_ZONE,
+      scheduledTasks,
+      scheduledEvents,
+      needsScheduling: tasks.filter((task) => !task.scheduledStart && task.lane !== 'archive'),
+      recurring,
+      fetchedAt: new Date().toISOString(),
+    })
   } catch (error) {
     const detail = error?.stderr || error?.stdout || error?.message || 'Unknown error'
     res.status(500).json({ ok: false, error: detail })
@@ -204,6 +261,61 @@ app.post('/api/tasks', async (req, res) => {
     res.json({ ok: true, task })
   } catch (error) {
     res.status(500).json({ ok: false, error: error.message || 'Failed to create task.' })
+  }
+})
+
+app.get('/api/events', async (_req, res) => {
+  try {
+    const events = await readEvents()
+    res.json({ ok: true, events })
+  } catch (error) {
+    res.status(500).json({ ok: false, error: error.message || 'Failed to load events.' })
+  }
+})
+
+app.post('/api/events', async (req, res) => {
+  const title = typeof req.body?.title === 'string' ? req.body.title.trim() : ''
+  const notes = typeof req.body?.notes === 'string' ? req.body.notes.trim() : ''
+  const description = typeof req.body?.description === 'string' ? req.body.description.trim() : ''
+  const owner = typeof req.body?.owner === 'string' ? req.body.owner.trim() : 'haolun'
+  const status = typeof req.body?.status === 'string' ? req.body.status : 'active'
+  const scheduledStart = typeof req.body?.scheduledStart === 'string' ? req.body.scheduledStart : ''
+  const scheduledEnd = typeof req.body?.scheduledEnd === 'string' ? req.body.scheduledEnd : ''
+  if (!title) return res.status(400).json({ ok: false, error: 'Event title is required.' })
+
+  try {
+    const events = await readEvents()
+    const now = new Date().toISOString()
+    const event = normalizeEvent({ id: `event-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`, title, notes, description, owner, status, scheduledStart, scheduledEnd, createdAt: now, updatedAt: now })
+    events.unshift(event)
+    await writeEvents(events)
+    res.json({ ok: true, event })
+  } catch (error) {
+    res.status(500).json({ ok: false, error: error.message || 'Failed to create event.' })
+  }
+})
+
+app.patch('/api/events/:id', async (req, res) => {
+  try {
+    const events = await readEvents()
+    const event = events.find((item) => item.id === req.params.id)
+    if (!event) return res.status(404).json({ ok: false, error: 'Event not found.' })
+
+    if (typeof req.body?.title === 'string') event.title = req.body.title.trim() || event.title
+    if (typeof req.body?.notes === 'string') event.notes = req.body.notes.trim()
+    if (typeof req.body?.description === 'string') event.description = req.body.description.trim()
+    if (typeof req.body?.owner === 'string') event.owner = req.body.owner.trim() || event.owner
+    if (typeof req.body?.status === 'string') event.status = req.body.status
+    if (typeof req.body?.scheduledStart === 'string') event.scheduledStart = req.body.scheduledStart
+    if (typeof req.body?.scheduledEnd === 'string') event.scheduledEnd = req.body.scheduledEnd
+    event.updatedAt = new Date().toISOString()
+
+    const normalized = normalizeEvent(event)
+    const nextEvents = events.map((item) => (item.id === normalized.id ? normalized : item))
+    await writeEvents(nextEvents)
+    res.json({ ok: true, event: normalized })
+  } catch (error) {
+    res.status(500).json({ ok: false, error: error.message || 'Failed to update event.' })
   }
 })
 

@@ -1,0 +1,14 @@
+[
+  {
+    "id": "event-task-mn5dl4fc-yzlha",
+    "title": "Speech Revision",
+    "notes": "Scheduled for haolun tomorrow at 8:00 PM America/New_York via mission-control schedule intake.",
+    "description": "Project memory\n\nGoal\n- Hold time for Speech Revision for haolun.\n\nWhat is known\n- Schedule request: \"schedule tomorrow at 8 pm for haolun - Speech Revision\".\n- Interpret this as a one-off scheduled item in America/New_York.\n\nWhat has been done\n- Added this scheduled task to mission control.\n\nBlockers / unknowns\n- No blocker right now.\n\nNext steps\n- Be ready for Speech Revision at the scheduled time.",
+    "owner": "haolun",
+    "status": "active",
+    "scheduledStart": "2026-03-26T00:00:00.000Z",
+    "scheduledEnd": "2026-03-26T00:00:00.000Z",
+    "createdAt": "2026-03-25T01:39:15.239Z",
+    "updatedAt": "2026-03-25T01:39:15.239Z"
+  }
+]

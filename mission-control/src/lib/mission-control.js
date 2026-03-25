@@ -10,6 +10,7 @@ export const scheduleTimeZone = 'America/New_York'
 export const storageKeys = {
   page: 'mission-control:page',
   selectedTaskId: 'mission-control:selected-task-id',
+  selectedEventId: 'mission-control:selected-event-id',
   activeTaskLane: 'mission-control:active-task-lane',
   calendarMonth: 'mission-control:calendar-month',
   selectedMemoryId: 'mission-control:selected-memory-id',

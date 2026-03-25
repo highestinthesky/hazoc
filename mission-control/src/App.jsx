@@ -250,14 +250,16 @@ function ScheduleView({
   calendarDays,
   calendarMonth,
   error,
-  nextScheduledTask,
+  nextScheduledEvent,
   onScheduleDraftKeyDown,
+  openEvent,
   openTask,
   recurring,
   scheduleDraft,
   scheduleMessages,
   scheduleSending,
   scheduleThreadRef,
+  scheduledEvents,
   scheduledTasks,
   scheduleLoaded,
   sendScheduleRequest,
@@ -265,19 +267,19 @@ function ScheduleView({
   setScheduleDraft,
   unscheduledActiveTasks,
 }) {
-  const hasSchedule = scheduledTasks.length > 0
+  const hasSchedule = scheduledEvents.length > 0
 
   return (
     <section className="tasks-layout">
       <div className="hero-row">
-        <HeroCard label="Schedule model" title="Hazoc calendar" primary>
-          This calendar tracks future work haolun asks for, using dates and times stored directly on tasks.
+        <HeroCard label="Schedule model" title="Events calendar" primary>
+          This calendar now reflects scheduled events separately from work tasks.
         </HeroCard>
-        <HeroCard label="Planned items" title={String(scheduledTasks.length)}>
+        <HeroCard label="Scheduled events" title={String(scheduledEvents.length)}>
           Shown in {scheduleTimeZone} so dates and times stay anchored.
         </HeroCard>
-        <HeroCard label="Next up" title={nextScheduledTask ? formatDateTime(nextScheduledTask.scheduledStart) : 'None yet'}>
-          {nextScheduledTask ? nextScheduledTask.title : 'Future asks will land here once they get scheduled.'}
+        <HeroCard label="Next event" title={nextScheduledEvent ? formatDateTime(nextScheduledEvent.scheduledStart) : 'None yet'}>
+          {nextScheduledEvent ? nextScheduledEvent.title : 'Future events will land here once they get scheduled.'}
         </HeroCard>
       </div>
 
@@ -321,10 +323,10 @@ function ScheduleView({
                   {day.entries.length ? <div className="calendar-date-count">{day.entries.length}</div> : null}
                 </div>
                 <div className="calendar-events">
-                  {day.entries.slice(0, 4).map((task) => (
-                    <button key={task.id} type="button" className={`calendar-pill lane-${task.lane}`} onClick={() => openTask(task.id)}>
-                      <span className="calendar-pill-time">{formatTime(task.scheduledStart)}</span>
-                      <span className="calendar-pill-title">{task.title}</span>
+                  {day.entries.slice(0, 4).map((event) => (
+                    <button key={event.id} type="button" className="calendar-pill calendar-pill-event" onClick={() => openEvent(event.id)}>
+                      <span className="calendar-pill-time">{formatTime(event.scheduledStart)}</span>
+                      <span className="calendar-pill-title">{event.title}</span>
                     </button>
                   ))}
                   {day.entries.length > 4 ? <span className="calendar-more">+{day.entries.length - 4} more</span> : null}
@@ -344,7 +346,7 @@ function ScheduleView({
             </div>
 
             <div className="schedule-intake-copy">
-              Type schedule requests here. If something is unclear, hazoc can answer in this panel and ask the minimum follow-up needed.
+              Type event requests here. If something is unclear, hazoc can answer in this panel and ask the minimum follow-up needed.
             </div>
 
             <div className="schedule-chat-thread" ref={scheduleThreadRef}>
@@ -364,13 +366,13 @@ function ScheduleView({
                   onChange={(event) => setScheduleDraft(event.target.value)}
                   onKeyDown={onScheduleDraftKeyDown}
                   rows={5}
-                  placeholder="e.g. put dinner with haolun tomorrow at 7:30 PM, and also add it to another user's schedule"
+                  placeholder="e.g. add dinner with haolun tomorrow at 7:30 PM"
                 />
               </label>
               <div className="schedule-intake-actions">
                 <small>Send with Ctrl/Cmd + Enter if you want.</small>
                 <button type="button" className="save-button" onClick={sendScheduleRequest} disabled={scheduleSending || !scheduleDraft.trim()}>
-                  {scheduleSending ? 'Sending…' : 'Send to hazoc'}
+                  {scheduleSending ? 'Sending…' : 'Create / clarify event'}
                 </button>
               </div>
             </div>
@@ -379,24 +381,48 @@ function ScheduleView({
           <section className="panel schedule-side-panel schedule-side-panel-upcoming">
             <div className="panel-header">
               <div>
-                <p className="panel-kicker">upcoming tasks</p>
-                <h2>Future asks</h2>
+                <p className="panel-kicker">upcoming events</p>
+                <h2>Scheduled events</h2>
               </div>
             </div>
             {!scheduleLoaded && !hasSchedule ? (
-              <div className="lane-empty">Loading schedule…</div>
+              <div className="lane-empty">Loading events…</div>
             ) : !hasSchedule ? (
-              <div className="lane-empty">No future items are scheduled yet. When haolun asks for something later, hazoc should add a date/time to that task and it will appear here.</div>
+              <div className="lane-empty">No events are scheduled yet. New schedule entries from this panel should land as events, not tasks.</div>
             ) : (
               <div className="upcoming-list">
-                {scheduledTasks.map((task) => (
-                  <article key={task.id} className="upcoming-card clickable" onClick={() => openTask(task.id)}>
+                {scheduledEvents.map((event) => (
+                  <article key={event.id} className="upcoming-card clickable" onClick={() => openEvent(event.id)}>
+                    <div className="task-card-header">
+                      <strong>{event.title}</strong>
+                      <span>{event.owner}</span>
+                    </div>
+                    <p>{formatDateTime(event.scheduledStart)}</p>
+                    {event.notes ? <small>{event.notes}</small> : null}
+                  </article>
+                ))}
+              </div>
+            )}
+          </section>
+
+          <section className="panel schedule-side-panel schedule-side-panel-tasks">
+            <div className="panel-header">
+              <div>
+                <p className="panel-kicker">scheduled tasks</p>
+                <h2>Hazoc work items</h2>
+              </div>
+            </div>
+            {!scheduledTasks.length ? (
+              <div className="lane-empty">No work tasks are date-anchored right now.</div>
+            ) : (
+              <div className="upcoming-list compact-list">
+                {scheduledTasks.slice(0, 8).map((task) => (
+                  <article key={task.id} className="upcoming-card compact clickable" onClick={() => openTask(task.id)}>
                     <div className="task-card-header">
                       <strong>{task.title}</strong>
                       <span>{laneMeta(task.lane).title}</span>
                     </div>
                     <p>{formatDateTime(task.scheduledStart)}</p>
-                    {task.notes ? <small>{task.notes}</small> : null}
                   </article>
                 ))}
               </div>
@@ -451,6 +477,201 @@ function ScheduleView({
               </div>
             )}
           </section>
+        </aside>
+      </section>
+    </section>
+  )
+}
+
+function EventsView({
+  archivedEvents,
+  error,
+  eventDescription,
+  eventNotes,
+  eventOwner,
+  eventScheduledEnd,
+  eventScheduledStart,
+  eventSaving,
+  eventStatus,
+  eventTitle,
+  events,
+  saveEventDetails,
+  selectedEvent,
+  selectedEventId,
+  setEventDescription,
+  setEventNotes,
+  setEventOwner,
+  setEventScheduledEnd,
+  setEventScheduledStart,
+  setEventStatus,
+  setEventTitle,
+  setSelectedEventId,
+  upcomingEvents,
+}) {
+  return (
+    <section className="tasks-layout">
+      <div className="hero-row">
+        <HeroCard label="Events model" title="Separate from tasks" primary>
+          User-scheduled events live here as calendar items, separate from hazoc work tasks.
+        </HeroCard>
+        <HeroCard label="Upcoming events" title={String(upcomingEvents.length)}>
+          Active scheduled items for people, plans, and reminders.
+        </HeroCard>
+        <HeroCard label="Archived events" title={String(archivedEvents.length)}>
+          Older events stay stored here instead of cluttering the live schedule.
+        </HeroCard>
+      </div>
+
+      {error ? <div className="error-banner">{error}</div> : null}
+
+      <section className="workspace-grid events-grid">
+        <section className="board-grid events-board">
+          <section className="panel events-column">
+            <div className="lane-header lane-header-dense">
+              <div>
+                <p className="panel-kicker">upcoming</p>
+                <h2>Live events</h2>
+              </div>
+              <span className="lane-count">{upcomingEvents.length}</span>
+            </div>
+            <div className="task-list task-list-dense events-list">
+              {!upcomingEvents.length ? <div className="lane-empty">No active events yet.</div> : null}
+              {upcomingEvents.map((event) => (
+                <article key={event.id} className={`task-card ${selectedEventId === event.id ? 'active' : ''}`} onClick={() => setSelectedEventId(event.id)}>
+                  <div className="task-card-header">
+                    <strong>{event.title}</strong>
+                    <span>{formatDate(event.updatedAt || event.createdAt)}</span>
+                  </div>
+                  <div className="task-card-meta-row">
+                    <span className="meta-chip">{event.owner}</span>
+                    <span className="meta-chip">{formatDateTime(event.scheduledStart)}</span>
+                  </div>
+                  {event.notes ? <p className="task-preview">{event.notes}</p> : null}
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section className="panel events-column events-column-archive">
+            <div className="lane-header lane-header-dense">
+              <div>
+                <p className="panel-kicker">archive</p>
+                <h2>Past / stored events</h2>
+              </div>
+              <span className="lane-count">{archivedEvents.length}</span>
+            </div>
+            <div className="task-list task-list-dense events-list">
+              {!archivedEvents.length ? <div className="lane-empty">No archived events yet.</div> : null}
+              {archivedEvents.map((event) => (
+                <article key={event.id} className={`task-card ${selectedEventId === event.id ? 'active' : ''}`} onClick={() => setSelectedEventId(event.id)}>
+                  <div className="task-card-header">
+                    <strong>{event.title}</strong>
+                    <span>{formatDate(event.updatedAt || event.createdAt)}</span>
+                  </div>
+                  <div className="task-card-meta-row">
+                    <span className="meta-chip">{event.owner}</span>
+                    <span className="meta-chip">{event.scheduledStart ? formatDateTime(event.scheduledStart) : 'No time set'}</span>
+                  </div>
+                  {event.notes ? <p className="task-preview">{event.notes}</p> : null}
+                </article>
+              ))}
+            </div>
+          </section>
+        </section>
+
+        <aside className="detail-panel panel task-detail-panel">
+          {selectedEvent ? (
+            <>
+              <section className="detail-hero">
+                <div>
+                  <p className="panel-kicker">event details</p>
+                  <h2>{selectedEvent.title}</h2>
+                  <p className="detail-hero-copy">Events live separately from tasks so personal schedule items can stay organized and archived cleanly.</p>
+                </div>
+                <div className="detail-chip-row">
+                  <span className="meta-chip">{eventOwner || 'haolun'}</span>
+                  <span className="meta-chip">{eventStatus === 'archived' ? 'Archived' : 'Active'}</span>
+                  <span className="meta-chip">Created {formatDate(selectedEvent.createdAt)}</span>
+                  <span className="meta-chip">Updated {formatDate(selectedEvent.updatedAt || selectedEvent.createdAt)}</span>
+                </div>
+              </section>
+
+              <div className="detail-form detail-form-polished">
+                <section className="form-section form-section-soft">
+                  <div className="section-heading">
+                    <p className="panel-kicker">essentials</p>
+                    <h3>Core event details</h3>
+                  </div>
+                  <div className="detail-grid two-up">
+                    <label className="field-block field-block-wide">
+                      <span>Title</span>
+                      <input value={eventTitle} onChange={(event) => setEventTitle(event.target.value)} />
+                    </label>
+                    <label className="field-block">
+                      <span>Owner</span>
+                      <input value={eventOwner} onChange={(event) => setEventOwner(event.target.value)} placeholder="haolun" />
+                    </label>
+                    <label className="field-block">
+                      <span>Status</span>
+                      <select value={eventStatus} onChange={(event) => setEventStatus(event.target.value)}>
+                        <option value="active">Active</option>
+                        <option value="archived">Archived</option>
+                      </select>
+                    </label>
+                    <label className="field-block field-block-wide">
+                      <span>Short notes</span>
+                      <textarea value={eventNotes} onChange={(event) => setEventNotes(event.target.value)} rows={4} />
+                    </label>
+                  </div>
+                </section>
+
+                <section className="form-section form-section-accent">
+                  <div className="section-heading">
+                    <p className="panel-kicker">timing</p>
+                    <h3>Event timing in {scheduleTimeZone}</h3>
+                  </div>
+                  <div className="schedule-edit-grid refined-grid">
+                    <label className="field-block">
+                      <span>Starts</span>
+                      <input type="datetime-local" value={eventScheduledStart} onChange={(event) => setEventScheduledStart(event.target.value)} />
+                    </label>
+                    <label className="field-block">
+                      <span>Ends</span>
+                      <input type="datetime-local" value={eventScheduledEnd} onChange={(event) => setEventScheduledEnd(event.target.value)} />
+                    </label>
+                  </div>
+                  <div className="schedule-preview-row">
+                    <div className="schedule-preview-card">
+                      <span className="schedule-preview-label">Starts</span>
+                      <strong>{eventScheduledStart ? formatDateTime(fromInputValueInZone(eventScheduledStart, scheduleTimeZone)) : 'Not set yet'}</strong>
+                    </div>
+                    <div className="schedule-preview-card">
+                      <span className="schedule-preview-label">Ends</span>
+                      <strong>{eventScheduledEnd ? formatDateTime(fromInputValueInZone(eventScheduledEnd, scheduleTimeZone)) : 'Not set yet'}</strong>
+                    </div>
+                  </div>
+                </section>
+
+                <section className="form-section form-section-memory">
+                  <div className="section-heading">
+                    <p className="panel-kicker">event memory</p>
+                    <h3>Context</h3>
+                  </div>
+                  <label className="field-block field-block-wide">
+                    <span>Detailed event notes</span>
+                    <textarea className="memory-textarea" value={eventDescription} onChange={(event) => setEventDescription(event.target.value)} rows={16} />
+                  </label>
+                </section>
+
+                <div className="detail-save-row">
+                  <div className="save-note">Save after updating title, owner, archive state, timing, or event notes.</div>
+                  <button type="button" className="save-button" onClick={saveEventDetails} disabled={eventSaving}>
+                    {eventSaving ? 'Saving…' : 'Save event'}
+                  </button>
+                </div>
+              </div>
+            </>
+          ) : <div className="lane-empty">Select an event to open its details.</div>}
         </aside>
       </section>
     </section>
@@ -538,12 +759,13 @@ function stripReplyTag(text) {
 }
 
 const defaultScheduleMessages = [
-  createScheduleMessage('assistant', 'Send schedule requests here. If anything is ambiguous, I’ll ask the minimum follow-up question in this panel before I act.'),
+  createScheduleMessage('assistant', 'Send event requests here. If anything is ambiguous, I’ll ask the minimum follow-up question in this panel before I act.'),
 ]
 
 export default function App() {
   const [page, setPage] = useState(() => readStorage(storageKeys.page, 'tasks'))
   const [tasks, setTasks] = useState([])
+  const [events, setEvents] = useState([])
   const [memoryEntries, setMemoryEntries] = useState([])
   const [recurring, setRecurring] = useState([])
   const [loading, setLoading] = useState(true)
@@ -552,6 +774,7 @@ export default function App() {
   const [detailSaving, setDetailSaving] = useState(false)
   const [error, setError] = useState('')
   const [selectedTaskId, setSelectedTaskId] = useState(() => readStorage(storageKeys.selectedTaskId, ''))
+  const [selectedEventId, setSelectedEventId] = useState(() => readStorage(storageKeys.selectedEventId, ''))
   const [activeLaneId, setActiveLaneId] = useState(() => readStorage(storageKeys.activeTaskLane, 'workbench'))
   const [selectedMemoryId, setSelectedMemoryId] = useState(() => readStorage(storageKeys.selectedMemoryId, ''))
   const [detailTitle, setDetailTitle] = useState('')
@@ -560,6 +783,14 @@ export default function App() {
   const [detailLane, setDetailLane] = useState('workbench')
   const [detailScheduledStart, setDetailScheduledStart] = useState('')
   const [detailScheduledEnd, setDetailScheduledEnd] = useState('')
+  const [eventTitle, setEventTitle] = useState('')
+  const [eventNotes, setEventNotes] = useState('')
+  const [eventDescription, setEventDescription] = useState('')
+  const [eventOwner, setEventOwner] = useState('haolun')
+  const [eventStatus, setEventStatus] = useState('active')
+  const [eventScheduledStart, setEventScheduledStart] = useState('')
+  const [eventScheduledEnd, setEventScheduledEnd] = useState('')
+  const [eventSaving, setEventSaving] = useState(false)
   const [scheduleDraft, setScheduleDraft] = useState(() => readStorage(storageKeys.scheduleDraft, ''))
   const [scheduleMessages, setScheduleMessages] = useState(() => parseStoredMessages(readStorage(storageKeys.scheduleMessages, '')) || defaultScheduleMessages)
   const [scheduleSending, setScheduleSending] = useState(false)
@@ -573,6 +804,10 @@ export default function App() {
     setTasks((current) => current.map((task) => (task.id === nextTask.id ? nextTask : task)))
   }, [])
 
+  const replaceEventInState = useCallback((nextEvent) => {
+    setEvents((current) => current.map((event) => (event.id === nextEvent.id ? nextEvent : event)))
+  }, [])
+
   const loadTasks = useCallback(async () => {
     setLoading(true)
     setError('')
@@ -583,6 +818,15 @@ export default function App() {
       setError(err.message)
     } finally {
       setLoading(false)
+    }
+  }, [])
+
+  const loadEvents = useCallback(async () => {
+    try {
+      const result = await requestJson('/api/events')
+      setEvents(result.events)
+    } catch (err) {
+      setError(err.message)
     }
   }, [])
 
@@ -607,14 +851,15 @@ export default function App() {
   }, [])
 
   const refreshCurrentPage = useCallback(async () => {
-    await loadTasks()
+    await Promise.all([loadTasks(), loadEvents()])
     if (page === 'memory') await loadMemory()
     if (page === 'schedule') await loadScheduleExtras()
-  }, [loadMemory, loadScheduleExtras, loadTasks, page])
+  }, [loadEvents, loadMemory, loadScheduleExtras, loadTasks, page])
 
   useEffect(() => {
     loadTasks()
-  }, [loadTasks])
+    loadEvents()
+  }, [loadEvents, loadTasks])
 
   useEffect(() => {
     writeStorage(storageKeys.page, page)
@@ -623,6 +868,7 @@ export default function App() {
   }, [loadMemory, loadScheduleExtras, memoryLoaded, page, scheduleLoaded])
 
   useEffect(() => { writeStorage(storageKeys.selectedTaskId, selectedTaskId) }, [selectedTaskId])
+  useEffect(() => { writeStorage(storageKeys.selectedEventId, selectedEventId) }, [selectedEventId])
   useEffect(() => { writeStorage(storageKeys.activeTaskLane, activeLaneId) }, [activeLaneId])
   useEffect(() => { writeStorage(storageKeys.selectedMemoryId, selectedMemoryId) }, [selectedMemoryId])
   useEffect(() => { writeStorage(storageKeys.scheduleDraft, scheduleDraft) }, [scheduleDraft])
@@ -630,7 +876,9 @@ export default function App() {
   useEffect(() => { writeStorage(storageKeys.calendarMonth, calendarMonth.toISOString()) }, [calendarMonth])
 
   const sortedTasks = useMemo(() => [...tasks].sort(sortTasks), [tasks])
+  const sortedEvents = useMemo(() => [...events].sort(sortTasks), [events])
   const selectedTask = useMemo(() => sortedTasks.find((task) => task.id === selectedTaskId) || null, [selectedTaskId, sortedTasks])
+  const selectedEvent = useMemo(() => sortedEvents.find((event) => event.id === selectedEventId) || null, [selectedEventId, sortedEvents])
   const selectedMemory = useMemo(() => memoryEntries.find((entry) => entry.id === selectedMemoryId) || null, [memoryEntries, selectedMemoryId])
 
   useEffect(() => {
@@ -642,6 +890,10 @@ export default function App() {
   }, [memoryEntries, selectedMemory, selectedMemoryId])
 
   useEffect(() => {
+    if (sortedEvents.length && (!selectedEventId || !selectedEvent)) setSelectedEventId(sortedEvents[0].id)
+  }, [selectedEvent, selectedEventId, sortedEvents])
+
+  useEffect(() => {
     if (!selectedTask) return
     setDetailTitle(selectedTask.title || '')
     setDetailNotes(selectedTask.notes || '')
@@ -650,6 +902,17 @@ export default function App() {
     setDetailScheduledStart(toInputValueInZone(selectedTask.scheduledStart, scheduleTimeZone))
     setDetailScheduledEnd(toInputValueInZone(selectedTask.scheduledEnd, scheduleTimeZone))
   }, [selectedTask])
+
+  useEffect(() => {
+    if (!selectedEvent) return
+    setEventTitle(selectedEvent.title || '')
+    setEventNotes(selectedEvent.notes || '')
+    setEventDescription(selectedEvent.description || '')
+    setEventOwner(selectedEvent.owner || 'haolun')
+    setEventStatus(selectedEvent.status || 'active')
+    setEventScheduledStart(toInputValueInZone(selectedEvent.scheduledStart, scheduleTimeZone))
+    setEventScheduledEnd(toInputValueInZone(selectedEvent.scheduledEnd, scheduleTimeZone))
+  }, [selectedEvent])
 
   useEffect(() => {
     if (!lanes.some((lane) => lane.id === activeLaneId)) setActiveLaneId('workbench')
@@ -673,17 +936,20 @@ export default function App() {
 
   const scheduledTasks = useMemo(() => sortedTasks.filter((task) => task.scheduledStart && task.lane !== 'archive'), [sortedTasks])
   const unscheduledActiveTasks = useMemo(() => sortedTasks.filter((task) => !task.scheduledStart && task.lane !== 'archive'), [sortedTasks])
-  const nextScheduledTask = scheduledTasks[0] || null
+  const scheduledEvents = useMemo(() => sortedEvents.filter((event) => event.scheduledStart && event.status !== 'archived'), [sortedEvents])
+  const archivedEvents = useMemo(() => sortedEvents.filter((event) => event.status === 'archived'), [sortedEvents])
+  const upcomingEvents = scheduledEvents
+  const nextScheduledEvent = scheduledEvents[0] || null
 
-  const tasksByScheduleDay = useMemo(() => {
+  const eventsByScheduleDay = useMemo(() => {
     const map = new Map()
-    for (const task of scheduledTasks) {
-      const key = dateKeyInZone(task.scheduledStart, scheduleTimeZone)
+    for (const event of scheduledEvents) {
+      const key = dateKeyInZone(event.scheduledStart, scheduleTimeZone)
       if (!map.has(key)) map.set(key, [])
-      map.get(key).push(task)
+      map.get(key).push(event)
     }
     return map
-  }, [scheduledTasks])
+  }, [scheduledEvents])
 
   const todayKey = calendarCellKey(new Date())
 
@@ -696,12 +962,12 @@ export default function App() {
       return {
         date,
         key,
-        entries: tasksByScheduleDay.get(key) || [],
+        entries: eventsByScheduleDay.get(key) || [],
         inMonth: date.getMonth() === calendarMonth.getMonth(),
         isToday: key === todayKey,
       }
     })
-  }, [calendarMonth, tasksByScheduleDay, todayKey])
+  }, [calendarMonth, eventsByScheduleDay, todayKey])
 
   const moveTask = useCallback(async (id, lane) => {
     const snapshot = tasks
@@ -736,20 +1002,34 @@ export default function App() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          message: `Mission-control schedule intake panel. Treat this as a schedule request from haolun. Reply briefly and specifically for schedule intake. If the request is ambiguous or missing something important, ask the minimum clarifying follow-up question. If the request is clear enough, confirm the schedule intent in plain language. Do not claim something was scheduled unless you actually updated the relevant task/schedule state. User request:\n\n${message}`,
+          message: `Mission-control schedule intake panel. Treat this as an event request from haolun, not a task-board task, unless the message is clearly about hazoc's own work tracking instead of a personal/shared calendar event.
+
+Primary storage target for scheduled events: /home/haolun/.openclaw/workspace/mission-control/data/events.json
+Event schema fields: id, title, notes, description, owner, status, scheduledStart, scheduledEnd, createdAt, updatedAt
+Status values: active | archived
+Default owner: haolun
+
+Behavior:
+- Reply briefly and specifically for event intake.
+- If the request is ambiguous or missing something important, ask the minimum clarifying follow-up question.
+- If the request is clear enough, confirm the event intent in plain language.
+- Do not claim something was scheduled unless you actually updated the relevant event state.
+- Prefer creating/updating an event in events.json instead of creating a task in tasks.json for user-entered schedule items.
+
+User request:\n\n${message}`,
         }),
       })
 
       const assistantText = stripReplyTag(result.reply) || 'I read that, but I do not have a clean reply yet.'
       setScheduleMessages((current) => [...current, createScheduleMessage('assistant', assistantText)])
-      await Promise.all([loadTasks(), loadScheduleExtras()])
+      await Promise.all([loadTasks(), loadEvents(), loadScheduleExtras()])
     } catch (err) {
       setScheduleMessages((current) => [...current, createScheduleMessage('assistant', `I hit a snag sending that through the schedule panel: ${err.message}`)])
       setError(err.message)
     } finally {
       setScheduleSending(false)
     }
-  }, [loadScheduleExtras, loadTasks, scheduleDraft])
+  }, [loadEvents, loadScheduleExtras, loadTasks, scheduleDraft])
 
   const onScheduleDraftKeyDown = useCallback((event) => {
     if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') {
@@ -762,6 +1042,33 @@ export default function App() {
     const node = scheduleThreadRef.current
     if (node) node.scrollTop = node.scrollHeight
   }, [scheduleMessages])
+
+  const saveEventDetails = useCallback(async () => {
+    if (!selectedEvent) return
+    setEventSaving(true)
+    setError('')
+
+    try {
+      const result = await requestJson(`/api/events/${selectedEvent.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: eventTitle,
+          notes: eventNotes,
+          description: eventDescription,
+          owner: eventOwner,
+          status: eventStatus,
+          scheduledStart: fromInputValueInZone(eventScheduledStart, scheduleTimeZone),
+          scheduledEnd: fromInputValueInZone(eventScheduledEnd, scheduleTimeZone),
+        }),
+      })
+      replaceEventInState(result.event)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setEventSaving(false)
+    }
+  }, [eventDescription, eventNotes, eventOwner, eventScheduledEnd, eventScheduledStart, eventStatus, eventTitle, replaceEventInState, selectedEvent])
 
   const saveTaskDetails = useCallback(async () => {
     if (!selectedTask) return
@@ -797,6 +1104,11 @@ export default function App() {
     setPage('tasks')
   }, [tasks])
 
+  const openEvent = useCallback((eventId) => {
+    setSelectedEventId(eventId)
+    setPage('events')
+  }, [])
+
   return (
     <div className="shell">
       <aside className="sidebar">
@@ -813,6 +1125,7 @@ export default function App() {
           <div className="nav-items">
             <button className={`nav-item ${page === 'tasks' ? 'active' : ''}`} type="button" onClick={() => setPage('tasks')}><span className="nav-dot" />Tasks</button>
             <button className={`nav-item ${page === 'schedule' ? 'active' : ''}`} type="button" onClick={() => setPage('schedule')}><span className="nav-dot" />Schedule</button>
+            <button className={`nav-item ${page === 'events' ? 'active' : ''}`} type="button" onClick={() => setPage('events')}><span className="nav-dot" />Events</button>
             <button className={`nav-item ${page === 'memory' ? 'active' : ''}`} type="button" onClick={() => setPage('memory')}><span className="nav-dot" />Memory</button>
           </div>
         </section>
@@ -825,9 +1138,9 @@ export default function App() {
 
       <main className="main-panel">
         <header className="topbar">
-          <div className="breadcrumbs">Mission Control &nbsp;›&nbsp; <strong>{page === 'schedule' ? 'Schedule' : page === 'memory' ? 'Memory' : 'Tasks'}</strong></div>
+          <div className="breadcrumbs">Mission Control &nbsp;›&nbsp; <strong>{page === 'schedule' ? 'Schedule' : page === 'events' ? 'Events' : page === 'memory' ? 'Memory' : 'Tasks'}</strong></div>
           <div className="topbar-actions">
-            <div className="search-pill">{page === 'schedule' ? 'Planned work calendar' : page === 'memory' ? 'Journal and memory context' : 'Shared memory for requests'}</div>
+            <div className="search-pill">{page === 'schedule' ? 'Calendar for scheduled events' : page === 'events' ? 'Stored and archived events' : page === 'memory' ? 'Journal and memory context' : 'Shared memory for requests'}</div>
             <button type="button" className="icon-button accent" onClick={refreshCurrentPage} disabled={loading}>{loading ? '…' : '⟳'}</button>
           </div>
         </header>
@@ -868,20 +1181,50 @@ export default function App() {
             calendarDays={calendarDays}
             calendarMonth={calendarMonth}
             error={error}
-            nextScheduledTask={nextScheduledTask}
+            nextScheduledEvent={nextScheduledEvent}
             onScheduleDraftKeyDown={onScheduleDraftKeyDown}
+            openEvent={openEvent}
             openTask={openTask}
             recurring={recurring}
             scheduleDraft={scheduleDraft}
             scheduleMessages={scheduleMessages}
             scheduleSending={scheduleSending}
             scheduleThreadRef={scheduleThreadRef}
+            scheduledEvents={scheduledEvents}
             scheduledTasks={scheduledTasks}
             scheduleLoaded={scheduleLoaded}
             sendScheduleRequest={sendScheduleRequest}
             setCalendarMonth={setCalendarMonth}
             setScheduleDraft={setScheduleDraft}
             unscheduledActiveTasks={unscheduledActiveTasks}
+          />
+        ) : null}
+
+        {page === 'events' ? (
+          <EventsView
+            archivedEvents={archivedEvents}
+            error={error}
+            eventDescription={eventDescription}
+            eventNotes={eventNotes}
+            eventOwner={eventOwner}
+            eventScheduledEnd={eventScheduledEnd}
+            eventScheduledStart={eventScheduledStart}
+            eventSaving={eventSaving}
+            eventStatus={eventStatus}
+            eventTitle={eventTitle}
+            events={events}
+            saveEventDetails={saveEventDetails}
+            selectedEvent={selectedEvent}
+            selectedEventId={selectedEventId}
+            setEventDescription={setEventDescription}
+            setEventNotes={setEventNotes}
+            setEventOwner={setEventOwner}
+            setEventScheduledEnd={setEventScheduledEnd}
+            setEventScheduledStart={setEventScheduledStart}
+            setEventStatus={setEventStatus}
+            setEventTitle={setEventTitle}
+            setSelectedEventId={setSelectedEventId}
+            upcomingEvents={upcomingEvents}
           />
         ) : null}
 

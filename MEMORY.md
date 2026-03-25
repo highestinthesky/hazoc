@@ -32,10 +32,11 @@
 ## Current mission-control state
 
 - Reliable local URL: `http://127.0.0.1:4180/`.
-- The site currently has Tasks, Schedule, and Memory pages.
+- The site currently has Tasks, Schedule, Events, and Memory pages.
 - Tasks are stored locally and act as shared project memory.
 - The current Tasks page uses three practical sections: Workbench, On Hold, and Archived. The old Capture Tray concept was dropped because it was not actually being used.
-- Schedule runs on task scheduling fields, not Google Calendar, and uses `America/New_York`.
+- Scheduled events are now stored separately from tasks in a dedicated events store and can be organized/archived on the Events page.
+- Schedule uses `America/New_York` and is now event-first, with scheduled tasks shown separately from user events.
 - Memory page reads real workspace memory files instead of using a separate database.
 - Current notable open issue: the site works, but the UI still needs more visual polish to feel elegant rather than clunky.
 
