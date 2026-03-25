@@ -14,7 +14,7 @@
 - Per meaningful message: triage task -> create/update task -> adjust lane.
 - Review/update task board roughly hourly while active.
 - Mirror important Discord/Telegram items back into main project memory.
-- Push meaningful GitHub changes every half hour while active, aligned to :00 / :30; a recurring reminder only counts after a real commit/push or a verified clean/no-change check.
+- Push meaningful GitHub changes once per hour while active, aligned to `:30`; a recurring reminder only counts after a real commit/push or a verified clean/no-change check.
 - Keep mission control up while active.
 - Use memory retrieval before answering new meaningful questions.
 

@@ -10,9 +10,11 @@
   {
     "id": "recurring-github-push",
     "title": "Push meaningful changes to GitHub",
-    "summary": "When actively working and there are real changes worth preserving, push every half hour, aligned to :00 / :30.",
-    "cadence": "every 30 minutes",
-    "everyHours": 0.5,
+    "summary": "When actively working and there are real changes worth preserving, push once per hour at :30.",
+    "cadence": "hourly at :30",
+    "everyHours": 1,
+    "everyMinutes": 60,
+    "anchorMinute": 30,
     "category": "version-control"
   },
   {

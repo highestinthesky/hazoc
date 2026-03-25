@@ -126,6 +126,21 @@ export function sortTasks(a, b) {
 }
 
 export function nextRecurringDue(item) {
+  if (item.everyMinutes && item.everyMinutes > 0) {
+    const now = new Date()
+    const intervalMs = item.everyMinutes * 60 * 1000
+    const anchorMinute = Number.isFinite(item.anchorMinute) ? item.anchorMinute : 0
+    const anchor = new Date(now)
+    anchor.setSeconds(0, 0)
+    anchor.setMinutes(anchorMinute)
+
+    if (now <= anchor) return formatDateTime(anchor.toISOString())
+
+    const elapsed = now.getTime() - anchor.getTime()
+    const next = new Date(anchor.getTime() + Math.ceil(elapsed / intervalMs) * intervalMs)
+    return formatDateTime(next.toISOString())
+  }
+
   if (!item.everyHours || item.everyHours <= 0) return 'Continuous'
   const now = new Date()
   const hourMs = item.everyHours * 60 * 60 * 1000

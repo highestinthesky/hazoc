@@ -74,7 +74,7 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 
 **Lane management rule:** actively manage task markings based on current reality. Move tasks between Capture Tray, Workbench, Parking Lot, and Archive Shelf as work starts, pauses, gets postponed, or finishes; do not leave stale lane assignments sitting around.
 
-**Git push rhythm:** when actively working and making changes worth preserving, push to GitHub every half hour (aligned to :00 / :30). A visible recurring duty is not enough by itself — the duty counts only after a real commit/push or a verified clean/no-change check. Use the automated git sync path where configured.
+**Git push rhythm:** when actively working and making changes worth preserving, push to GitHub once per hour at `:30`. A visible recurring duty is not enough by itself — the duty counts only after a real commit/push or a verified clean/no-change check. Use the automated git sync path where configured.
 
 **Recurring duties rule:** keep recurring upkeep visible on the schedule page, especially hourly task-board review and the GitHub push rhythm, so they do not drift out of view during active work.
 
