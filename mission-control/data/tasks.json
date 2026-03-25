@@ -38,11 +38,11 @@
   {
     "id": "task-recurring-duties-schedule",
     "title": "Track recurring duties on the schedule page",
-    "notes": "Added recurring duties to the schedule page, including hourly task-board review, GitHub push rhythm, and mission-control uptime duty.",
-    "description": "Project memory\n\nGoal\n- Make recurring operational duties visible on the schedule page so hazoc does not neglect them.\n\nWhat is known\n- Haolun noticed GitHub pushes were not happening on the requested cadence.\n- Recurring duties like hourly task-board review and periodic GitHub pushes should be visible in the schedule so they are harder to forget, and the current cadence is hourly at :30.\n\nWhat has been done\n- Added a recurring duties data source and API response.\n- Added recurring cards to the schedule page.\n- Seeded the schedule with hourly task-board review, GitHub push rhythm, and mission-control uptime duties.\n\nBlockers / unknowns\n- No blocker right now.\n\nNext steps\n- Keep the recurring list aligned with real operating rules as they evolve.",
+    "notes": "Recurring duties on the schedule page now include the fuller hourly memory optimization + task-board update, GitHub push rhythm, and mission-control uptime duty.",
+    "description": "Project memory\n\nGoal\n- Make recurring operational duties visible on the schedule page so hazoc does not neglect them.\n\nWhat is known\n- Haolun noticed GitHub pushes were not happening on the requested cadence.\n- Recurring duties like hourly memory optimization / task-board maintenance and periodic GitHub pushes should be visible in the schedule so they are harder to forget. GitHub push cadence is hourly at :30.\n\nWhat has been done\n- Added a recurring duties data source and API response.\n- Added recurring cards to the schedule page.\n- Seeded the schedule with hourly memory optimization + task-board maintenance, GitHub push rhythm, and mission-control uptime duties.\n\nBlockers / unknowns\n- No blocker right now.\n\nNext steps\n- Keep the recurring list aligned with real operating rules as they evolve.",
     "lane": "archive",
     "createdAt": "2026-03-24T19:38:00.000Z",
-    "updatedAt": "2026-03-25T01:06:00.000Z"
+    "updatedAt": "2026-03-25T02:28:00.000Z"
   },
   {
     "id": "task-github-push-rhythm",
@@ -66,10 +66,10 @@
     "id": "task-mission-control-uptime",
     "title": "Keep mission-control website up while active",
     "notes": "Watchdog now checks the stable 4180 single-server runtime rather than the older 4173 dev path.",
-    "description": "Project memory\n\nGoal\n- Keep the local mission-control website available while hazoc is actively running.\n\nWhat is known\n- Haolun wants the local site kept up during active use.\n- The site runs from mission-control via npm run dev, with the UI on 4173 and API on 4174.\n\nWhat has been done\n- Added a watchdog script at mission-control/scripts/keepalive.sh.\n- The watchdog checks the local UI and API once per minute and restarts the app if it is down.\n- The rule has been written into AGENTS.md, USER.md, and today's memory note.\n\nBlockers / unknowns\n- This keeps the site up while hazoc is running, not as a full machine boot-time service.\n\nNext steps\n- Leave the watchdog running during active work.\n- If needed later, convert this into a more formal service.",
+    "description": "Project memory\n\nGoal\n- Keep the local mission-control website available while hazoc is actively running.\n\nWhat is known\n- Haolun wants the local site kept up during active use.\n- The stable runtime is now the single-server 4180 origin served by mission-control/server.js.\n\nWhat has been done\n- Added a watchdog script at mission-control/scripts/keepalive.sh.\n- The watchdog checks the live 4180 site/API once per minute and restarts the app if it is down.\n- The rule has been written into AGENTS.md, USER.md, and today's memory note.\n\nBlockers / unknowns\n- This keeps the site up while hazoc is running, not as a full machine boot-time service.\n\nNext steps\n- Leave the watchdog running during active work.\n- If needed later, convert this into a more formal service.",
     "lane": "workbench",
     "createdAt": "2026-03-24T17:00:00.000Z",
-    "updatedAt": "2026-03-24T21:07:00.000Z"
+    "updatedAt": "2026-03-25T02:28:00.000Z"
   },
   {
     "id": "task-memory-page",
@@ -101,20 +101,20 @@
   {
     "id": "task-manage-future-schedule",
     "title": "Actively place future asks onto the schedule page",
-    "notes": "When haolun asks for something in the future, add the task and schedule date/time so it appears on the calendar.",
-    "description": "Project memory\n\nGoal\n- Keep the schedule page meaningful by placing future asks onto it as they arise.\n\nWhat is known\n- The schedule page now reflects task scheduling data rather than Google Calendar events.\n- Haolun wants future things they ask for to be tracked there.\n- Correct dates/times should be shown in America/New_York.\n\nWhat has been done\n- Built the schedule page and task scheduling fields.\n- Added this standing operational task so the behavior stays visible.\n\nBlockers / unknowns\n- No blocker; this is an operating discipline.\n\nNext steps\n- When a request has a future date/time, update or create the task and fill in the schedule fields.\n- Keep the calendar aligned with the current task board state.",
+    "notes": "When haolun asks for a future scheduled item, put user-facing schedule entries into Events and keep hazoc work items in Tasks.",
+    "description": "Project memory\n\nGoal\n- Keep the schedule page meaningful by placing future asks onto it as they arise.\n\nWhat is known\n- The schedule is now event-first, with user-facing scheduled items stored as Events and hazoc work items kept as Tasks.\n- Haolun wants future things they ask for to be tracked there.\n- Correct dates/times should be shown in America/New_York.\n\nWhat has been done\n- Built the schedule page and task scheduling fields.\n- Added this standing operational task so the behavior stays visible.\n\nBlockers / unknowns\n- No blocker; this is an operating discipline.\n\nNext steps\n- When a user-facing request has a future date/time, create/update an Event and fill in its schedule fields.\n- When the future item is hazoc's own work, keep using Tasks.\n- Keep the calendar aligned with the current event/task state.",
     "lane": "workbench",
     "createdAt": "2026-03-24T17:19:00.000Z",
-    "updatedAt": "2026-03-24T18:48:00.000Z"
+    "updatedAt": "2026-03-25T02:28:00.000Z"
   },
   {
     "id": "task-schedule-page",
     "title": "Build a real schedule page for hazoc planned work",
-    "notes": "Built the real schedule page and wired it to task scheduling data in America/New_York.",
-    "description": "Project memory\n\nGoal\n- Expand mission control with a real schedule page for hazoc's own planned tasks and future commitments.\n\nWhat is known\n- Haolun wants the schedule to represent hazoc's future work rather than Google Calendar events.\n- Times and dates should be correct.\n- Future requests from haolun should be trackable there.\n\nWhat has been done\n- Added scheduling fields to tasks (`scheduledStart`, `scheduledEnd`).\n- Added a real Schedule page with a monthly calendar and upcoming list.\n- Wired the schedule to task data instead of Google Calendar.\n- Set the schedule display to America/New_York.\n- Added scheduling inputs to task detail editing.\n- Kept the old Google Calendar path as a placeholder API, separate from the main schedule page.\n\nBlockers / unknowns\n- Future scheduling still depends on hazoc actively assigning dates/times to tasks as new requests come in.\n\nNext steps\n- As haolun asks for future work, record those tasks and add schedule dates/times so they appear on the calendar.",
+    "notes": "Built the schedule page, then evolved it into an event-first calendar with tasks shown separately.",
+    "description": "Project memory\n\nGoal\n- Expand mission control with a real schedule page for scheduled events and future commitments, while keeping hazoc work tasks separate.\n\nWhat is known\n- Haolun wants the schedule grounded in mission-control state rather than Google Calendar as the primary source of truth.\n- Times and dates should be correct.\n- Future requests from haolun should be trackable there.\n\nWhat has been done\n- Added scheduling fields to tasks (`scheduledStart`, `scheduledEnd`).\n- Added a real Schedule page with a monthly calendar and upcoming list.\n- Evolved the schedule into an event-first calendar backed by a dedicated events store, with scheduled work tasks shown separately.\n- Set the schedule display to America/New_York.\n- Added scheduling inputs to task detail editing.\n- Kept the old Google Calendar path as a placeholder API, separate from the main schedule page.\n\nBlockers / unknowns\n- Future scheduling still depends on hazoc actively assigning dates/times to the right container: Events for user-facing schedule items, Tasks for hazoc work.\n\nNext steps\n- As haolun asks for future scheduled items, record them in Events (or Tasks when the item is hazoc work) and keep the calendar aligned.",
     "lane": "archive",
     "createdAt": "2026-03-24T17:15:00.000Z",
-    "updatedAt": "2026-03-24T18:48:00.000Z"
+    "updatedAt": "2026-03-25T02:28:00.000Z"
   },
   {
     "id": "task-youtube-video-combo",
@@ -208,12 +208,12 @@
   },
   {
     "id": "task-mn4rikzn-l4lwy",
-    "title": "Keep the mission-control task board fresh while running",
-    "notes": "Update it when new requests appear and review it roughly hourly during active work.",
-    "description": "Project memory\n\nGoal\n- Keep the mission-control task board current enough to serve as durable project memory.\n\nWhat is known\n- Haolun explicitly wants the task board updated whenever new requests appear.\n- Haolun also wants it reviewed and refreshed about hourly while hazoc is actively running.\n- The purpose is to reduce loss from short-term memory resets and keep project context in the website itself.\n\nWhat has been done\n- The preference has been written into AGENTS.md, USER.md, and today's memory file.\n- This todo has now been added to the mission-control task board itself.\n\nBlockers / unknowns\n- No automation exists yet; this is still a workflow rule that hazoc must follow.\n\nNext steps\n- Follow the rule in active sessions.\n- If needed later, automate hourly review reminders or sync behavior.",
+    "title": "Run hourly memory optimization + task board update while active",
+    "notes": "Upgrade the old hourly task-board skim into a fuller maintenance pass: capture meaningful changes from the last hour, record passive work like push IDs, reread curated memory + today's note for accuracy, tighten stale task/event state, and lightly optimize today's memory without touching previous daily files.",
+    "description": "Project memory\n\nGoal\n- Keep workspace memory and the mission-control board tight enough that future resets can recover quickly without hauling old chat context.\n\nWhat is known\n- Haolun wants the old hourly task-board review upgraded into a fuller memory optimization + task-board update pass.\n- The thought process should be: (1) did anything happen in the past hour, and if so has it been written down yet? (2) if not, did passive work happen anyway, such as GitHub pushes, and has that been recorded? (3) reread curated memory files plus today's note and check whether they are still accurate. (4) lightly reorganize/optimize current memory files if it helps retrieval.\n- Previous daily notes should remain untouched; only today's daily note can be lightly improved.\n\nWhat has been done\n- Promoted this upgraded process into recurring duties, curated memory, active state, and the task board.\n- Planned an hourly automation path so the process is not just a good intention.\n- Ran the first full pass manually during setup.\n\nBlockers / unknowns\n- The review still requires judgment; it is not a blind mechanical sync.\n\nNext steps\n- Run the hourly memory optimization pass while active.\n- Record meaningful changes/passive work promptly.\n- Keep curated memory accurate and compact.",
     "lane": "workbench",
     "createdAt": "2026-03-24T15:21:25.187Z",
-    "updatedAt": "2026-03-24T15:21:25.187Z"
+    "updatedAt": "2026-03-25T02:28:00.000Z"
   },
   {
     "id": "task-discord-digest",

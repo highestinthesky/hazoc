@@ -6,13 +6,14 @@
 
 ## What exists now
 - Tasks page with detailed task memory and section management across Workbench, On Hold, and Archived; the old Capture Tray has been removed.
-- Schedule page using task dates/times in `America/New_York`.
-- Memory page reading real workspace memory files.
-- Recurring duties visible on Schedule.
+- Schedule page is now event-first in `America/New_York`, with scheduled user events separated from hazoc work tasks.
+- Events page stores scheduled events separately so they can be reviewed and archived cleanly.
+- Memory page reads real workspace memory files.
+- Recurring duties are visible on Schedule.
 
 ## Core operating rules
 - Per meaningful message: triage task -> create/update task -> adjust lane.
-- Review/update task board roughly hourly while active.
+- Run a full hourly memory optimization + task board update while active, not just a superficial board skim.
 - Mirror important Discord/Telegram items back into main project memory.
 - Push meaningful GitHub changes once per hour while active, aligned to `:30`; a recurring reminder only counts after a real commit/push or a verified clean/no-change check.
 - Keep mission control up while active.

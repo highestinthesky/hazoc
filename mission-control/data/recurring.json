@@ -1,8 +1,8 @@
 [
   {
     "id": "recurring-task-board-review",
-    "title": "Review and update the task board",
-    "summary": "Keep task descriptions and lane markings fresh while actively working.",
+    "title": "Run hourly memory optimization + task board update",
+    "summary": "Each hour while active: capture anything meaningful from the last hour, record passive work like push IDs, reread curated memory + today's note for accuracy, tighten stale task/event state, and lightly optimize today's memory without rewriting older daily files.",
     "cadence": "hourly",
     "everyHours": 1,
     "category": "workflow"

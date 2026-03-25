@@ -21,7 +21,8 @@
 
 - Mission control is the shared workspace between haolun and hazoc.
 - The important surfaces are: task tracking, hazoc's planned schedule, memory/journal, and end-of-session continuity.
-- The calendar should represent hazoc's planned work rather than Google Calendar events.
+- The schedule/calendar should stay grounded in mission-control state rather than defaulting to Google Calendar as the primary source of truth.
+- User-entered scheduled events should stay separate from hazoc work tasks.
 - The build should start local-only, but the architecture should be ready to become LAN-accessible later without a rewrite.
 - The Schedule page now includes a text box that sends directly to hazoc for schedule requests, with inline hazoc replies for confirmations and clarifying questions.
 - Planned schedule-user model: 4 schedule profiles total — hazoc, haolun, and two additional users.
@@ -43,7 +44,7 @@
 ## Operating rules for continuity
 
 - For each meaningful message from haolun: identify the implied task/follow-up, create or update it in the mission-control task board, and keep the lane marking current.
-- Review/update the task board roughly hourly while actively working.
+- Run a full memory optimization + task board update roughly hourly while actively working: capture meaningful changes from the last hour, record passive work like push IDs, reread curated memory + today's note for accuracy, tighten stale task/event state, and lightly optimize today's memory without rewriting prior daily files.
 - Keep the local mission-control site up while hazoc is actively running.
 - Push meaningful workspace changes to GitHub once per hour while active, aligned to `:30`.
 - A visible recurring duty does not count as done by itself; it only counts after a real commit/push or a verified clean/no-change check.

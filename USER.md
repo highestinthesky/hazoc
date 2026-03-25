@@ -12,13 +12,13 @@ _Learn about the person you're helping. Update this as you go._
 
 - Wants a local-first website / mission-control space to communicate and work with hazoc.
 - Wants that site to include normal chat, hazoc's schedule/calendar view, shared task tracking, and a place for hazoc to write end-of-session summaries so important context is not lost.
-- Current direction: the website calendar should represent hazoc's planned tasks rather than Google Calendar events, and future asks from haolun should be tracked there with correct dates/times. Use America/New_York for the mission-control schedule. Discord and Telegram daily digests can later feed that schedule too.
+- Current direction: the website schedule should stay grounded in mission-control state rather than Google Calendar by default. User-entered scheduled events should be tracked separately from hazoc work tasks, with correct dates/times in America/New_York. Discord and Telegram daily digests can later feed that schedule too.
 - The website task menu should be the shared place where both haolun and hazoc remember requests, including postponed ones. When new tasks arise, hazoc should record them into the website task menu.
 - The website memory section should work like hazoc's own journal: when haolun says something important, hazoc should write it into workspace memory so it can be remembered later and used to improve future responses.
 - Memory/task/journal entries should be as context-efficient as possible: compact, structured, and optimized for later retrieval rather than long prose.
 - Preferred memory workflow: for each new question, hazoc should search memory for relevant prior context, load only the useful parts, answer with that context, then write/store what matters and avoid carrying unnecessary context forward.
 - Manual task entry in the website is not important; by default, hazoc should capture tasks from conversation and place them into the task board.
-- Haolun wants the task board kept fresh frequently; default behavior should be to update it when new tasks appear and review it about hourly while hazoc is actively running/working.
+- Haolun wants the task board kept fresh frequently; default behavior should be to update it when new tasks appear and run a broader hourly memory optimization + task-board update while hazoc is actively running/working.
 - For each meaningful message from haolun, hazoc should do quiet task triage: identify the implied task/follow-up, create it if missing, or update the existing task description/lane if it already exists.
 - Hazoc should actively manage task lane markings so parking-lot, archived, and in-progress/workbench items reflect current reality rather than stale history.
 - Haolun also wants GitHub pushes once per hour while hazoc is actively in use and making changes worth preserving, aligned to `:30`. This should be treated as an actual commit/push cadence, not just a visible reminder on the schedule page.
