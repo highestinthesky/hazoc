@@ -33,6 +33,13 @@
 ## Important next-step reminder
 - Start the next conversation fresh and re-anchor from this file + today's memory note instead of dragging the old thread forward.
 
+## Handoff for tomorrow
+- First confirm the Protocol page / Workbench split feels right in the live UI.
+- If continuing mission-control UI work, start with the safest/highest-signal polish slices: visual hierarchy first, then task/event scanability.
+- If switching to the digest build, start under `skills/market-watch` with the bounded source allowlist, `sources.json`, observation schema, and polling loop before scoring or delivery.
+- For multi-user scheduling, the next key design choice is whether “add to another user” means shared attendees or separate personal copies, then define reminder-channel rules.
+- Mission control should already auto-recover and be reachable at `http://192.168.12.188:4180/` after login/reboot via the watchdog + bootstrap path.
+
 ## Latest upgrade
 - Mission control now runs stably on port 4180 with `HOST=0.0.0.0`.
 - LAN bridge is working and the current Wi-Fi/LAN URL is `http://192.168.12.188:4180/`.
