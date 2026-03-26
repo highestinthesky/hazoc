@@ -42,6 +42,8 @@
 - No new blocker surfaced during re-anchor; the main known open issue is still that mission control works but the UI feels visually clunky and needs another polish pass.
 - If work resumes immediately, default first move is to either do the visual hierarchy polish slice or formalize the digest source/schema spec.
 - Fresh UI preference from haolun: strip self-explanatory page/context boxes and keep mission control utility-first rather than explaining pages back to ourselves.
+- Fresh interaction preference from haolun: selected task/detail state should read clearly at a glance; stronger selected-card affordances are now the preferred direction for mission-control lists.
+- Current polish direction also includes richer sidebar/navigation selection and small whole-site fit-and-finish improvements where they make the interface feel smoother without adding clutter.
 
 ## Handoff for tomorrow
 - First confirm the Protocol page / Workbench split feels right in the live UI.

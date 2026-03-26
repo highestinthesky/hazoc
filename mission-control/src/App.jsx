@@ -95,7 +95,7 @@ function TasksView({
 
       {error ? <div className="error-banner">{error}</div> : null}
 
-      <section className="workspace-grid tasks-workspace-grid">
+      <section className={`workspace-grid tasks-workspace-grid tasks-workspace-grid-${activeLaneId}`}>
         <section className={`panel lane-detail-stack lane-${activeLaneId}`}>
           <div className="lane-header lane-header-dense">
             <div>
@@ -108,30 +108,33 @@ function TasksView({
           <div className="task-list task-list-dense">
             {!loading && !activeLaneTasks.length ? <div className="lane-empty">Nothing here right now.</div> : null}
             {activeLaneTasks.map((task) => {
-              const preview = task.notes || compactTextPreview(task.description, 220)
+              const isArchiveCard = activeLaneId === 'archive'
+              const preview = isArchiveCard ? task.notes : task.notes || compactTextPreview(task.description, 220)
               return (
                 <article
                   key={task.id}
-                  className={`task-card task-card-dense ${selectedTaskId === task.id ? 'active' : ''}`}
+                  className={`task-card task-card-dense ${selectedTaskId === task.id ? 'active' : ''} ${isArchiveCard ? 'task-card-archive' : ''}`}
                   onClick={() => setSelectedTaskId(task.id)}
                 >
                   <div className="task-card-main">
                     <div className="task-card-header">
-                      <strong>{task.title}</strong>
+                      <div className="task-card-title-wrap">
+                        <strong>{task.title}</strong>
+                      </div>
                       <span>{formatDate(task.updatedAt || task.createdAt)}</span>
                     </div>
 
                     <div className="task-card-meta-row">
                       <span className={`meta-chip lane-chip lane-${task.lane}`}>{laneMeta(task.lane).title}</span>
                       {task.scheduledStart ? <span className="meta-chip">🗓 {formatDateTime(task.scheduledStart)}</span> : null}
-                      <span className="meta-chip">Updated {formatDate(task.updatedAt || task.createdAt)}</span>
+                      {!isArchiveCard ? <span className="meta-chip">Updated {formatDate(task.updatedAt || task.createdAt)}</span> : null}
                     </div>
 
                     {preview ? <p className="task-preview">{preview}</p> : null}
                   </div>
 
                   <div className="task-card-footer task-card-footer-dense" onClick={(event) => event.stopPropagation()}>
-                    <select value={task.lane} onChange={(event) => moveTask(task.id, event.target.value)}>
+                    <select aria-label={`Move ${task.title} to section`} value={task.lane} onChange={(event) => moveTask(task.id, event.target.value)}>
                       {lanes.map((option) => (
                         <option key={option.id} value={option.id}>{option.title}</option>
                       ))}
@@ -568,7 +571,9 @@ function EventsView({
               {upcomingEvents.map((event) => (
                 <article key={event.id} className={`task-card ${selectedEventId === event.id ? 'active' : ''}`} onClick={() => setSelectedEventId(event.id)}>
                   <div className="task-card-header">
-                    <strong>{event.title}</strong>
+                    <div className="task-card-title-wrap">
+                      <strong>{event.title}</strong>
+                    </div>
                     <span>{formatDate(event.updatedAt || event.createdAt)}</span>
                   </div>
                   <div className="task-card-meta-row">
@@ -594,7 +599,9 @@ function EventsView({
               {archivedEvents.map((event) => (
                 <article key={event.id} className={`task-card ${selectedEventId === event.id ? 'active' : ''}`} onClick={() => setSelectedEventId(event.id)}>
                   <div className="task-card-header">
-                    <strong>{event.title}</strong>
+                    <div className="task-card-title-wrap">
+                      <strong>{event.title}</strong>
+                    </div>
                     <span>{formatDate(event.updatedAt || event.createdAt)}</span>
                   </div>
                   <div className="task-card-meta-row">
@@ -722,7 +729,9 @@ function MemoryView({ error, loading, memoryEntries, memoryLoaded, selectedMemor
           {memoryEntries.map((entry) => (
             <article key={entry.id} className={`task-card memory-card ${selectedMemoryId === entry.id ? 'active' : ''}`} onClick={() => setSelectedMemoryId(entry.id)}>
               <div className="task-card-header">
-                <strong>{entry.title}</strong>
+                <div className="task-card-title-wrap">
+                  <strong>{entry.title}</strong>
+                </div>
                 <span>{entry.kind.replace('-', ' ')}</span>
               </div>
               <p>{entry.excerpt}</p>
