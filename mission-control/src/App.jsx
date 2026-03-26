@@ -26,7 +26,7 @@ function HeroCard({ label, title, children, primary = false }) {
     <article className={`hero-card ${primary ? 'primary' : ''}`}>
       <span className="hero-label">{label}</span>
       <strong>{title}</strong>
-      <p>{children}</p>
+      {children ? <p>{children}</p> : null}
     </article>
   )
 }
@@ -64,15 +64,9 @@ function TasksView({
   return (
     <section className="tasks-layout">
       <div className="hero-row hero-row-tasks">
-        <HeroCard label="Task model" title="Dense task library" primary>
-          New requests should go straight into the real section they belong to. Workbench is for active project work, On Hold is for parked context, Archived keeps finished memory, and Protocol now holds standing duties plus recurring operational rhythm.
-        </HeroCard>
-        <HeroCard label="Live tasks" title={String(sortedTasks.filter((task) => task.lane !== 'archive').length)}>
-          Shared between haolun and hazoc.
-        </HeroCard>
-        <HeroCard label="Need scheduling" title={String(unscheduledActiveTasks.length)}>
-          Active items that still do not have a future date or time.
-        </HeroCard>
+        <HeroCard label="Live tasks" title={String(sortedTasks.filter((task) => task.lane !== 'archive').length)} primary />
+        <HeroCard label="Workbench" title={String(laneCounts.get('workbench') || 0)} />
+        <HeroCard label="Need scheduling" title={String(unscheduledActiveTasks.length)} />
       </div>
 
       <section className="panel task-sections-panel">
@@ -81,7 +75,6 @@ function TasksView({
             <p className="panel-kicker">task sections</p>
             <h2>Choose a subsection</h2>
           </div>
-          <p className="task-sections-note">Capture Tray is gone, and standing duties are no longer pretending to be project work here. Protocol now owns operational rules and recurring rhythm.</p>
         </div>
 
         <div className="lane-tabs" role="tablist" aria-label="Task sections">
@@ -157,7 +150,6 @@ function TasksView({
                 <div>
                   <p className="panel-kicker">task memory</p>
                   <h2>{selectedTask.title}</h2>
-                  <p className="detail-hero-copy">Compact project memory, scheduling, and context for this task live here.</p>
                 </div>
                 <div className="detail-chip-row">
                   <span className={`meta-chip lane-chip lane-${detailLane}`}>{laneMeta(detailLane).title}</span>
@@ -250,15 +242,9 @@ function ProtocolView({ error, protocolItems, protocolLoaded, recurring }) {
   return (
     <section className="tasks-layout">
       <div className="hero-row">
-        <HeroCard label="Protocol model" title="Operating rules" primary>
-          Protocol holds standing rules and recurring operational rhythm so Workbench can stay focused on real project work.
-        </HeroCard>
-        <HeroCard label="Standing protocol" title={String(protocolItems.length)}>
-          Message triage, harm checks, cross-channel continuity, and other default behaviors live here.
-        </HeroCard>
-        <HeroCard label="Recurring rhythm" title={String(recurring.length)}>
-          GitHub pushes, memory optimization, uptime, and similar repeating duties belong here instead of the workbench.
-        </HeroCard>
+        <HeroCard label="Standing protocol" title={String(protocolItems.length)} primary />
+        <HeroCard label="Recurring rhythm" title={String(recurring.length)} />
+        <HeroCard label="Continuous items" title={String(protocolItems.filter((item) => item.cadence === 'continuous').length)} />
       </div>
 
       {error ? <div className="error-banner">{error}</div> : null}
@@ -321,17 +307,6 @@ function ProtocolView({ error, protocolItems, protocolLoaded, recurring }) {
             )}
           </section>
 
-          <section className="panel protocol-panel protocol-panel-note">
-            <div className="panel-header">
-              <div>
-                <p className="panel-kicker">why this exists</p>
-                <h2>Keep workbench clean</h2>
-              </div>
-            </div>
-            <div className="protocol-note-copy">
-              Duties like message triage, hourly memory optimization, GitHub push rhythm, and uptime checks are real, but they are not project backlog. Protocol gives them a visible home without making the workbench feel bloated or misleading.
-            </div>
-          </section>
         </aside>
       </section>
     </section>
@@ -363,15 +338,11 @@ function ScheduleView({
   return (
     <section className="tasks-layout">
       <div className="hero-row">
-        <HeroCard label="Schedule model" title="Events calendar" primary>
-          This calendar now reflects scheduled events separately from work tasks.
-        </HeroCard>
-        <HeroCard label="Scheduled events" title={String(scheduledEvents.length)}>
-          Shown in {scheduleTimeZone} so dates and times stay anchored.
-        </HeroCard>
+        <HeroCard label="Scheduled events" title={String(scheduledEvents.length)} primary />
         <HeroCard label="Next event" title={nextScheduledEvent ? formatDateTime(nextScheduledEvent.scheduledStart) : 'None yet'}>
-          {nextScheduledEvent ? nextScheduledEvent.title : 'Future events will land here once they get scheduled.'}
+          {nextScheduledEvent ? nextScheduledEvent.title : null}
         </HeroCard>
+        <HeroCard label="Unplaced work" title={String(unscheduledActiveTasks.length)} />
       </div>
 
       {error ? <div className="error-banner">{error}</div> : null}
@@ -434,10 +405,6 @@ function ScheduleView({
                 <p className="panel-kicker">direct to hazoc</p>
                 <h2>Schedule requests</h2>
               </div>
-            </div>
-
-            <div className="schedule-intake-copy">
-              Type event requests here. If something is unclear, hazoc can answer in this panel and ask the minimum follow-up needed.
             </div>
 
             <div className="schedule-chat-thread" ref={scheduleThreadRef}>
@@ -577,14 +544,10 @@ function EventsView({
   return (
     <section className="tasks-layout">
       <div className="hero-row">
-        <HeroCard label="Events model" title="Separate from tasks" primary>
-          User-scheduled events live here as calendar items, separate from hazoc work tasks.
-        </HeroCard>
-        <HeroCard label="Upcoming events" title={String(upcomingEvents.length)}>
-          Active scheduled items for people, plans, and reminders.
-        </HeroCard>
-        <HeroCard label="Archived events" title={String(archivedEvents.length)}>
-          Older events stay stored here instead of cluttering the live schedule.
+        <HeroCard label="Live events" title={String(upcomingEvents.length)} primary />
+        <HeroCard label="Archived events" title={String(archivedEvents.length)} />
+        <HeroCard label="Next event" title={upcomingEvents[0] ? formatDateTime(upcomingEvents[0].scheduledStart) : 'None yet'}>
+          {upcomingEvents[0] ? upcomingEvents[0].title : null}
         </HeroCard>
       </div>
 
@@ -652,7 +615,6 @@ function EventsView({
                 <div>
                   <p className="panel-kicker">event details</p>
                   <h2>{selectedEvent.title}</h2>
-                  <p className="detail-hero-copy">Events live separately from tasks so personal schedule items can stay organized and archived cleanly.</p>
                 </div>
                 <div className="detail-chip-row">
                   <span className="meta-chip">{eventOwner || 'haolun'}</span>
@@ -748,15 +710,9 @@ function MemoryView({ error, loading, memoryEntries, memoryLoaded, selectedMemor
   return (
     <section className="tasks-layout">
       <div className="hero-row">
-        <HeroCard label="Memory model" title="Hazoc journal" primary>
-          Important things get written into workspace memory so future responses can recover context instead of starting from nothing.
-        </HeroCard>
-        <HeroCard label="Memory sources" title={String(memoryEntries.length)}>
-          Active state, curated context, and recent journal files shown together.
-        </HeroCard>
-        <HeroCard label="Boosting responses" title="On">
-          This page reflects the same memory sources hazoc should use to re-anchor and answer better later.
-        </HeroCard>
+        <HeroCard label="Memory entries" title={String(memoryEntries.length)} primary />
+        <HeroCard label="Daily notes" title={String(memoryEntries.filter((entry) => entry.kind === 'daily-note').length)} />
+        <HeroCard label="Curated files" title={String(memoryEntries.filter((entry) => entry.kind === 'curated').length)} />
       </div>
 
       {error ? <div className="error-banner">{error}</div> : null}

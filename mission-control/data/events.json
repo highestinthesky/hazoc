@@ -5,10 +5,22 @@
     "notes": "Scheduled for haolun tomorrow at 8:00 PM America/New_York via mission-control schedule intake.",
     "description": "Project memory\n\nGoal\n- Hold time for Speech Revision for haolun.\n\nWhat is known\n- Schedule request: \"schedule tomorrow at 8 pm for haolun - Speech Revision\".\n- Interpret this as a one-off scheduled item in America/New_York.\n\nWhat has been done\n- Added this scheduled event to mission control and later migrated it into the dedicated events store.\n\nBlockers / unknowns\n- No blocker right now.\n\nNext steps\n- Be ready for Speech Revision at the scheduled time.",
     "owner": "haolun",
-    "status": "active",
+    "status": "archived",
     "scheduledStart": "2026-03-26T00:00:00.000Z",
     "scheduledEnd": "2026-03-26T00:00:00.000Z",
     "createdAt": "2026-03-25T01:39:15.239Z",
-    "updatedAt": "2026-03-25T02:28:00.000Z"
+    "updatedAt": "2026-03-26T22:11:00.000Z"
+  },
+  {
+    "id": "event-english-speech-booking-reminder-20260326-2030",
+    "title": "Get English Speech Booking Done",
+    "notes": "Reminder requested from Discord #control-center for today at 8:30 PM America/New_York.",
+    "description": "Project memory\n\nGoal\n- Remind haolun in #control-center to get the English speech booking done.\n\nWhat is known\n- Request came from Discord on 2026-03-26.\n- The requested reminder time is today at 8:30 PM America/New_York.\n- The exact reminder wording requested was: \"Get English Speech Booking Done\".\n\nWhat has been done\n- Scheduled a one-shot cron reminder for the same time in the current Discord session.\n- Added this event so the request is reflected in mission-control event memory.\n\nBlockers / unknowns\n- No blocker right now.\n\nNext steps\n- Fire the reminder in-channel at the requested time.",
+    "owner": "haolun",
+    "status": "active",
+    "scheduledStart": "2026-03-27T00:30:00.000Z",
+    "scheduledEnd": "2026-03-27T00:30:00.000Z",
+    "createdAt": "2026-03-26T22:25:00.000Z",
+    "updatedAt": "2026-03-26T22:25:00.000Z"
   }
 ]

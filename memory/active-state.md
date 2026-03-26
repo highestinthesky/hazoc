@@ -33,6 +33,16 @@
 ## Important next-step reminder
 - Start the next conversation fresh and re-anchor from this file + today's memory note instead of dragging the old thread forward.
 
+## Current session anchor (2026-03-26 18:16 EDT)
+- Re-anchored after reset from active-state, today's note, curated memory, and the mission-control task board.
+- Current workbench priorities remain:
+  - mission-control UI polish, starting with visual hierarchy and scanability
+  - market-moving news digest design, starting with a bounded source allowlist and observation schema
+  - multi-user schedule architecture, starting with profile registry + event ownership rules
+- No new blocker surfaced during re-anchor; the main known open issue is still that mission control works but the UI feels visually clunky and needs another polish pass.
+- If work resumes immediately, default first move is to either do the visual hierarchy polish slice or formalize the digest source/schema spec.
+- Fresh UI preference from haolun: strip self-explanatory page/context boxes and keep mission control utility-first rather than explaining pages back to ourselves.
+
 ## Handoff for tomorrow
 - First confirm the Protocol page / Workbench split feels right in the live UI.
 - If continuing mission-control UI work, start with the safest/highest-signal polish slices: visual hierarchy first, then task/event scanability.
