@@ -65,7 +65,7 @@ function TasksView({
     <section className="tasks-layout">
       <div className="hero-row hero-row-tasks">
         <HeroCard label="Task model" title="Dense task library" primary>
-          New requests should go straight into the real section they belong to. Workbench is for active work, On Hold is for parked context, and Archived keeps finished memory without bloating the live board.
+          New requests should go straight into the real section they belong to. Workbench is for active project work, On Hold is for parked context, Archived keeps finished memory, and Protocol now holds standing duties plus recurring operational rhythm.
         </HeroCard>
         <HeroCard label="Live tasks" title={String(sortedTasks.filter((task) => task.lane !== 'archive').length)}>
           Shared between haolun and hazoc.
@@ -81,7 +81,7 @@ function TasksView({
             <p className="panel-kicker">task sections</p>
             <h2>Choose a subsection</h2>
           </div>
-          <p className="task-sections-note">Capture Tray is gone. Hazoc should route tasks directly into a useful section instead of letting them rot in a fake inbox.</p>
+          <p className="task-sections-note">Capture Tray is gone, and standing duties are no longer pretending to be project work here. Protocol now owns operational rules and recurring rhythm.</p>
         </div>
 
         <div className="lane-tabs" role="tablist" aria-label="Task sections">
@@ -246,6 +246,98 @@ function TasksView({
   )
 }
 
+function ProtocolView({ error, protocolItems, protocolLoaded, recurring }) {
+  return (
+    <section className="tasks-layout">
+      <div className="hero-row">
+        <HeroCard label="Protocol model" title="Operating rules" primary>
+          Protocol holds standing rules and recurring operational rhythm so Workbench can stay focused on real project work.
+        </HeroCard>
+        <HeroCard label="Standing protocol" title={String(protocolItems.length)}>
+          Message triage, harm checks, cross-channel continuity, and other default behaviors live here.
+        </HeroCard>
+        <HeroCard label="Recurring rhythm" title={String(recurring.length)}>
+          GitHub pushes, memory optimization, uptime, and similar repeating duties belong here instead of the workbench.
+        </HeroCard>
+      </div>
+
+      {error ? <div className="error-banner">{error}</div> : null}
+
+      <section className="workspace-grid protocol-grid">
+        <section className="panel protocol-panel protocol-panel-standing">
+          <div className="lane-header lane-header-dense">
+            <div>
+              <p className="panel-kicker">standing protocol</p>
+              <h2>Default operating rules</h2>
+            </div>
+            <span className="lane-count">{protocolItems.length}</span>
+          </div>
+          {!protocolLoaded && !protocolItems.length ? (
+            <div className="lane-empty">Loading protocol…</div>
+          ) : !protocolItems.length ? (
+            <div className="lane-empty">No standing protocol items are stored yet.</div>
+          ) : (
+            <div className="upcoming-list">
+              {protocolItems.map((item) => (
+                <article key={item.id} className="upcoming-card protocol-card">
+                  <div className="task-card-header">
+                    <strong>{item.title}</strong>
+                    <span>{item.category}</span>
+                  </div>
+                  <p>{item.summary}</p>
+                  <small>Cadence: {item.cadence}</small>
+                </article>
+              ))}
+            </div>
+          )}
+        </section>
+
+        <aside className="protocol-stack">
+          <section className="panel protocol-panel protocol-panel-recurring">
+            <div className="lane-header lane-header-dense">
+              <div>
+                <p className="panel-kicker">recurring rhythm</p>
+                <h2>Repeating duties</h2>
+              </div>
+              <span className="lane-count">{recurring.length}</span>
+            </div>
+            {!protocolLoaded && !recurring.length ? (
+              <div className="lane-empty">Loading recurring duties…</div>
+            ) : !recurring.length ? (
+              <div className="lane-empty">No recurring duties are configured right now.</div>
+            ) : (
+              <div className="upcoming-list compact-list">
+                {recurring.map((item) => (
+                  <article key={item.id} className="upcoming-card compact recurring-card">
+                    <div className="task-card-header">
+                      <strong>{item.title}</strong>
+                      <span>{item.cadence}</span>
+                    </div>
+                    <p>{item.summary}</p>
+                    <small>Next due: {nextRecurringDue(item)}</small>
+                  </article>
+                ))}
+              </div>
+            )}
+          </section>
+
+          <section className="panel protocol-panel protocol-panel-note">
+            <div className="panel-header">
+              <div>
+                <p className="panel-kicker">why this exists</p>
+                <h2>Keep workbench clean</h2>
+              </div>
+            </div>
+            <div className="protocol-note-copy">
+              Duties like message triage, hourly memory optimization, GitHub push rhythm, and uptime checks are real, but they are not project backlog. Protocol gives them a visible home without making the workbench feel bloated or misleading.
+            </div>
+          </section>
+        </aside>
+      </section>
+    </section>
+  )
+}
+
 function ScheduleView({
   calendarDays,
   calendarMonth,
@@ -254,7 +346,6 @@ function ScheduleView({
   onScheduleDraftKeyDown,
   openEvent,
   openTask,
-  recurring,
   scheduleDraft,
   scheduleMessages,
   scheduleSending,
@@ -423,31 +514,6 @@ function ScheduleView({
                       <span>{laneMeta(task.lane).title}</span>
                     </div>
                     <p>{formatDateTime(task.scheduledStart)}</p>
-                  </article>
-                ))}
-              </div>
-            )}
-          </section>
-
-          <section className="panel schedule-side-panel schedule-side-panel-recurring">
-            <div className="panel-header">
-              <div>
-                <p className="panel-kicker">recurring duties</p>
-                <h2>Operational rhythm</h2>
-              </div>
-            </div>
-            {!recurring.length ? (
-              <div className="lane-empty">No recurring duties are configured right now.</div>
-            ) : (
-              <div className="upcoming-list compact-list">
-                {recurring.map((item) => (
-                  <article key={item.id} className="upcoming-card compact recurring-card">
-                    <div className="task-card-header">
-                      <strong>{item.title}</strong>
-                      <span>{item.cadence}</span>
-                    </div>
-                    <p>{item.summary}</p>
-                    <small>Next due: {nextRecurringDue(item)}</small>
                   </article>
                 ))}
               </div>
@@ -768,9 +834,11 @@ export default function App() {
   const [events, setEvents] = useState([])
   const [memoryEntries, setMemoryEntries] = useState([])
   const [recurring, setRecurring] = useState([])
+  const [protocolItems, setProtocolItems] = useState([])
   const [loading, setLoading] = useState(true)
   const [memoryLoaded, setMemoryLoaded] = useState(false)
   const [scheduleLoaded, setScheduleLoaded] = useState(false)
+  const [protocolLoaded, setProtocolLoaded] = useState(false)
   const [detailSaving, setDetailSaving] = useState(false)
   const [error, setError] = useState('')
   const [selectedTaskId, setSelectedTaskId] = useState(() => readStorage(storageKeys.selectedTaskId, ''))
@@ -840,10 +908,20 @@ export default function App() {
     }
   }, [])
 
+  const loadProtocol = useCallback(async () => {
+    try {
+      const result = await requestJson('/api/protocol')
+      setProtocolItems(result.protocol || [])
+      setRecurring(result.recurring || [])
+      setProtocolLoaded(true)
+    } catch (err) {
+      setError(err.message)
+    }
+  }, [])
+
   const loadScheduleExtras = useCallback(async () => {
     try {
-      const result = await requestJson('/api/schedule')
-      setRecurring(result.recurring || [])
+      await requestJson('/api/schedule')
       setScheduleLoaded(true)
     } catch (err) {
       setError(err.message)
@@ -853,8 +931,9 @@ export default function App() {
   const refreshCurrentPage = useCallback(async () => {
     await Promise.all([loadTasks(), loadEvents()])
     if (page === 'memory') await loadMemory()
+    if (page === 'protocol') await loadProtocol()
     if (page === 'schedule') await loadScheduleExtras()
-  }, [loadEvents, loadMemory, loadScheduleExtras, loadTasks, page])
+  }, [loadEvents, loadMemory, loadProtocol, loadScheduleExtras, loadTasks, page])
 
   useEffect(() => {
     loadTasks()
@@ -864,8 +943,9 @@ export default function App() {
   useEffect(() => {
     writeStorage(storageKeys.page, page)
     if (page === 'memory' && !memoryLoaded) loadMemory()
+    if (page === 'protocol' && !protocolLoaded) loadProtocol()
     if (page === 'schedule' && !scheduleLoaded) loadScheduleExtras()
-  }, [loadMemory, loadScheduleExtras, memoryLoaded, page, scheduleLoaded])
+  }, [loadMemory, loadProtocol, loadScheduleExtras, memoryLoaded, page, protocolLoaded, scheduleLoaded])
 
   useEffect(() => { writeStorage(storageKeys.selectedTaskId, selectedTaskId) }, [selectedTaskId])
   useEffect(() => { writeStorage(storageKeys.selectedEventId, selectedEventId) }, [selectedEventId])
@@ -1124,6 +1204,7 @@ User request:\n\n${message}`,
           <p className="nav-label">Dashboard</p>
           <div className="nav-items">
             <button className={`nav-item ${page === 'tasks' ? 'active' : ''}`} type="button" onClick={() => setPage('tasks')}><span className="nav-dot" />Tasks</button>
+            <button className={`nav-item ${page === 'protocol' ? 'active' : ''}`} type="button" onClick={() => setPage('protocol')}><span className="nav-dot" />Protocol</button>
             <button className={`nav-item ${page === 'schedule' ? 'active' : ''}`} type="button" onClick={() => setPage('schedule')}><span className="nav-dot" />Schedule</button>
             <button className={`nav-item ${page === 'events' ? 'active' : ''}`} type="button" onClick={() => setPage('events')}><span className="nav-dot" />Events</button>
             <button className={`nav-item ${page === 'memory' ? 'active' : ''}`} type="button" onClick={() => setPage('memory')}><span className="nav-dot" />Memory</button>
@@ -1138,9 +1219,9 @@ User request:\n\n${message}`,
 
       <main className="main-panel">
         <header className="topbar">
-          <div className="breadcrumbs">Mission Control &nbsp;›&nbsp; <strong>{page === 'schedule' ? 'Schedule' : page === 'events' ? 'Events' : page === 'memory' ? 'Memory' : 'Tasks'}</strong></div>
+          <div className="breadcrumbs">Mission Control &nbsp;›&nbsp; <strong>{page === 'protocol' ? 'Protocol' : page === 'schedule' ? 'Schedule' : page === 'events' ? 'Events' : page === 'memory' ? 'Memory' : 'Tasks'}</strong></div>
           <div className="topbar-actions">
-            <div className="search-pill">{page === 'schedule' ? 'Calendar for scheduled events' : page === 'events' ? 'Stored and archived events' : page === 'memory' ? 'Journal and memory context' : 'Shared memory for requests'}</div>
+            <div className="search-pill">{page === 'protocol' ? 'Standing rules and recurring operational rhythm' : page === 'schedule' ? 'Calendar for scheduled events' : page === 'events' ? 'Stored and archived events' : page === 'memory' ? 'Journal and memory context' : 'Shared memory for active project work'}</div>
             <button type="button" className="icon-button accent" onClick={refreshCurrentPage} disabled={loading}>{loading ? '…' : '⟳'}</button>
           </div>
         </header>
@@ -1176,6 +1257,15 @@ User request:\n\n${message}`,
           />
         ) : null}
 
+        {page === 'protocol' ? (
+          <ProtocolView
+            error={error}
+            protocolItems={protocolItems}
+            protocolLoaded={protocolLoaded}
+            recurring={recurring}
+          />
+        ) : null}
+
         {page === 'schedule' ? (
           <ScheduleView
             calendarDays={calendarDays}
@@ -1185,7 +1275,6 @@ User request:\n\n${message}`,
             onScheduleDraftKeyDown={onScheduleDraftKeyDown}
             openEvent={openEvent}
             openTask={openTask}
-            recurring={recurring}
             scheduleDraft={scheduleDraft}
             scheduleMessages={scheduleMessages}
             scheduleSending={scheduleSending}

@@ -50,6 +50,7 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 - Don't exfiltrate private data. Ever.
 - Don't run destructive commands without asking.
 - `trash` > `rm` (recoverable beats gone forever)
+- Before any meaningful action, do a quick harm check: ask "could this be harmful in any way?" If yes or unclear, reduce the blast radius or ask first.
 - When in doubt, ask.
 
 ## External vs Internal

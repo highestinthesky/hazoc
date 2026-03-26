@@ -110,8 +110,9 @@ button { cursor: pointer; }
 .events-board { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .memory-board { grid-template-columns: 1fr; }
 .schedule-layout-grid { grid-template-columns: minmax(0, 1.9fr) minmax(320px, 0.72fr); align-items: start; }
-.schedule-sidebar-grid { display: grid; gap: 16px; align-content: start; }
-.schedule-side-panel { min-height: 0; }
+.protocol-grid { grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr); align-items: start; }
+.schedule-sidebar-grid, .protocol-stack { display: grid; gap: 16px; align-content: start; }
+.schedule-side-panel, .protocol-panel { min-height: 0; }
 .schedule-side-panel-intake {
   background:
     radial-gradient(circle at 14% 18%, rgba(238, 198, 111, 0.18), transparent 28%),
@@ -132,6 +133,26 @@ button { cursor: pointer; }
   background:
     radial-gradient(circle at 14% 84%, rgba(104, 147, 136, 0.16), transparent 26%),
     linear-gradient(180deg, rgba(255, 248, 235, 0.05) 0%, rgba(255, 248, 235, 0.025) 100%);
+}
+.protocol-panel-standing {
+  background:
+    radial-gradient(circle at 12% 12%, rgba(238, 198, 111, 0.18), transparent 30%),
+    radial-gradient(circle at 88% 84%, rgba(173, 96, 56, 0.14), transparent 30%),
+    linear-gradient(180deg, rgba(255, 248, 235, 0.05) 0%, rgba(255, 248, 235, 0.025) 100%);
+}
+.protocol-panel-recurring {
+  background:
+    radial-gradient(circle at 14% 84%, rgba(104, 147, 136, 0.18), transparent 28%),
+    linear-gradient(180deg, rgba(255, 248, 235, 0.05) 0%, rgba(255, 248, 235, 0.025) 100%);
+}
+.protocol-panel-note {
+  background:
+    radial-gradient(circle at 88% 14%, rgba(142, 88, 109, 0.16), transparent 28%),
+    linear-gradient(180deg, rgba(255, 248, 235, 0.05) 0%, rgba(255, 248, 235, 0.025) 100%);
+}
+.protocol-note-copy {
+  color: #d7c7b1;
+  line-height: 1.6;
 }
 .schedule-side-panel-unscheduled {
   background:

@@ -18,6 +18,7 @@ const SCHEDULE_TIME_ZONE = 'America/New_York'
 const TASKS_PATH = path.join(WORKSPACE, 'mission-control/data/tasks.json')
 const EVENTS_PATH = path.join(WORKSPACE, 'mission-control/data/events.json')
 const RECURRING_PATH = path.join(WORKSPACE, 'mission-control/data/recurring.json')
+const PROTOCOL_PATH = path.join(WORKSPACE, 'mission-control/data/protocol.json')
 const MEMORY_DIR = path.join(WORKSPACE, 'memory')
 const DIST_DIR = path.join(__dirname, 'dist')
 
@@ -117,6 +118,22 @@ function sortEvents(events) {
   })
 }
 
+function normalizeProtocolItem(item) {
+  return {
+    id: String(item?.id || ''),
+    title: String(item?.title || '').trim(),
+    summary: String(item?.summary || '').trim(),
+    category: String(item?.category || 'workflow').trim() || 'workflow',
+    cadence: String(item?.cadence || 'continuous').trim() || 'continuous',
+    createdAt: String(item?.createdAt || new Date().toISOString()),
+    updatedAt: String(item?.updatedAt || item?.createdAt || new Date().toISOString()),
+  }
+}
+
+function sortProtocolItems(items) {
+  return [...items].sort((a, b) => Date.parse(b.updatedAt) - Date.parse(a.updatedAt))
+}
+
 async function runJsonCommand(command, args) {
   const { stdout } = await execFileAsync(command, args, {
     cwd: WORKSPACE,
@@ -151,6 +168,15 @@ async function readEvents() {
 
 async function writeEvents(events) {
   await fs.writeFile(EVENTS_PATH, `${JSON.stringify(events.map(normalizeEvent), null, 2)}\n`, 'utf8')
+}
+
+async function readProtocolItems() {
+  const raw = await fs.readFile(PROTOCOL_PATH, 'utf8')
+  return sortProtocolItems(JSON.parse(raw).map(normalizeProtocolItem))
+}
+
+async function writeProtocolItems(items) {
+  await fs.writeFile(PROTOCOL_PATH, `${JSON.stringify(items.map(normalizeProtocolItem), null, 2)}\n`, 'utf8')
 }
 
 async function readTextIfExists(filePath) {
@@ -231,6 +257,15 @@ app.get('/api/memory', async (_req, res) => {
     res.json({ ok: true, entries, fetchedAt: new Date().toISOString() })
   } catch (error) {
     res.status(500).json({ ok: false, error: error.message || 'Failed to load memory.' })
+  }
+})
+
+app.get('/api/protocol', async (_req, res) => {
+  try {
+    const [protocol, recurring] = await Promise.all([readProtocolItems(), readJsonFile(RECURRING_PATH, [])])
+    res.json({ ok: true, protocol, recurring, fetchedAt: new Date().toISOString() })
+  } catch (error) {
+    res.status(500).json({ ok: false, error: error.message || 'Failed to load protocol.' })
   }
 })
 

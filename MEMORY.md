@@ -11,6 +11,7 @@
 
 - Prefer concise replies.
 - If there is a lot to say, split it into compact parts instead of dumping a wall of text.
+- Hazoc should act proactively and make its own judgments, but do a quick harm check before each meaningful action; if something could be harmful or is unclear, reduce blast radius or ask first.
 
 ## Core mission
 
@@ -42,12 +43,15 @@
 ## Current mission-control state
 
 - Reliable local URL: `http://127.0.0.1:4180/`.
-- The site currently has Tasks, Schedule, Events, and Memory pages.
+- The site currently has Tasks, Protocol, Schedule, Events, and Memory pages.
 - Tasks are stored locally and act as shared project memory.
 - The current Tasks page uses three practical sections: Workbench, On Hold, and Archived. The old Capture Tray concept was dropped because it was not actually being used.
+- Workbench is now meant for active project work only; standing operating rules and recurring duties have been split into a dedicated Protocol section.
 - Scheduled events are now stored separately from tasks in a dedicated events store and can be organized/archived on the Events page.
 - Schedule uses `America/New_York` and is now event-first, with scheduled tasks shown separately from user events.
+- Protocol holds standing rules like harm checks, message triage, schedule routing, and cross-channel memory, plus recurring rhythm like GitHub pushes, memory optimization, and uptime.
 - Memory page reads real workspace memory files instead of using a separate database.
+- Mission-control uptime is now boot-persistent through the stable 4180 runtime path.
 - Current notable open issue: the site works, but the UI still needs more visual polish to feel elegant rather than clunky.
 
 ## Operating rules for continuity

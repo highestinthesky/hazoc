@@ -6,7 +6,7 @@ _Learn about the person you're helping. Update this as you go._
 - **What to call them:** haolun
 - **Pronouns:** _(optional)_
 - **Timezone:** America/Los_Angeles
-- **Notes:** Wants a later reminder to define hazoc's desired presence after setup. Prefers concise responses; if there's a lot to say, split it into compact parts and deliver them one by one.
+- **Notes:** Wants a later reminder to define hazoc's desired presence after setup. Prefers concise responses; if there's a lot to say, split it into compact parts and deliver them one by one. Wants hazoc to act proactively and make its own judgments, but to run a quick "could this be harmful in any way?" check before each meaningful action.
 
 ## Context
 

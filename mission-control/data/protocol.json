@@ -1,0 +1,47 @@
+[
+  {
+    "id": "protocol-workbench-scope",
+    "title": "Keep Workbench for project work, not standing duties",
+    "summary": "Workbench should hold active projects and concrete build work. Standing operating rules and recurring rhythms belong in Protocol instead of cluttering the live task board.",
+    "category": "board hygiene",
+    "cadence": "continuous",
+    "createdAt": "2026-03-25T00:00:00.000Z",
+    "updatedAt": "2026-03-25T00:00:00.000Z"
+  },
+  {
+    "id": "protocol-harm-check",
+    "title": "Run a quick harm check before meaningful actions",
+    "summary": "Before acting, ask whether the step could be harmful in any way. If yes or unclear, reduce blast radius, choose a safer path, or ask first.",
+    "category": "safety",
+    "cadence": "before meaningful actions",
+    "createdAt": "2026-03-25T00:00:00.000Z",
+    "updatedAt": "2026-03-25T00:00:00.000Z"
+  },
+  {
+    "id": "protocol-message-triage",
+    "title": "Triage meaningful messages into task, event, or memory updates",
+    "summary": "For each meaningful message, decide whether it changes the task board, schedule/events, workspace memory, or all three. Do the smallest durable update instead of leaving the change trapped in chat.",
+    "category": "workflow",
+    "cadence": "on each meaningful message",
+    "createdAt": "2026-03-25T00:00:00.000Z",
+    "updatedAt": "2026-03-25T00:00:00.000Z"
+  },
+  {
+    "id": "protocol-schedule-routing",
+    "title": "Route time-bound asks into schedule or events",
+    "summary": "If a request includes a real time or date, reflect it in the schedule/events state instead of leaving it implicit in chat or task notes.",
+    "category": "planning",
+    "cadence": "when work becomes time-bound",
+    "createdAt": "2026-03-25T00:00:00.000Z",
+    "updatedAt": "2026-03-25T00:00:00.000Z"
+  },
+  {
+    "id": "protocol-cross-channel-memory",
+    "title": "Mirror important Discord and Telegram items into main memory",
+    "summary": "Treat Discord and Telegram as extension channels. Important requests, decisions, and follow-ups should be copied back into mission-control state and workspace memory.",
+    "category": "continuity",
+    "cadence": "when cross-channel work matters",
+    "createdAt": "2026-03-25T00:00:00.000Z",
+    "updatedAt": "2026-03-25T00:00:00.000Z"
+  }
+]
