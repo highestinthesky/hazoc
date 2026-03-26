@@ -25,7 +25,10 @@ restart_app() {
   sleep 1
   cd "$APP_DIR"
   npm run build >> "$APP_LOG" 2>&1
-  nohup npm run start >> "$APP_LOG" 2>&1 &
+  (
+    exec 9>&-
+    nohup npm run start >> "$APP_LOG" 2>&1 &
+  )
 }
 
 if ! check_up; then
