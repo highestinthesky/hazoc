@@ -11,6 +11,7 @@
 | Cross-channel important item | task board + daily note | graph link |
 | Relationship-heavy project state | graph entry/link | task detail |
 | Same workflow pain repeats | workflow/skill patch | AGENTS.md rule |
+| UI display/interaction friction | daily note + direct validation pass | workflow/skill patch |
 
 ## Escalation order
 

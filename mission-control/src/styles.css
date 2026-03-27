@@ -195,6 +195,8 @@ button { cursor: pointer; }
     linear-gradient(180deg, rgba(255, 248, 235, 0.05) 0%, rgba(255, 248, 235, 0.025) 100%);
 }
 .memory-grid { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr); }
+.skills-grid { grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.38fr); }
+.skills-board { grid-template-columns: 1fr; max-height: calc(100vh - 240px); overflow: auto; padding-right: 4px; }
 
 .hero-card, .panel {
   border: 1px solid rgba(212, 184, 133, 0.1);
@@ -285,14 +287,14 @@ button { cursor: pointer; }
 }
 
 .task-form, .detail-form { display: flex; flex-direction: column; gap: 12px; }
-.task-form input, .task-form textarea, .task-form select, .task-card-footer select, .detail-form input, .detail-form textarea, .detail-form select {
+.task-form input, .task-form textarea, .detail-form input, .detail-form textarea {
   width: 100%; border: 1px solid rgba(219, 189, 137, 0.12); border-radius: 14px;
   background: linear-gradient(180deg, rgba(255, 248, 235, 0.07) 0%, rgba(255, 248, 235, 0.04) 100%);
   color: #f7efe2; padding: 12px 14px; outline: none;
   box-shadow: inset 0 1px 0 rgba(255, 248, 235, 0.03);
 }
 .task-form input::placeholder, .task-form textarea::placeholder, .detail-form textarea::placeholder { color: #a99882; }
-.task-form input:focus, .task-form textarea:focus, .task-form select:focus, .task-card-footer select:focus, .detail-form input:focus, .detail-form textarea:focus, .detail-form select:focus {
+.task-form input:focus, .task-form textarea:focus, .detail-form input:focus, .detail-form textarea:focus {
   border-color: rgba(223, 188, 129, 0.32); box-shadow: 0 0 0 3px rgba(184, 134, 67, 0.14);
 }
 .task-form textarea, .detail-form textarea { resize: vertical; }
@@ -532,6 +534,92 @@ button { cursor: pointer; }
 .field-block { display: flex; flex-direction: column; gap: 8px; }
 .field-block-wide { grid-column: 1 / -1; }
 .refined-grid { gap: 12px; }
+.segmented-control {
+  display: inline-flex;
+  align-items: stretch;
+  gap: 4px;
+  width: 100%;
+  min-width: 0;
+  padding: 4px;
+  border-radius: 18px;
+  border: 1px solid rgba(219, 189, 137, 0.1);
+  background: linear-gradient(180deg, rgba(22, 17, 14, 0.72) 0%, rgba(255, 248, 235, 0.025) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 248, 235, 0.03);
+}
+.segmented-control-option {
+  flex: 1 1 0;
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  min-height: 38px;
+  padding: 9px 12px;
+  border: 1px solid transparent;
+  border-radius: 13px;
+  background: transparent;
+  color: #d8c6ad;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: 180ms ease;
+}
+.segmented-control-option:hover {
+  background: rgba(255, 248, 235, 0.045);
+  color: #f0e4d2;
+}
+.segmented-control-option.active {
+  box-shadow: inset 0 1px 0 rgba(255, 248, 235, 0.04), 0 8px 18px rgba(0, 0, 0, 0.14);
+}
+.segmented-control-dot {
+  display: none;
+}
+.segmented-control-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.segmented-control .tone-workbench { color: #e8d1a8; }
+.segmented-control .tone-workbench.active {
+  border-color: rgba(240, 205, 143, 0.18);
+  background: linear-gradient(180deg, rgba(149, 100, 43, 0.24) 0%, rgba(255, 248, 235, 0.06) 100%);
+  color: #fff3d8;
+}
+.segmented-control .tone-parking,
+.segmented-control .tone-on-hold { color: #d8bed0; }
+.segmented-control .tone-parking.active,
+.segmented-control .tone-on-hold.active {
+  border-color: rgba(204, 146, 182, 0.18);
+  background: linear-gradient(180deg, rgba(123, 72, 98, 0.26) 0%, rgba(255, 248, 235, 0.05) 100%);
+  color: #ffe5f1;
+}
+.segmented-control .tone-archive,
+.segmented-control .tone-archived { color: #c4dfd2; }
+.segmented-control .tone-archive.active,
+.segmented-control .tone-archived.active {
+  border-color: rgba(169, 214, 194, 0.18);
+  background: linear-gradient(180deg, rgba(77, 126, 112, 0.28) 0%, rgba(255, 248, 235, 0.045) 100%);
+  color: #e8fff5;
+}
+.task-lane-control {
+  width: min(360px, 100%);
+}
+.task-card-archive .task-lane-control {
+  width: min(420px, 100%);
+}
+.task-lane-control .segmented-control-option {
+  min-height: 36px;
+  padding: 8px 10px;
+}
+.task-lane-control .segmented-control-label {
+  font-size: 0.88rem;
+}
+.detail-segmented-control {
+  background: linear-gradient(180deg, rgba(255, 248, 235, 0.07) 0%, rgba(255, 248, 235, 0.04) 100%);
+}
+.detail-segmented-control-status {
+  max-width: 320px;
+}
 .schedule-preview-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 12px; }
 .schedule-preview-card {
   padding: 14px; border-radius: 16px; border: 1px solid rgba(223, 188, 129, 0.1);
@@ -716,6 +804,67 @@ button { cursor: pointer; }
 }
 .events-list { max-height: calc(100vh - 330px); }
 .memory-card { cursor: pointer; }
+.skills-detail-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.skill-summary-block,
+.skill-flow-panel {
+  margin: 0;
+}
+.skill-description {
+  margin: 0;
+  color: #dfd0bd;
+  line-height: 1.65;
+}
+.skill-flow-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.skill-flow-step-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.skill-flow-step {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  padding: 14px 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(212, 184, 133, 0.12);
+  background:
+    radial-gradient(circle at 10% 18%, rgba(233, 188, 106, 0.11), transparent 26%),
+    linear-gradient(180deg, rgba(255, 248, 235, 0.06) 0%, rgba(255, 248, 235, 0.03) 100%);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.14), inset 0 1px 0 rgba(255, 248, 235, 0.03);
+}
+.skill-flow-index {
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  border: 1px solid rgba(223, 188, 129, 0.16);
+  background: linear-gradient(180deg, rgba(103, 69, 31, 0.7) 0%, rgba(53, 36, 24, 0.76) 100%);
+  color: #fff2d6;
+  font-weight: 800;
+}
+.skill-flow-copy {
+  color: #f4eadb;
+  line-height: 1.45;
+}
+.skill-flow-connector {
+  width: 2px;
+  height: 18px;
+  margin: 6px 0 6px 20px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(223, 188, 129, 0.5) 0%, rgba(118, 160, 149, 0.2) 100%);
+}
 .memory-entry-view {
   border: 1px solid rgba(212, 184, 133, 0.08); border-radius: 16px; background: rgba(255, 248, 235, 0.03); padding: 16px; max-height: 70vh; overflow: auto;
 }
@@ -724,20 +873,23 @@ button { cursor: pointer; }
 .task-list-dense::-webkit-scrollbar,
 .events-list::-webkit-scrollbar,
 .schedule-chat-thread::-webkit-scrollbar,
-.memory-entry-view::-webkit-scrollbar {
+.memory-entry-view::-webkit-scrollbar,
+.skills-board::-webkit-scrollbar {
   width: 10px;
 }
 .task-list-dense::-webkit-scrollbar-track,
 .events-list::-webkit-scrollbar-track,
 .schedule-chat-thread::-webkit-scrollbar-track,
-.memory-entry-view::-webkit-scrollbar-track {
+.memory-entry-view::-webkit-scrollbar-track,
+.skills-board::-webkit-scrollbar-track {
   background: rgba(255, 248, 235, 0.03);
   border-radius: 999px;
 }
 .task-list-dense::-webkit-scrollbar-thumb,
 .events-list::-webkit-scrollbar-thumb,
 .schedule-chat-thread::-webkit-scrollbar-thumb,
-.memory-entry-view::-webkit-scrollbar-thumb {
+.memory-entry-view::-webkit-scrollbar-thumb,
+.skills-board::-webkit-scrollbar-thumb {
   border-radius: 999px;
   border: 2px solid transparent;
   background: linear-gradient(180deg, rgba(219, 183, 118, 0.56) 0%, rgba(117, 82, 46, 0.52) 100%);
@@ -746,13 +898,14 @@ button { cursor: pointer; }
 .task-list-dense,
 .events-list,
 .schedule-chat-thread,
-.memory-entry-view {
+.memory-entry-view,
+.skills-board {
   scrollbar-color: rgba(191, 151, 86, 0.65) rgba(255, 248, 235, 0.03);
   scrollbar-width: thin;
 }
 
 @media (max-width: 1280px) {
-  .workspace-grid, .schedule-layout-grid, .memory-grid { grid-template-columns: 1fr; }
+  .workspace-grid, .schedule-layout-grid, .memory-grid, .skills-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 1080px) {
   .hero-row, .board-grid, .schedule-edit-grid, .detail-grid.two-up, .schedule-preview-row, .lane-tabs { grid-template-columns: 1fr; }

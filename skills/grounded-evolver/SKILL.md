@@ -29,7 +29,23 @@ Start from a real trigger:
 - decision that changes the plan
 - meaningful progress worth preserving
 
-### 2. Score what kind of evolution is needed
+### 2. Generalize the root cause into a reusable moral
+
+Before changing anything, ask:
+- **What was the root cause of this problem?**
+- **Can that root cause be generalized into a guideline for future work?**
+- **Is the guideline broad enough to help on unrelated future tasks, not just this exact incident?**
+
+The goal is to prevent fixing one symptom while leaving the same class of mistake alive.
+Prefer morals that change future behavior across many tasks.
+
+Examples of good generalized morals:
+- Do not trust surface polish before testing real behavior.
+- Fix the interaction model before tuning cosmetics.
+- If a control looks immediate, it should behave immediately.
+- Protect important state from easy accidental mutation.
+
+### 3. Score what kind of evolution is needed
 
 Ask four questions:
 - **How easy is this to lose?**
@@ -37,7 +53,7 @@ Ask four questions:
 - **Is it repeating?**
 - **Does structure matter more than prose?**
 
-### 3. Pick the smallest useful mutation
+### 4. Pick the smallest useful mutation
 
 Possible mutation targets:
 - `memory/active-state.md`
@@ -51,15 +67,21 @@ Possible mutation targets:
 
 Prefer memory/task/rule updates before code changes.
 
-### 4. Validate before accepting
+### 5. Validate before accepting
 
 Every evolution must answer:
 - What concrete problem is being solved?
 - What is the smallest safe change?
 - What proves it helped?
 - Where is the result recorded?
+- Does the chosen change actually honor the generalized moral from step 2?
 
-### 5. Record and re-anchor
+For UI work, validation must include both display and behavior:
+- check for visual bugs in the real layout/state where the change lives
+- test the interaction directly instead of assuming it works from appearance
+- verify the control behaves the way it implies (immediate vs saved, safe vs destructive)
+
+### 6. Record and re-anchor
 
 After the change:
 - update the right memory layer
@@ -124,6 +146,36 @@ python3 skills/grounded-evolver/scripts/grounded_evolve.py \
   --cross-channel \
   --project \
   --rule
+```
+
+For UI friction, include `--ui` so the plan explicitly checks both display and interaction behavior:
+
+```bash
+python3 skills/grounded-evolver/scripts/grounded_evolve.py \
+  --signal "Task control looked interactive but did not apply until a separate save" \
+  --category correction \
+  --repeat-count 2 \
+  --impact 4 \
+  --loss-risk 3 \
+  --project \
+  --rule \
+  --ui
+```
+
+If you already know the abstraction, pass it in explicitly:
+
+```bash
+python3 skills/grounded-evolver/scripts/grounded_evolve.py \
+  --signal "Task control looked interactive but did not apply until a separate save" \
+  --root-cause "The UI implied immediate behavior, but the implementation still depended on a separate save flow." \
+  --moral "Do not let controls visually promise behavior they do not immediately perform." \
+  --category correction \
+  --repeat-count 2 \
+  --impact 4 \
+  --loss-risk 3 \
+  --project \
+  --rule \
+  --ui
 ```
 
 ## References

@@ -31,6 +31,32 @@ function HeroCard({ label, title, children, primary = false }) {
   )
 }
 
+function SegmentedControl({ ariaLabel, className = '', onChange, options, value }) {
+  return (
+    <div className={`segmented-control ${className}`.trim()} role="radiogroup" aria-label={ariaLabel}>
+      {options.map((option) => {
+        const active = option.value === value
+        return (
+          <button
+            key={option.value}
+            type="button"
+            role="radio"
+            aria-checked={active}
+            className={`segmented-control-option tone-${option.value} ${active ? 'active' : ''}`}
+            onClick={(event) => {
+              event.stopPropagation()
+              if (!active) onChange(option.value)
+            }}
+          >
+            <span className="segmented-control-dot" aria-hidden="true" />
+            <span className="segmented-control-label">{option.label}</span>
+          </button>
+        )
+      })}
+    </div>
+  )
+}
+
 function TasksView({
   activeLaneId,
   activeLaneTasks,
@@ -134,11 +160,13 @@ function TasksView({
                   </div>
 
                   <div className="task-card-footer task-card-footer-dense" onClick={(event) => event.stopPropagation()}>
-                    <select aria-label={`Move ${task.title} to section`} value={task.lane} onChange={(event) => moveTask(task.id, event.target.value)}>
-                      {lanes.map((option) => (
-                        <option key={option.id} value={option.id}>{option.title}</option>
-                      ))}
-                    </select>
+                    <SegmentedControl
+                      ariaLabel={`Move ${task.title} to section`}
+                      className="task-lane-control"
+                      value={task.lane}
+                      options={lanes.map((option) => ({ value: option.id, label: option.title }))}
+                      onChange={(nextLane) => moveTask(task.id, nextLane)}
+                    />
                   </div>
                 </article>
               )
@@ -173,14 +201,16 @@ function TasksView({
                       <span>Title</span>
                       <input value={detailTitle} onChange={(event) => setDetailTitle(event.target.value)} />
                     </label>
-                    <label className="field-block">
+                    <div className="field-block">
                       <span>Section</span>
-                      <select value={detailLane} onChange={(event) => setDetailLane(event.target.value)}>
-                        {lanes.map((lane) => (
-                          <option key={lane.id} value={lane.id}>{lane.title}</option>
-                        ))}
-                      </select>
-                    </label>
+                      <SegmentedControl
+                        ariaLabel="Task section"
+                        className="detail-segmented-control"
+                        value={detailLane}
+                        options={lanes.map((lane) => ({ value: lane.id, label: lane.title }))}
+                        onChange={setDetailLane}
+                      />
+                    </div>
                     <label className="field-block field-block-wide">
                       <span>Short notes</span>
                       <textarea value={detailNotes} onChange={(event) => setDetailNotes(event.target.value)} rows={4} />
@@ -227,7 +257,7 @@ function TasksView({
                 </section>
 
                 <div className="detail-save-row">
-                  <div className="save-note">Save after updating title, section, schedule, or project memory.</div>
+                  <div className="save-note">Section changes apply immediately. Save after updating title, notes, schedule, or project memory.</div>
                   <button type="button" className="save-button" onClick={saveTaskDetails} disabled={detailSaving}>
                     {detailSaving ? 'Saving…' : 'Save task memory'}
                   </button>
@@ -646,13 +676,19 @@ function EventsView({
                       <span>Owner</span>
                       <input value={eventOwner} onChange={(event) => setEventOwner(event.target.value)} placeholder="haolun" />
                     </label>
-                    <label className="field-block">
+                    <div className="field-block">
                       <span>Status</span>
-                      <select value={eventStatus} onChange={(event) => setEventStatus(event.target.value)}>
-                        <option value="active">Active</option>
-                        <option value="archived">Archived</option>
-                      </select>
-                    </label>
+                      <SegmentedControl
+                        ariaLabel="Event status"
+                        className="detail-segmented-control detail-segmented-control-status"
+                        value={eventStatus}
+                        options={[
+                          { value: 'active', label: 'Active' },
+                          { value: 'archived', label: 'Archived' },
+                        ]}
+                        onChange={setEventStatus}
+                      />
+                    </div>
                     <label className="field-block field-block-wide">
                       <span>Short notes</span>
                       <textarea value={eventNotes} onChange={(event) => setEventNotes(event.target.value)} rows={4} />
@@ -699,7 +735,7 @@ function EventsView({
                 </section>
 
                 <div className="detail-save-row">
-                  <div className="save-note">Save after updating title, owner, archive state, timing, or event notes.</div>
+                  <div className="save-note">Status changes apply immediately. Save after updating title, owner, timing, or event notes.</div>
                   <button type="button" className="save-button" onClick={saveEventDetails} disabled={eventSaving}>
                     {eventSaving ? 'Saving…' : 'Save event'}
                   </button>
@@ -768,6 +804,86 @@ function MemoryView({ error, loading, memoryEntries, memoryLoaded, selectedMemor
   )
 }
 
+function SkillsView({ error, loading, selectedSkill, selectedSkillId, setSelectedSkillId, skills, skillsLoaded }) {
+  return (
+    <section className="tasks-layout">
+      <div className="hero-row">
+        <HeroCard label="Skills" title={String(skills.length)} primary />
+        <HeroCard label="Workspace" title={String(skills.filter((skill) => skill.source === 'workspace').length)} />
+        <HeroCard label="System" title={String(skills.filter((skill) => skill.source === 'system').length)} />
+      </div>
+
+      {error ? <div className="error-banner">{error}</div> : null}
+
+      <section className="workspace-grid skills-grid">
+        <section className="board-grid skills-board">
+          {skills.map((skill) => (
+            <article key={skill.id} className={`task-card memory-card ${selectedSkillId === skill.id ? 'active' : ''}`} onClick={() => setSelectedSkillId(skill.id)}>
+              <div className="task-card-header">
+                <div className="task-card-title-wrap">
+                  <strong>{skill.name}</strong>
+                </div>
+                <span>{skill.sourceLabel}</span>
+              </div>
+              <p>{skill.description}</p>
+              <div className="task-card-meta-row">
+                <span className="meta-chip">{skill.flow.length} flow steps</span>
+                <span className="meta-chip">{skill.referencesCount} refs</span>
+                <span className="meta-chip">{skill.scriptsCount} scripts</span>
+              </div>
+            </article>
+          ))}
+        </section>
+
+        <aside className="detail-panel panel skills-detail-panel">
+          {!skillsLoaded && loading ? (
+            <div className="lane-empty">Loading skills…</div>
+          ) : selectedSkill ? (
+            <>
+              <div className="panel-header sticky-panel-header">
+                <div>
+                  <p className="panel-kicker">skill flow</p>
+                  <h2>{selectedSkill.name}</h2>
+                </div>
+              </div>
+              <div className="detail-meta">
+                <span>{selectedSkill.sourceLabel}</span>
+                <span>{selectedSkill.skillPath}</span>
+              </div>
+              <section className="form-section form-section-soft skill-summary-block">
+                <div className="section-heading">
+                  <p className="panel-kicker">trigger</p>
+                  <h3>When this skill activates</h3>
+                </div>
+                <p className="skill-description">{selectedSkill.description}</p>
+              </section>
+              <section className="form-section form-section-accent skill-flow-panel">
+                <div className="section-heading">
+                  <p className="panel-kicker">thinking flow</p>
+                  <h3>How I would reason through it</h3>
+                </div>
+                <div className="skill-flow-list">
+                  {selectedSkill.flow.map((step, index) => (
+                    <div key={`${selectedSkill.id}-${index}`} className="skill-flow-step-wrap">
+                      <article className="skill-flow-step">
+                        <span className="skill-flow-index">{index + 1}</span>
+                        <div className="skill-flow-copy">{step}</div>
+                      </article>
+                      {index < selectedSkill.flow.length - 1 ? <div className="skill-flow-connector" aria-hidden="true" /> : null}
+                    </div>
+                  ))}
+                </div>
+              </section>
+            </>
+          ) : (
+            <div className="lane-empty">Select a skill to inspect its current process flow.</div>
+          )}
+        </aside>
+      </section>
+    </section>
+  )
+}
+
 function parseStoredMessages(raw) {
   try {
     const parsed = JSON.parse(raw)
@@ -798,10 +914,12 @@ export default function App() {
   const [tasks, setTasks] = useState([])
   const [events, setEvents] = useState([])
   const [memoryEntries, setMemoryEntries] = useState([])
+  const [skills, setSkills] = useState([])
   const [recurring, setRecurring] = useState([])
   const [protocolItems, setProtocolItems] = useState([])
   const [loading, setLoading] = useState(true)
   const [memoryLoaded, setMemoryLoaded] = useState(false)
+  const [skillsLoaded, setSkillsLoaded] = useState(false)
   const [scheduleLoaded, setScheduleLoaded] = useState(false)
   const [protocolLoaded, setProtocolLoaded] = useState(false)
   const [detailSaving, setDetailSaving] = useState(false)
@@ -810,6 +928,7 @@ export default function App() {
   const [selectedEventId, setSelectedEventId] = useState(() => readStorage(storageKeys.selectedEventId, ''))
   const [activeLaneId, setActiveLaneId] = useState(() => readStorage(storageKeys.activeTaskLane, 'workbench'))
   const [selectedMemoryId, setSelectedMemoryId] = useState(() => readStorage(storageKeys.selectedMemoryId, ''))
+  const [selectedSkillId, setSelectedSkillId] = useState(() => readStorage(storageKeys.selectedSkillId, ''))
   const [detailTitle, setDetailTitle] = useState('')
   const [detailNotes, setDetailNotes] = useState('')
   const [detailDescription, setDetailDescription] = useState('')
@@ -873,6 +992,16 @@ export default function App() {
     }
   }, [])
 
+  const loadSkills = useCallback(async () => {
+    try {
+      const result = await requestJson('/api/skills')
+      setSkills(result.skills || [])
+      setSkillsLoaded(true)
+    } catch (err) {
+      setError(err.message)
+    }
+  }, [])
+
   const loadProtocol = useCallback(async () => {
     try {
       const result = await requestJson('/api/protocol')
@@ -896,9 +1025,10 @@ export default function App() {
   const refreshCurrentPage = useCallback(async () => {
     await Promise.all([loadTasks(), loadEvents()])
     if (page === 'memory') await loadMemory()
+    if (page === 'skills') await loadSkills()
     if (page === 'protocol') await loadProtocol()
     if (page === 'schedule') await loadScheduleExtras()
-  }, [loadEvents, loadMemory, loadProtocol, loadScheduleExtras, loadTasks, page])
+  }, [loadEvents, loadMemory, loadProtocol, loadScheduleExtras, loadSkills, loadTasks, page])
 
   useEffect(() => {
     loadTasks()
@@ -908,14 +1038,16 @@ export default function App() {
   useEffect(() => {
     writeStorage(storageKeys.page, page)
     if (page === 'memory' && !memoryLoaded) loadMemory()
+    if (page === 'skills' && !skillsLoaded) loadSkills()
     if (page === 'protocol' && !protocolLoaded) loadProtocol()
     if (page === 'schedule' && !scheduleLoaded) loadScheduleExtras()
-  }, [loadMemory, loadProtocol, loadScheduleExtras, memoryLoaded, page, protocolLoaded, scheduleLoaded])
+  }, [loadMemory, loadProtocol, loadScheduleExtras, loadSkills, memoryLoaded, page, protocolLoaded, scheduleLoaded, skillsLoaded])
 
   useEffect(() => { writeStorage(storageKeys.selectedTaskId, selectedTaskId) }, [selectedTaskId])
   useEffect(() => { writeStorage(storageKeys.selectedEventId, selectedEventId) }, [selectedEventId])
   useEffect(() => { writeStorage(storageKeys.activeTaskLane, activeLaneId) }, [activeLaneId])
   useEffect(() => { writeStorage(storageKeys.selectedMemoryId, selectedMemoryId) }, [selectedMemoryId])
+  useEffect(() => { writeStorage(storageKeys.selectedSkillId, selectedSkillId) }, [selectedSkillId])
   useEffect(() => { writeStorage(storageKeys.scheduleDraft, scheduleDraft) }, [scheduleDraft])
   useEffect(() => { writeStorage(storageKeys.scheduleMessages, JSON.stringify(scheduleMessages)) }, [scheduleMessages])
   useEffect(() => { writeStorage(storageKeys.calendarMonth, calendarMonth.toISOString()) }, [calendarMonth])
@@ -925,6 +1057,7 @@ export default function App() {
   const selectedTask = useMemo(() => sortedTasks.find((task) => task.id === selectedTaskId) || null, [selectedTaskId, sortedTasks])
   const selectedEvent = useMemo(() => sortedEvents.find((event) => event.id === selectedEventId) || null, [selectedEventId, sortedEvents])
   const selectedMemory = useMemo(() => memoryEntries.find((entry) => entry.id === selectedMemoryId) || null, [memoryEntries, selectedMemoryId])
+  const selectedSkill = useMemo(() => skills.find((skill) => skill.id === selectedSkillId) || null, [selectedSkillId, skills])
 
   useEffect(() => {
     if (sortedTasks.length && (!selectedTaskId || !selectedTask)) setSelectedTaskId(sortedTasks[0].id)
@@ -933,6 +1066,10 @@ export default function App() {
   useEffect(() => {
     if (memoryEntries.length && (!selectedMemoryId || !selectedMemory)) setSelectedMemoryId(memoryEntries[0].id)
   }, [memoryEntries, selectedMemory, selectedMemoryId])
+
+  useEffect(() => {
+    if (skills.length && (!selectedSkillId || !selectedSkill)) setSelectedSkillId(skills[0].id)
+  }, [selectedSkill, selectedSkillId, skills])
 
   useEffect(() => {
     if (sortedEvents.length && (!selectedEventId || !selectedEvent)) setSelectedEventId(sortedEvents[0].id)
@@ -1026,11 +1163,19 @@ export default function App() {
       })
       replaceTaskInState(result.task)
       if (selectedTaskId === id) setActiveLaneId(result.task.lane)
+      return result.task
     } catch (err) {
       setTasks(snapshot)
       setError(err.message)
+      return null
     }
   }, [replaceTaskInState, selectedTaskId, tasks])
+
+  const applyDetailLaneChange = useCallback(async (nextLane) => {
+    setDetailLane(nextLane)
+    if (!selectedTask || nextLane === selectedTask.lane) return
+    await moveTask(selectedTask.id, nextLane)
+  }, [moveTask, selectedTask])
 
   const sendScheduleRequest = useCallback(async () => {
     const message = scheduleDraft.trim()
@@ -1115,6 +1260,26 @@ User request:\n\n${message}`,
     }
   }, [eventDescription, eventNotes, eventOwner, eventScheduledEnd, eventScheduledStart, eventStatus, eventTitle, replaceEventInState, selectedEvent])
 
+  const applyEventStatusChange = useCallback(async (nextStatus) => {
+    setEventStatus(nextStatus)
+    if (!selectedEvent || nextStatus === selectedEvent.status) return
+    setEventSaving(true)
+    setError('')
+
+    try {
+      const result = await requestJson(`/api/events/${selectedEvent.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: nextStatus }),
+      })
+      replaceEventInState(result.event)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setEventSaving(false)
+    }
+  }, [replaceEventInState, selectedEvent])
+
   const saveTaskDetails = useCallback(async () => {
     if (!selectedTask) return
     setDetailSaving(true)
@@ -1173,6 +1338,7 @@ User request:\n\n${message}`,
             <button className={`nav-item ${page === 'schedule' ? 'active' : ''}`} type="button" onClick={() => setPage('schedule')}><span className="nav-dot" />Schedule</button>
             <button className={`nav-item ${page === 'events' ? 'active' : ''}`} type="button" onClick={() => setPage('events')}><span className="nav-dot" />Events</button>
             <button className={`nav-item ${page === 'memory' ? 'active' : ''}`} type="button" onClick={() => setPage('memory')}><span className="nav-dot" />Memory</button>
+            <button className={`nav-item ${page === 'skills' ? 'active' : ''}`} type="button" onClick={() => setPage('skills')}><span className="nav-dot" />Skills</button>
           </div>
         </section>
 
@@ -1184,9 +1350,9 @@ User request:\n\n${message}`,
 
       <main className="main-panel">
         <header className="topbar">
-          <div className="breadcrumbs">Mission Control &nbsp;›&nbsp; <strong>{page === 'protocol' ? 'Protocol' : page === 'schedule' ? 'Schedule' : page === 'events' ? 'Events' : page === 'memory' ? 'Memory' : 'Tasks'}</strong></div>
+          <div className="breadcrumbs">Mission Control &nbsp;›&nbsp; <strong>{page === 'protocol' ? 'Protocol' : page === 'schedule' ? 'Schedule' : page === 'events' ? 'Events' : page === 'memory' ? 'Memory' : page === 'skills' ? 'Skills' : 'Tasks'}</strong></div>
           <div className="topbar-actions">
-            <div className="search-pill">{page === 'protocol' ? 'Standing rules and recurring operational rhythm' : page === 'schedule' ? 'Calendar for scheduled events' : page === 'events' ? 'Stored and archived events' : page === 'memory' ? 'Journal and memory context' : 'Shared memory for active project work'}</div>
+            <div className="search-pill">{page === 'protocol' ? 'Standing rules and recurring operational rhythm' : page === 'schedule' ? 'Calendar for scheduled events' : page === 'events' ? 'Stored and archived events' : page === 'memory' ? 'Journal and memory context' : page === 'skills' ? 'Skill flowcharts and reasoning paths' : 'Shared memory for active project work'}</div>
             <button type="button" className="icon-button accent" onClick={refreshCurrentPage} disabled={loading}>{loading ? '…' : '⟳'}</button>
           </div>
         </header>
@@ -1206,7 +1372,7 @@ User request:\n\n${message}`,
             detailDescription={detailDescription}
             setDetailDescription={setDetailDescription}
             detailLane={detailLane}
-            setDetailLane={setDetailLane}
+            setDetailLane={applyDetailLaneChange}
             detailScheduledStart={detailScheduledStart}
             setDetailScheduledStart={setDetailScheduledStart}
             detailScheduledEnd={detailScheduledEnd}
@@ -1275,7 +1441,7 @@ User request:\n\n${message}`,
             setEventOwner={setEventOwner}
             setEventScheduledEnd={setEventScheduledEnd}
             setEventScheduledStart={setEventScheduledStart}
-            setEventStatus={setEventStatus}
+            setEventStatus={applyEventStatusChange}
             setEventTitle={setEventTitle}
             setSelectedEventId={setSelectedEventId}
             upcomingEvents={upcomingEvents}
@@ -1291,6 +1457,18 @@ User request:\n\n${message}`,
             selectedMemory={selectedMemory}
             selectedMemoryId={selectedMemoryId}
             setSelectedMemoryId={setSelectedMemoryId}
+          />
+        ) : null}
+
+        {page === 'skills' ? (
+          <SkillsView
+            error={error}
+            loading={loading}
+            selectedSkill={selectedSkill}
+            selectedSkillId={selectedSkillId}
+            setSelectedSkillId={setSelectedSkillId}
+            skills={skills}
+            skillsLoaded={skillsLoaded}
           />
         ) : null}
       </main>

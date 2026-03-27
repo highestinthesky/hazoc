@@ -20,6 +20,8 @@ const EVENTS_PATH = path.join(WORKSPACE, 'mission-control/data/events.json')
 const RECURRING_PATH = path.join(WORKSPACE, 'mission-control/data/recurring.json')
 const PROTOCOL_PATH = path.join(WORKSPACE, 'mission-control/data/protocol.json')
 const MEMORY_DIR = path.join(WORKSPACE, 'memory')
+const LOCAL_SKILLS_DIR = path.join(WORKSPACE, 'skills')
+const GLOBAL_SKILLS_DIR = path.join(os.homedir(), '.npm-global/lib/node_modules/openclaw/skills')
 const DIST_DIR = path.join(__dirname, 'dist')
 
 app.use(express.json({ limit: '1mb' }))
@@ -198,6 +200,117 @@ function toMemoryEntry(id, title, kind, filePath, content) {
   return { id, title, kind, filePath, excerpt: excerpt(content), content, lineCount: lines.length }
 }
 
+function parseFrontmatter(raw) {
+  const match = raw.match(/^---\n([\s\S]*?)\n---\n?/)
+  if (!match) return { meta: {}, body: raw }
+
+  const meta = {}
+  for (const line of match[1].split('\n')) {
+    const item = line.match(/^([A-Za-z0-9_-]+):\s*(.*)$/)
+    if (!item) continue
+    meta[item[1]] = item[2].trim().replace(/^['"]|['"]$/g, '')
+  }
+
+  return { meta, body: raw.slice(match[0].length) }
+}
+
+function normalizeFlowLabel(text) {
+  return String(text || '')
+    .replace(/^\d+[.)-]?\s*/, '')
+    .replace(/^phase\s+\d+\s+[—-]\s*/i, '')
+    .replace(/^step\s+\d+\s*[:.-]?\s*/i, '')
+    .trim()
+}
+
+function extractFlowSteps(body) {
+  const skip = new Set(['overview', 'references', 'reference', 'commands', 'command', 'guardrails'])
+  const headingMatches = [...body.matchAll(/^#{2,3}\s+(.+)$/gm)]
+  const headingSteps = headingMatches
+    .map((match) => normalizeFlowLabel(match[1]))
+    .filter((label) => label && !skip.has(label.toLowerCase()))
+
+  if (headingSteps.length >= 2) return [...new Set(headingSteps)].slice(0, 8)
+
+  const orderedMatches = [...body.matchAll(/^\d+\.\s+(.+)$/gm)]
+  const orderedSteps = orderedMatches
+    .map((match) => normalizeFlowLabel(match[1]))
+    .filter(Boolean)
+  if (orderedSteps.length >= 2) return [...new Set(orderedSteps)].slice(0, 8)
+
+  const bulletMatches = [...body.matchAll(/^-\s+(.+)$/gm)]
+  const bulletSteps = bulletMatches
+    .map((match) => normalizeFlowLabel(match[1]))
+    .filter((label) => label && label.length <= 120)
+  if (bulletSteps.length >= 2) return [...new Set(bulletSteps)].slice(0, 8)
+
+  return ['Detect trigger', 'Read SKILL.md', 'Load extra references or scripts if needed', 'Execute the workflow', 'Validate and record the result']
+}
+
+function summarizeSkillType(source) {
+  return source === 'workspace' ? 'Workspace skill' : 'System skill'
+}
+
+function shortPath(filePath) {
+  return String(filePath)
+    .replace(`${os.homedir()}/`, '~/')
+    .replace(`${WORKSPACE}/`, '')
+}
+
+async function readSkills() {
+  const sources = [
+    { dir: LOCAL_SKILLS_DIR, source: 'workspace' },
+    { dir: GLOBAL_SKILLS_DIR, source: 'system' },
+  ]
+
+  const skills = []
+  const seen = new Set()
+
+  for (const bucket of sources) {
+    const names = await fs.readdir(bucket.dir).catch(() => [])
+    for (const name of names.sort()) {
+      const skillDir = path.join(bucket.dir, name)
+      const stat = await fs.stat(skillDir).catch(() => null)
+      if (!stat?.isDirectory()) continue
+
+      const skillPath = path.join(skillDir, 'SKILL.md')
+      const raw = await readTextIfExists(skillPath)
+      if (!raw) continue
+
+      const { meta, body } = parseFrontmatter(raw)
+      const skillName = meta.name || name
+      if (seen.has(skillName)) continue
+      seen.add(skillName)
+
+      const referencesDir = path.join(skillDir, 'references')
+      const scriptsDir = path.join(skillDir, 'scripts')
+      const assetsDir = path.join(skillDir, 'assets')
+      const [references, scripts, assets] = await Promise.all([
+        fs.readdir(referencesDir).catch(() => []),
+        fs.readdir(scriptsDir).catch(() => []),
+        fs.readdir(assetsDir).catch(() => []),
+      ])
+
+      skills.push({
+        id: `${bucket.source}:${skillName}`,
+        name: skillName,
+        source: bucket.source,
+        sourceLabel: summarizeSkillType(bucket.source),
+        skillPath: shortPath(skillPath),
+        description: meta.description || excerpt(body, 220),
+        flow: extractFlowSteps(body),
+        referencesCount: references.length,
+        scriptsCount: scripts.length,
+        assetsCount: assets.length,
+      })
+    }
+  }
+
+  return skills.sort((a, b) => {
+    if (a.source !== b.source) return a.source === 'workspace' ? -1 : 1
+    return a.name.localeCompare(b.name)
+  })
+}
+
 async function readMemoryEntries() {
   const activeStatePath = path.join(MEMORY_DIR, 'active-state.md')
   const today = new Date().toISOString().slice(0, 10)
@@ -266,6 +379,15 @@ app.get('/api/protocol', async (_req, res) => {
     res.json({ ok: true, protocol, recurring, fetchedAt: new Date().toISOString() })
   } catch (error) {
     res.status(500).json({ ok: false, error: error.message || 'Failed to load protocol.' })
+  }
+})
+
+app.get('/api/skills', async (_req, res) => {
+  try {
+    const skills = await readSkills()
+    res.json({ ok: true, skills, fetchedAt: new Date().toISOString() })
+  } catch (error) {
+    res.status(500).json({ ok: false, error: error.message || 'Failed to load skills.' })
   }
 })
 

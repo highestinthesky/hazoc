@@ -13,7 +13,18 @@ Start from something real:
 
 Write the signal in one sentence.
 
-## Phase 2 — Classify
+## Phase 2 — Generalize the root cause
+
+Before mutating, force one layer of abstraction.
+Ask:
+- What was the root cause?
+- What broader failure mode does this belong to?
+- What guideline would help future-you avoid this class of mistake on unrelated tasks?
+- Is that guideline broad enough to transfer, but concrete enough to change behavior?
+
+Do not stop at an incident-specific fix when a reusable moral is available.
+
+## Phase 3 — Classify
 
 Classify along these axes:
 
@@ -23,7 +34,7 @@ Classify along these axes:
 - **structure need**: whether relations matter more than prose
 - **blast radius**: how risky the possible change is
 
-## Phase 3 — Choose mutation class
+## Phase 4 — Choose mutation class
 
 Recommended classes:
 - memory capture
@@ -36,7 +47,7 @@ Recommended classes:
 
 Prefer lower blast radius classes first.
 
-## Phase 4 — Validate
+## Phase 5 — Validate
 
 Pick one concrete proof:
 - context survives a gap/restart
@@ -45,7 +56,17 @@ Pick one concrete proof:
 - workflow shortens
 - relation query becomes answerable
 
-## Phase 5 — Record outcome
+Also verify that the chosen fix actually follows the generalized moral from Phase 2.
+If it solves the local incident but violates the moral, the evolution is incomplete.
+
+For UI-related work, do not stop at visual polish.
+Also verify:
+- the layout has no obvious display bugs in the real view/state
+- the interaction actually works end to end
+- the control's behavior matches its visual implication
+- accidental destructive state changes are not too easy
+
+## Phase 6 — Record outcome
 
 Always leave behind:
 - what changed

@@ -1,11 +1,112 @@
 [
   {
+    "id": "task-message-triage-loop",
+    "title": "Triage every meaningful message into task updates",
+    "notes": "Standing workflow rule now lives in Protocol instead of Workbench.",
+    "description": "Project memory\n\nGoal\n- Make sure meaningful messages get reflected in durable state instead of staying trapped in chat.\n\nWhat changed\n- This is no longer treated as an active Workbench project item.\n- The behavior now belongs in the Protocol section as an ongoing operating rule.\n\nWhy\n- It is a standing duty, not backlog work to be \"completed\" in the Workbench.\n\nWhere it lives now\n- Mission Control > Protocol\n- Protocol item: triage meaningful messages into task, event, or memory updates.",
+    "lane": "archive",
+    "scheduledStart": "",
+    "scheduledEnd": "",
+    "createdAt": "2026-03-24T17:10:00.000Z",
+    "updatedAt": "2026-03-27T00:00:55.701Z"
+  },
+  {
+    "id": "task-optimize-mission-control",
+    "title": "Optimize the mission-control website",
+    "notes": "Mission control is LAN-accessible and now has a dedicated Protocol section so duties/recurring rhythm stop cluttering Workbench. UI direction from haolun: remove self-explanatory page/context boxes, keep the interface utility-first, make selected task/detail state much clearer, keep highlights lane-aware, make sidebar/page chrome feel more polished, treat Archived as its own compact shelf layout, and replace ugly floating/native task controls with inline segmented lane/status switches that do not obscure content.",
+    "description": "Project memory\n\nGoal\n- Keep improving mission control so it feels cleaner, more reliable, more LAN-friendly, and easier to use as the shared workspace.\n\nWhat is known\n- The current app now uses a stable single-server runtime on port 4180 instead of the earlier fragile split-origin setup.\n- WSL-only binding was not enough for Wi-Fi/LAN access, so Windows needed a portproxy bridge and inbound firewall allowance.\n- Haolun wanted the schedule and tasks to feel more clearly separated, with recurring duties shown as their own distinct box rather than blended into a generic side stack.\n\nWhat has been done\n- Refactored the frontend into cleaner view sections with shared mission-control utility helpers.\n- Optimized calendar rendering by grouping scheduled tasks by day instead of re-filtering for every calendar cell.\n- Reworked the schedule page so the calendar, upcoming scheduled tasks, recurring duties, and unscheduled work each have a clearer dedicated area.\n- Cleaned up the toolbar/button styling and tightened the page structure.\n- Switched the stable runtime to HOST=0.0.0.0 on port 4180.\n- Updated the watchdog to monitor and restart the 4180 single-server runtime.\n- Added a Windows portproxy from 0.0.0.0:4180 to the WSL address and added a private-profile firewall rule for TCP 4180.\n\nBlockers / unknowns\n- If the Windows LAN IP changes later, the portproxy target address may need to be refreshed if the WSL IP also changes.\n- Real-world testing from another Wi-Fi device is still worth doing, even though Windows-local LAN-IP access now succeeds.\n\nNext steps\n- Test from another device on the same Wi-Fi using the Windows LAN IP URL.\n- If the LAN IP changes later, refresh the reported URL and verify the bridge still works.\n- Keep polishing based on real usage friction rather than abstract cleanup.\n\nVisual polish feedback\n- Strong correction on task controls: floating dropdowns keep fighting the card layout, clipping, and visual layering. Better design is to stop using popup menus here entirely and switch to inline segmented controls for lane/status changes.\n- Native browser dropdowns looked out of place against the rest of the UI. Replace them with custom in-app menus for task section/status controls so the opened menu matches the site palette and feels intentional.\n- Important correction from haolun: the archive problem was structural, not just visual. Archived rows were too squished and the status dropdown became unusably tiny. Treat Archived as a compact shelf/list mode with full-width rows and a real-width dropdown instead of reusing the active-task card layout unchanged.\n- Sidebar polish direction: active navigation should feel visibly selected, including a richer gold dot / accent treatment on the active page item.\n- General low-risk polish is welcome: smoother hover states, more intentional scroll areas, and small consistency upgrades that make the site feel finished rather than rough.\n- Haolun also wants the archive selection state to feel smooth rather than choppy, and wants the task-section menu highlight to follow the same lane color scheme as the content below it.\n- Haolun wants the selected task/detail state to be much clearer and smoother: stronger visual selection, bolder outline/accent, and generally nicer interaction when opening task details.\n- Haolun explicitly does not want self-explanatory page-context boxes like “Why this exists” / “Keep workbench clean”; keep the UI focused on actionable state instead of explaining the product back to ourselves.\n- Haolun said the current UI works on Mac now, but still looks a bit ugly.\n- The detail panel/header treatment feels visually heavy and needs refinement.\n\nNext polish targets\n- Improve typography hierarchy and spacing.\n- Reduce bulky dark blocks and harsh panel framing.\n- Make the task detail view feel more elegant and integrated with the rest of the page.\n\n\nLatest task-board refit\n- Haolun said the Capture Tray had effectively gone unused and should be removed.\n- Reworked the Tasks page into selectable subsections for Workbench, On Hold, and Archived.\n- Swapped the old multi-column lane board for a denser single-section list plus detail panel so more tasks can stay visible at once while keeping long-form memory on the right.\n\nCalendar polish update\n- Haolun wanted the Schedule calendar to reflect scheduled events more clearly and to have more space.\n- Enlarged the calendar area relative to the sidebar.\n- Increased cell size and made scheduled days visually stronger.\n- Event pills now show time + title so calendar entries read like actual scheduled items instead of tiny generic chips.\n\nEvent separation update\n- Haolun wanted scheduled events separated from tasks.\n- Added a dedicated events data store and API.\n- Added an Events page where events can be reviewed, edited, and archived.\n- Schedule calendar now reflects scheduled events, while scheduled work tasks remain separate in their own panel.\n- Clicking a scheduled event now opens the Events page instead of the task board.\n\n\nLatest planning\n- While haolun is away from the desk, prefer low-risk internal optimizations instead of ambiguous product leaps.\n- Best near-term queue: (1) tighten task/event/schedule UI polish into smaller concrete cleanup slices, (2) improve task-memory/context efficiency where noisy, (3) refine next-step implementation plans for market digest and multi-user scheduling so fresh sessions can pick them up cleanly.\n- Added a dedicated Protocol section so standing rules and recurring duties (message triage, GitHub push rhythm, memory optimization, uptime, schedule routing, cross-channel mirroring) have their own dashboard home instead of bloating Workbench.\n\nAway-time execution slices\n- Visual hierarchy pass\n  - tighten typography scale, heading hierarchy, and panel spacing\n  - reduce heavy dark blocks / repeated framing\n  - standardize chip/button/input emphasis across Tasks, Schedule, Events, and Memory\n- Tasks + Events scanability pass\n  - make row metadata easier to scan at a glance\n  - ensure selected state and archived/on-hold status read clearly\n  - trim noisy copy / redundant labels in detail panes\n- Schedule / Events distinction pass\n  - strengthen event-vs-task visual language\n  - make live vs archived event state clearer\n  - keep the schedule-intake panel visually integrated without competing with the calendar\n- Low-risk QA / cleanup pass\n  - click through Tasks, Schedule, Events, and Memory on the stable 4180 origin\n  - verify persistence, empty states, and obvious copy mismatches\n  - avoid touching watchdog / boot persistence unless a doc/state correction is clearly needed\n\nNear-term order\n- Start with visual hierarchy + scanability.\n- Then do schedule/events distinction.\n- Finish with a small QA sweep before considering more UI churn.",
+    "lane": "workbench",
+    "scheduledStart": "",
+    "scheduledEnd": "",
+    "createdAt": "2026-03-24T19:10:00.000Z",
+    "updatedAt": "2026-03-26T23:56:30Z"
+  },
+  {
+    "id": "task-recurring-duties-schedule",
+    "title": "Track recurring duties on the schedule page",
+    "notes": "Recurring duties were first made visible on Schedule; they now have a better permanent home in the Protocol section.",
+    "description": "Project memory\n\nGoal\n- Make recurring operational duties visible so hazoc does not neglect them.\n\nWhat has changed since this was first built\n- Recurring rhythm no longer needs to live on the Schedule page as its main home.\n- A dedicated Protocol section now holds standing rules plus recurring duties so Workbench stays clean and Schedule can stay focused on dated items.\n\nOutcome\n- This earlier schedule-page milestone remains archived as part of the product history.",
+    "lane": "archive",
+    "scheduledStart": "",
+    "scheduledEnd": "",
+    "createdAt": "2026-03-24T19:38:00.000Z",
+    "updatedAt": "2026-03-26T02:10:50Z"
+  },
+  {
+    "id": "task-github-push-rhythm",
+    "title": "Push workspace changes to GitHub once per hour while active",
+    "notes": "Recurring operational rhythm now lives in Protocol instead of Workbench.",
+    "description": "Project memory\n\nGoal\n- Keep meaningful workspace changes preserved on a steady cadence while active.\n\nWhat changed\n- This is no longer treated as a live Workbench item.\n- The GitHub push rhythm now belongs in Protocol as recurring operational work.\n\nWhy\n- It is a repeating duty, not a project backlog item.\n\nWhere it lives now\n- Mission Control > Protocol\n- Recurring rhythm: Push meaningful changes to GitHub.",
+    "lane": "archive",
+    "scheduledStart": "",
+    "scheduledEnd": "",
+    "createdAt": "2026-03-24T16:27:00.000Z",
+    "updatedAt": "2026-03-26T02:10:50Z"
+  },
+  {
+    "id": "task-mission-control-uptime",
+    "title": "Keep mission-control website up while active",
+    "notes": "Live uptime duty now lives in Protocol; the implementation itself is already in place.",
+    "description": "Project memory\n\nGoal\n- Keep the local mission-control website available whenever hazoc is up and actively working.\n\nWhat has been done\n- The watchdog/service/bootstrap path is already built and verified.\n- The live operational duty now belongs in Protocol instead of Workbench.\n\nWhy archive this\n- The build work is done. The continuing responsibility is operational rhythm, not active backlog.\n\nWhere it lives now\n- Mission Control > Protocol\n- Recurring rhythm: Keep mission control online.",
+    "lane": "archive",
+    "scheduledStart": "",
+    "scheduledEnd": "",
+    "createdAt": "2026-03-24T17:00:00.000Z",
+    "updatedAt": "2026-03-26T02:10:50Z"
+  },
+  {
+    "id": "task-manage-future-schedule",
+    "title": "Actively place future asks onto the schedule page",
+    "notes": "Standing planning rule now lives in Protocol instead of Workbench.",
+    "description": "Project memory\n\nGoal\n- Make sure time-bound asks actually land in schedule/event state instead of staying implicit in chat.\n\nWhat changed\n- This is now represented as a standing Protocol rule rather than a Workbench task.\n\nWhy\n- It is an ongoing behavior expectation, not a project backlog item.\n\nWhere it lives now\n- Mission Control > Protocol\n- Standing protocol: route time-bound asks into schedule or events.",
+    "lane": "archive",
+    "scheduledStart": "",
+    "scheduledEnd": "",
+    "createdAt": "2026-03-24T17:19:00.000Z",
+    "updatedAt": "2026-03-26T02:10:50Z"
+  },
+  {
+    "id": "task-discord-main-memory",
+    "title": "Mirror important Discord items into main project memory",
+    "notes": "Cross-channel continuity rule now lives in Protocol instead of Workbench.",
+    "description": "Project memory\n\nGoal\n- Make sure important Discord and Telegram items get copied back into main mission-control memory.\n\nWhat changed\n- This is now treated as standing Protocol, not active Workbench backlog.\n\nWhy\n- It is an ongoing operating rule for continuity, not a project waiting to be \"finished.\"\n\nWhere it lives now\n- Mission Control > Protocol\n- Standing protocol: mirror important Discord and Telegram items into main memory.",
+    "lane": "archive",
+    "scheduledStart": "",
+    "scheduledEnd": "",
+    "createdAt": "2026-03-24T16:01:00.000Z",
+    "updatedAt": "2026-03-26T02:10:50Z"
+  },
+  {
+    "id": "task-mn4rikzn-l4lwy",
+    "title": "Run hourly memory optimization + task board update while active",
+    "notes": "Recurring memory-maintenance rhythm now lives in Protocol instead of Workbench.",
+    "description": "Project memory\n\nGoal\n- Keep hourly memory optimization and task-board maintenance visible and durable.\n\nWhat changed\n- This is no longer treated as live Workbench backlog.\n- The duty now belongs in Protocol as recurring operational rhythm.\n\nWhy\n- It is an upkeep loop, not a project to keep pretending is in active build.\n\nWhere it lives now\n- Mission Control > Protocol\n- Recurring rhythm: Run hourly memory optimization + task board update.",
+    "lane": "archive",
+    "scheduledStart": "",
+    "scheduledEnd": "",
+    "createdAt": "2026-03-24T15:21:25.187Z",
+    "updatedAt": "2026-03-26T02:10:50Z"
+  },
+  {
     "id": "task-market-moving-news-digest",
     "title": "Design market-moving news digest system",
     "notes": "Preferred first shippable shape: local-only, bounded, and auditable. Build order should be source allowlist -> observation schema -> scoring/dedupe -> affected-name mapping -> digest compiler, with external delivery deferred until digest quality feels stable.",
-    "description": "Project memory\n\nGoal\n- Build a daily / interval-based market-moving news digest system for haolun.\n\nWhat is known\n- Haolun does not want ticker-specific monitoring as the main model.\n- The system should gather major public headlines that could significantly move markets.\n- It should infer which sectors and important stocks are likely affected by each headline.\n- It should later deliver digest summaries at chosen intervals.\n\nRecommended source tiers\n- Tier 1: official / primary sources (Fed, BLS, Treasury, SEC/EDGAR, company IR / press releases).\n- Tier 2: major public financial/news sources (Reuters public pages, Yahoo Finance, CNBC public pages, MarketWatch, public RSS / Google News).\n- Tier 3 later only if explicitly wanted: noisier public discussion sources.\n\nImportance scoring rules to implement\n- Macro impact (rates, inflation, jobs, war, regulation, energy, AI/chips, major earnings, M&A).\n- Surprise / novelty.\n- Breadth (broad market vs sector vs single-name).\n- Repeated multi-source confirmation.\n- Likely sensitivity of major stocks / ETFs / sectors.\n\nDigest format\n- Headline\n- Why it matters\n- Likely affected sectors / stocks / ETFs\n- Estimated impact scope (broad / sector / single-name)\n- Confidence / source quality\n\nDelivery plan\n- Interval-based digest rather than open-ended roaming.\n- Good defaults to consider: morning setup digest, midday update, evening wrap-up, plus optional urgent alerts later.\n\nWhat has been done\n- The high-level product direction has been written into curated memory, USER.md, active-state, and today's daily note.\n- A safer market skill base (`skills/market-watch`) already exists and can be extended.\n\nBlockers / unknowns\n- Exact final source allowlist still needs to be chosen.\n- Need the desired delivery destinations and cadence confirmed.\n- Need to decide whether the first version writes to files only, mission control only, or also pushes messages immediately.\n\nNext steps\n- Start with a bounded source list and digest scoring spec.\n- Add public-source fetch/parse scripts under `skills/market-watch`.\n- Store structured observations locally, then compile interval digests from that state.\n- Later connect digest delivery to the chosen channels.\n\nFirst shippable shape\n- Local-only, bounded, and auditable.\n- Compile morning / midday / evening digests from stored observations first.\n- Leave urgent alerts for a later high-confidence threshold path.\n\nExecution slices\n- Source allowlist + cadence\n  - finalize Tier 1 / Tier 2 pages or feeds\n  - define per-source trust and freshness windows\n- Observation schema\n  - store id, timestamp, source, headline, summary, category, affected sectors / stocks / ETFs, score fields, confidence, and URLs\n- Scoring + dedupe\n  - rules-based scoring first\n  - merge repeated coverage from credible sources\n  - suppress stale repeats across digest windows\n- Affected-name inference\n  - start from a small curated sector / ETF / bellwether mapping\n  - avoid an open-ended ticker universe in v1\n- Digest compiler\n  - rank accepted observations into morning / midday / evening bundles\n  - keep outputs deterministic and link-backed\n- Delivery boundary\n  - start with local files or mission-control storage\n  - add Discord / Telegram delivery only after digest quality is stable\n\nDecision edges still to confirm\n- Exact first delivery surface: files only, mission-control view, or both.\n- Observation retention window and dedupe horizon.\n- When a single-name story is important enough to include in a broader digest.\n",
+    "description": "Project memory\n\nGoal\n- Build a daily / interval-based market-moving news digest system for haolun.\n\nWhat is known\n- Haolun does not want ticker-specific monitoring as the main model.\n- The system should gather major public headlines that could significantly move markets.\n- It should infer which sectors and important stocks are likely affected by each headline.\n- It should later deliver digest summaries at chosen intervals.\n\nRecommended source tiers\n- Tier 1: official / primary sources (Fed, BLS, Treasury, SEC/EDGAR, company IR / press releases).\n- Tier 2: major public financial/news sources (Reuters public pages, Yahoo Finance, CNBC public pages, MarketWatch, public RSS / Google News).\n- Tier 3 later only if explicitly wanted: noisier public discussion sources.\n\nImportance scoring rules to implement\n- Macro impact (rates, inflation, jobs, war, regulation, energy, AI/chips, major earnings, M&A).\n- Surprise / novelty.\n- Breadth (broad market vs sector vs single-name).\n- Repeated multi-source confirmation.\n- Likely sensitivity of major stocks / ETFs / sectors.\n\nDigest format\n- Headline\n- Why it matters\n- Likely affected sectors / stocks / ETFs\n- Estimated impact scope (broad / sector / single-name)\n- Confidence / source quality\n\nDelivery plan\n- Interval-based digest rather than open-ended roaming.\n- Good defaults to consider: morning setup digest, midday update, evening wrap-up, plus optional urgent alerts later.\n\nWhat has been done\n- The high-level product direction has been written into curated memory, USER.md, active-state, and today's daily note.\n- A safer market skill base (`skills/market-watch`) already exists and can be extended.\n\nBlockers / unknowns\n- Exact final source allowlist still needs to be chosen.\n- Need the desired delivery destinations and cadence confirmed.\n- Need to decide whether the first version writes to files only, mission control only, or also pushes messages immediately.\n\nNext steps\n- Start with a bounded source list and digest scoring spec.\n- Add public-source fetch/parse scripts under `skills/market-watch`.\n- Store structured observations locally, then compile interval digests from that state.\n- Later connect digest delivery to the chosen channels.\n\nFirst shippable shape\n- Local-only, bounded, and auditable.\n- Compile morning / midday / evening digests from stored observations first.\n- Leave urgent alerts for a later high-confidence threshold path.\n\nExecution slices\n- Source allowlist + cadence\n  - finalize Tier 1 / Tier 2 pages or feeds\n  - define per-source trust and freshness windows\n- Observation schema\n  - store id, timestamp, source, headline, summary, category, affected sectors / stocks / ETFs, score fields, confidence, and URLs\n- Scoring + dedupe\n  - rules-based scoring first\n  - merge repeated coverage from credible sources\n  - suppress stale repeats across digest windows\n- Affected-name inference\n  - start from a small curated sector / ETF / bellwether mapping\n  - avoid an open-ended ticker universe in v1\n- Digest compiler\n  - rank accepted observations into morning / midday / evening bundles\n  - keep outputs deterministic and link-backed\n- Delivery boundary\n  - start with local files or mission-control storage\n  - add Discord / Telegram delivery only after digest quality is stable\n\nDecision edges still to confirm\n- Exact first delivery surface: files only, mission-control view, or both.\n- Observation retention window and dedupe horizon.\n- When a single-name story is important enough to include in a broader digest.",
     "lane": "workbench",
+    "scheduledStart": "",
+    "scheduledEnd": "",
     "createdAt": "2026-03-25T03:15:00.000Z",
+    "updatedAt": "2026-03-26T01:39:27Z"
+  },
+  {
+    "id": "task-multi-user-schedule-architecture",
+    "title": "Design multi-user schedule intake and reminder architecture",
+    "notes": "Current textbox stays as the intake layer. Cleaner build order: define profile registry + event ownership first, then clarification rules, then reminder routing, and leave Google Calendar linking for last.",
+    "description": "Project memory\n\nGoal\n- Prepare the next-stage architecture for multi-user scheduling in mission control without building it immediately.\n\nWhat is known\n- Haolun wants a Schedule-page text box that sends directly to hazoc for schedule requests.\n- This should not be a generic manual event form; hazoc should interpret the request.\n- The future schedule model should support 4 profiles: hazoc, haolun, and 2 additional users.\n- A request may specify an event name, time, and optionally ask for the event to also be added to another user's schedule.\n- Longer-term plan: link the user profiles to Google Calendar and let hazoc send reminders to each user through Discord and/or Telegram.\n\nWhat has been done\n- Captured the structure in durable memory and added this task to the board.\n- Implemented the first piece: a direct Schedule-page textbox that sends requests to hazoc and shows inline replies / clarifying questions.\n\nBlockers / unknowns\n- The exact UX, profile model, Google-account mapping, and reminder-routing rules still need design.\n- The broader multi-user/profile/integration work is still not to be implemented until requested.\n\nNext steps\n- Keep iterating on the direct schedule-intake panel as needed.\n- Later design the per-user schedule model, cross-posting logic, calendar sync mapping, and reminder delivery rules.\n\nPreferred build order\n- Keep the current Schedule-page textbox as the intake layer.\n- Define profile registry + event ownership next.\n- Add clarification rules for ambiguous requests after that.\n- Add reminder routing next.\n- Leave Google Calendar linking / sync for last.\n\nExecution slices\n- Profile registry\n  - fixed 4 profiles in v1: hazoc, haolun, user-3, user-4\n  - per-profile label, default channel(s), active flag, and optional external calendar link placeholder\n- Request interpretation contract\n  - parse owner, title, start/end, optional second target, and optional reminder intent\n  - clarify only when owner/date/time is ambiguous\n- Event model\n  - ownerProfileId\n  - participantProfileIds or mirroredToProfileIds\n  - reminderPolicy\n  - source = hazoc-intake / manual / sync\n  - keep syncState separate from core event data\n- Reminder routing rules\n  - per-profile preferred channel\n  - reminders attach to events, not generic tasks\n  - lead-time settings can remain simple at first\n- Calendar sync boundary\n  - external Google Calendar linking should be optional and last\n  - keep internal mission-control events as the source of truth unless explicitly changed later\n\nOpen questions to preserve\n- Does “add to another user's schedule” mean shared attendees or duplicated personal copies?\n- Should profiles get separate timezones later, or stay New-York-first initially?\n- Which profiles are allowed to receive automated reminders on which channel?",
+    "lane": "workbench",
+    "scheduledStart": "",
+    "scheduledEnd": "",
+    "createdAt": "2026-03-25T01:25:00.000Z",
     "updatedAt": "2026-03-26T01:39:27Z"
   },
   {
@@ -14,224 +115,10 @@
     "notes": "Reviewed upstream ClawHub skills, rejected the risky/autonomous pieces, and built local hazoc-owned forks instead: `skills/market-watch` and `skills/desktop-guard`. Next likely extension for market-watch is the bounded market-moving news digest pipeline.",
     "description": "Project memory\n\nGoal\n- Have local hazoc-owned versions of stock-analysis and desktop-control ready before haolun decides to use them.\n\nWhat was reviewed\n- `udiedrichsen/stock-analysis`\n- `matagul/desktop-control`\n\nVetting summary\n- `stock-analysis`: medium-high risk because the useful market tooling is mixed with Twitter/X token flows, rumor scanning, underspecified credential/storage behavior, and hidden home-directory persistence.\n- `desktop-control`: medium risk because it is honest about scope, but screenshots/clipboard/input control are inherently sensitive and the autonomous AI agent layer increases risk.\n\nWhat was built\n- `skills/market-watch`: safer public-data market snapshots + local watchlist, no cookie scraping, no social auth, no hidden ~/.clawdbot state.\n- `skills/desktop-guard`: guarded desktop primitives with dry-run-by-default mutating actions, no autonomous desktop agent layer.\n- Packaged artifacts: `market-watch.skill` and `desktop-guard.skill`.\n\nNext steps\n- Leave these parked until haolun says to use or extend them.\n- If needed later, flesh out features from the safer base instead of copying the upstream designs wholesale.",
     "lane": "parking",
+    "scheduledStart": "",
+    "scheduledEnd": "",
     "createdAt": "2026-03-25T02:47:00.000Z",
     "updatedAt": "2026-03-25T03:16:00.000Z"
-  },
-  {
-    "id": "task-optimize-mission-control",
-    "title": "Optimize the mission-control website",
-    "notes": "Mission control is LAN-accessible and now has a dedicated Protocol section so duties/recurring rhythm stop cluttering Workbench. UI direction from haolun: remove self-explanatory page/context boxes, keep the interface utility-first, make selected task/detail state much clearer, keep highlights lane-aware, make sidebar/page chrome feel more polished, and treat Archived as its own compact shelf layout rather than squeezing active-task cards into a cramped list.",
-    "description": "Project memory\n\nGoal\n- Keep improving mission control so it feels cleaner, more reliable, more LAN-friendly, and easier to use as the shared workspace.\n\nWhat is known\n- The current app now uses a stable single-server runtime on port 4180 instead of the earlier fragile split-origin setup.\n- WSL-only binding was not enough for Wi-Fi/LAN access, so Windows needed a portproxy bridge and inbound firewall allowance.\n- Haolun wanted the schedule and tasks to feel more clearly separated, with recurring duties shown as their own distinct box rather than blended into a generic side stack.\n\nWhat has been done\n- Refactored the frontend into cleaner view sections with shared mission-control utility helpers.\n- Optimized calendar rendering by grouping scheduled tasks by day instead of re-filtering for every calendar cell.\n- Reworked the schedule page so the calendar, upcoming scheduled tasks, recurring duties, and unscheduled work each have a clearer dedicated area.\n- Cleaned up the toolbar/button styling and tightened the page structure.\n- Switched the stable runtime to HOST=0.0.0.0 on port 4180.\n- Updated the watchdog to monitor and restart the 4180 single-server runtime.\n- Added a Windows portproxy from 0.0.0.0:4180 to the WSL address and added a private-profile firewall rule for TCP 4180.\n\nBlockers / unknowns\n- If the Windows LAN IP changes later, the portproxy target address may need to be refreshed if the WSL IP also changes.\n- Real-world testing from another Wi-Fi device is still worth doing, even though Windows-local LAN-IP access now succeeds.\n\nNext steps\n- Test from another device on the same Wi-Fi using the Windows LAN IP URL.\n- If the LAN IP changes later, refresh the reported URL and verify the bridge still works.\n- Keep polishing based on real usage friction rather than abstract cleanup.\n\nVisual polish feedback\n- Important correction from haolun: the archive problem was structural, not just visual. Archived rows were too squished and the status dropdown became unusably tiny. Treat Archived as a compact shelf/list mode with full-width rows and a real-width dropdown instead of reusing the active-task card layout unchanged.\n- Sidebar polish direction: active navigation should feel visibly selected, including a richer gold dot / accent treatment on the active page item.\n- General low-risk polish is welcome: smoother hover states, more intentional scroll areas, and small consistency upgrades that make the site feel finished rather than rough.\n- Haolun also wants the archive selection state to feel smooth rather than choppy, and wants the task-section menu highlight to follow the same lane color scheme as the content below it.\n- Haolun wants the selected task/detail state to be much clearer and smoother: stronger visual selection, bolder outline/accent, and generally nicer interaction when opening task details.\n- Haolun explicitly does not want self-explanatory page-context boxes like \u201cWhy this exists\u201d / \u201cKeep workbench clean\u201d; keep the UI focused on actionable state instead of explaining the product back to ourselves.\n- Haolun said the current UI works on Mac now, but still looks a bit ugly.\n- The detail panel/header treatment feels visually heavy and needs refinement.\n\nNext polish targets\n- Improve typography hierarchy and spacing.\n- Reduce bulky dark blocks and harsh panel framing.\n- Make the task detail view feel more elegant and integrated with the rest of the page.\n\n\nLatest task-board refit\n- Haolun said the Capture Tray had effectively gone unused and should be removed.\n- Reworked the Tasks page into selectable subsections for Workbench, On Hold, and Archived.\n- Swapped the old multi-column lane board for a denser single-section list plus detail panel so more tasks can stay visible at once while keeping long-form memory on the right.\n\nCalendar polish update\n- Haolun wanted the Schedule calendar to reflect scheduled events more clearly and to have more space.\n- Enlarged the calendar area relative to the sidebar.\n- Increased cell size and made scheduled days visually stronger.\n- Event pills now show time + title so calendar entries read like actual scheduled items instead of tiny generic chips.\n\nEvent separation update\n- Haolun wanted scheduled events separated from tasks.\n- Added a dedicated events data store and API.\n- Added an Events page where events can be reviewed, edited, and archived.\n- Schedule calendar now reflects scheduled events, while scheduled work tasks remain separate in their own panel.\n- Clicking a scheduled event now opens the Events page instead of the task board.\n\n\nLatest planning\n- While haolun is away from the desk, prefer low-risk internal optimizations instead of ambiguous product leaps.\n- Best near-term queue: (1) tighten task/event/schedule UI polish into smaller concrete cleanup slices, (2) improve task-memory/context efficiency where noisy, (3) refine next-step implementation plans for market digest and multi-user scheduling so fresh sessions can pick them up cleanly.\n- Added a dedicated Protocol section so standing rules and recurring duties (message triage, GitHub push rhythm, memory optimization, uptime, schedule routing, cross-channel mirroring) have their own dashboard home instead of bloating Workbench.\n\nAway-time execution slices\n- Visual hierarchy pass\n  - tighten typography scale, heading hierarchy, and panel spacing\n  - reduce heavy dark blocks / repeated framing\n  - standardize chip/button/input emphasis across Tasks, Schedule, Events, and Memory\n- Tasks + Events scanability pass\n  - make row metadata easier to scan at a glance\n  - ensure selected state and archived/on-hold status read clearly\n  - trim noisy copy / redundant labels in detail panes\n- Schedule / Events distinction pass\n  - strengthen event-vs-task visual language\n  - make live vs archived event state clearer\n  - keep the schedule-intake panel visually integrated without competing with the calendar\n- Low-risk QA / cleanup pass\n  - click through Tasks, Schedule, Events, and Memory on the stable 4180 origin\n  - verify persistence, empty states, and obvious copy mismatches\n  - avoid touching watchdog / boot persistence unless a doc/state correction is clearly needed\n\nNear-term order\n- Start with visual hierarchy + scanability.\n- Then do schedule/events distinction.\n- Finish with a small QA sweep before considering more UI churn.\n",
-    "lane": "workbench",
-    "createdAt": "2026-03-24T19:10:00.000Z",
-    "updatedAt": "2026-03-26T23:25:00Z"
-  },
-  {
-    "id": "task-multi-user-schedule-architecture",
-    "title": "Design multi-user schedule intake and reminder architecture",
-    "notes": "Current textbox stays as the intake layer. Cleaner build order: define profile registry + event ownership first, then clarification rules, then reminder routing, and leave Google Calendar linking for last.",
-    "description": "Project memory\n\nGoal\n- Prepare the next-stage architecture for multi-user scheduling in mission control without building it immediately.\n\nWhat is known\n- Haolun wants a Schedule-page text box that sends directly to hazoc for schedule requests.\n- This should not be a generic manual event form; hazoc should interpret the request.\n- The future schedule model should support 4 profiles: hazoc, haolun, and 2 additional users.\n- A request may specify an event name, time, and optionally ask for the event to also be added to another user's schedule.\n- Longer-term plan: link the user profiles to Google Calendar and let hazoc send reminders to each user through Discord and/or Telegram.\n\nWhat has been done\n- Captured the structure in durable memory and added this task to the board.\n- Implemented the first piece: a direct Schedule-page textbox that sends requests to hazoc and shows inline replies / clarifying questions.\n\nBlockers / unknowns\n- The exact UX, profile model, Google-account mapping, and reminder-routing rules still need design.\n- The broader multi-user/profile/integration work is still not to be implemented until requested.\n\nNext steps\n- Keep iterating on the direct schedule-intake panel as needed.\n- Later design the per-user schedule model, cross-posting logic, calendar sync mapping, and reminder delivery rules.\n\nPreferred build order\n- Keep the current Schedule-page textbox as the intake layer.\n- Define profile registry + event ownership next.\n- Add clarification rules for ambiguous requests after that.\n- Add reminder routing next.\n- Leave Google Calendar linking / sync for last.\n\nExecution slices\n- Profile registry\n  - fixed 4 profiles in v1: hazoc, haolun, user-3, user-4\n  - per-profile label, default channel(s), active flag, and optional external calendar link placeholder\n- Request interpretation contract\n  - parse owner, title, start/end, optional second target, and optional reminder intent\n  - clarify only when owner/date/time is ambiguous\n- Event model\n  - ownerProfileId\n  - participantProfileIds or mirroredToProfileIds\n  - reminderPolicy\n  - source = hazoc-intake / manual / sync\n  - keep syncState separate from core event data\n- Reminder routing rules\n  - per-profile preferred channel\n  - reminders attach to events, not generic tasks\n  - lead-time settings can remain simple at first\n- Calendar sync boundary\n  - external Google Calendar linking should be optional and last\n  - keep internal mission-control events as the source of truth unless explicitly changed later\n\nOpen questions to preserve\n- Does \u201cadd to another user's schedule\u201d mean shared attendees or duplicated personal copies?\n- Should profiles get separate timezones later, or stay New-York-first initially?\n- Which profiles are allowed to receive automated reminders on which channel?\n",
-    "lane": "workbench",
-    "createdAt": "2026-03-25T01:25:00.000Z",
-    "updatedAt": "2026-03-26T01:39:27Z"
-  },
-  {
-    "id": "task-message-triage-loop",
-    "title": "Triage every meaningful message into task updates",
-    "notes": "Standing workflow rule now lives in Protocol instead of Workbench.",
-    "description": "Project memory\n\nGoal\n- Make sure meaningful messages get reflected in durable state instead of staying trapped in chat.\n\nWhat changed\n- This is no longer treated as an active Workbench project item.\n- The behavior now belongs in the Protocol section as an ongoing operating rule.\n\nWhy\n- It is a standing duty, not backlog work to be \"completed\" in the Workbench.\n\nWhere it lives now\n- Mission Control > Protocol\n- Protocol item: triage meaningful messages into task, event, or memory updates.\n",
-    "lane": "archive",
-    "createdAt": "2026-03-24T17:10:00.000Z",
-    "updatedAt": "2026-03-26T02:10:50Z"
-  },
-  {
-    "id": "task-task-menu",
-    "title": "Build the mission-control task menu",
-    "notes": "Task board exists and now uses three real sections: Workbench, On Hold, and Archived. The unused Capture Tray was removed.",
-    "description": "Project memory\n\nGoal\n- Build the website's task area into the shared memory for requests between haolun and hazoc.\n- It should hold both active requests and postponed ones, so chat is not the only source of truth.\n\nWhat has been decided\n- The task board should be the place where new requests get recorded.\n- The current task system uses three practical sections so it is easier to scan: Workbench, On Hold, and Archived.\n- Each task should be clickable and should contain enough long-form project context that hazoc can relearn the project after losing short-term memory.\n\nWhat has been done\n- Built a local task board in mission-control.\n- Added JSON-backed storage at mission-control/data/tasks.json.\n- Added lane movement and seeded current project tasks.\n- Restyled the site into a darker luxury look with gold accents.\n\nWhat still matters\n- Future new requests should be recorded here, not left only in chat.\n- Over time, each task description should become a compact project journal: goal, decisions, work done, blockers, next steps.\n\nNext steps\n- Keep task descriptions current as real work happens.\n\nWhat has been done\n- Built the task board, detailed task view, luxury styling, and intake-by-conversation model.",
-    "lane": "archive",
-    "createdAt": "2026-03-24T15:05:00.000Z",
-    "updatedAt": "2026-03-25T02:31:00.000Z"
-  },
-  {
-    "id": "task-recurring-duties-schedule",
-    "title": "Track recurring duties on the schedule page",
-    "notes": "Recurring duties were first made visible on Schedule; they now have a better permanent home in the Protocol section.",
-    "description": "Project memory\n\nGoal\n- Make recurring operational duties visible so hazoc does not neglect them.\n\nWhat has changed since this was first built\n- Recurring rhythm no longer needs to live on the Schedule page as its main home.\n- A dedicated Protocol section now holds standing rules plus recurring duties so Workbench stays clean and Schedule can stay focused on dated items.\n\nOutcome\n- This earlier schedule-page milestone remains archived as part of the product history.\n",
-    "lane": "archive",
-    "createdAt": "2026-03-24T19:38:00.000Z",
-    "updatedAt": "2026-03-26T02:10:50Z"
-  },
-  {
-    "id": "task-github-push-rhythm",
-    "title": "Push workspace changes to GitHub once per hour while active",
-    "notes": "Recurring operational rhythm now lives in Protocol instead of Workbench.",
-    "description": "Project memory\n\nGoal\n- Keep meaningful workspace changes preserved on a steady cadence while active.\n\nWhat changed\n- This is no longer treated as a live Workbench item.\n- The GitHub push rhythm now belongs in Protocol as recurring operational work.\n\nWhy\n- It is a repeating duty, not a project backlog item.\n\nWhere it lives now\n- Mission Control > Protocol\n- Recurring rhythm: Push meaningful changes to GitHub.\n",
-    "lane": "archive",
-    "createdAt": "2026-03-24T16:27:00.000Z",
-    "updatedAt": "2026-03-26T02:10:50Z"
-  },
-  {
-    "id": "task-context-conservation",
-    "title": "Optimize memory and task entries for context conservation",
-    "notes": "Context-conservation rules are now written into AGENTS.md, USER.md, today's memory note, active-state, and MEMORY.md so fresh sessions can re-anchor from durable files instead of hauling old chat context.",
-    "description": "Project memory\n\nGoal\n- Reduce context waste by making memory, task, and journal use more retrieval-driven.\n\nWhat is known\n- Haolun wants hazoc to search memory for relevant prior context whenever a new question arrives.\n- Only the useful pieces should be loaded into working context.\n- After answering, hazoc should ask whether that context will matter for the next conversation; if not, write/store what matters and avoid carrying the larger context forward.\n\nWhat has been done\n- Wrote the retrieval-loop rule into AGENTS.md and USER.md.\n- Created MEMORY.md as a curated long-term anchor for mission-control direction, workflow rules, and current state.\n- Updated this task so the behavior stays visible in mission control.\n\nBlockers / unknowns\n- Current-session history cannot literally be deleted from the model context mid-thread, but future retrieval can be kept much tighter.\n\nNext steps\n- Use memory search at the start of new meaningful questions.\n- Keep retrieved context narrow.\n- Store the durable result and avoid reloading unnecessary context later.",
-    "lane": "workbench",
-    "createdAt": "2026-03-24T20:07:00.000Z",
-    "updatedAt": "2026-03-25T00:40:00.000Z"
-  },
-  {
-    "id": "task-mission-control-uptime",
-    "title": "Keep mission-control website up while active",
-    "notes": "Live uptime duty now lives in Protocol; the implementation itself is already in place.",
-    "description": "Project memory\n\nGoal\n- Keep the local mission-control website available whenever hazoc is up and actively working.\n\nWhat has been done\n- The watchdog/service/bootstrap path is already built and verified.\n- The live operational duty now belongs in Protocol instead of Workbench.\n\nWhy archive this\n- The build work is done. The continuing responsibility is operational rhythm, not active backlog.\n\nWhere it lives now\n- Mission Control > Protocol\n- Recurring rhythm: Keep mission control online.\n",
-    "lane": "archive",
-    "createdAt": "2026-03-24T17:00:00.000Z",
-    "updatedAt": "2026-03-26T02:10:50Z"
-  },
-  {
-    "id": "task-memory-page",
-    "title": "Build a Memory page for mission control",
-    "notes": "Built a Memory page that reads the real workspace memory files and presents them like a journal with a detail view.",
-    "description": "Project memory\n\nGoal\n- Add a website memory section that works like hazoc's journal and helps preserve important context for future responses.\n\nWhat is known\n- Haolun wants a memory section similar in spirit to tasks, but functioning more like a journal.\n- Important things should be written down via the existing workspace memory system so hazoc can remember them later and use them to improve responses.\n\nWhat has been done\n- Added an API endpoint that reads workspace memory sources directly.\n- Added a Memory page with journal-style cards and a detail panel.\n- Surfaced active state, curated context, and recent daily notes in one place.\n- Kept it tied to the real workspace files instead of inventing a second memory database.\n\nBlockers / unknowns\n- No blocker right now; future improvement should be driven by actual memory-use friction.\n\nNext steps\n- Keep writing important items into workspace memory during normal work so the Memory page stays valuable.",
-    "lane": "archive",
-    "createdAt": "2026-03-24T19:38:00.000Z",
-    "updatedAt": "2026-03-24T19:41:00.000Z"
-  },
-  {
-    "id": "task-website-icon",
-    "title": "Give mission control a website icon",
-    "notes": "Added a custom SVG favicon matching the luxe dark-and-gold mission-control aesthetic.",
-    "description": "Project memory\n\nGoal\n- Give the mission-control website its own recognizable icon.\n\nWhat is known\n- Haolun asked to add a website icon after being satisfied with the current look.\n- The icon should fit the existing luxe dark + gold visual language.\n\nWhat has been done\n- Created a custom SVG favicon at mission-control/public/favicon.svg.\n- Wired it into mission-control/index.html with a standard rel=icon tag.\n- Kept the icon aligned with the site palette: dark base, gold linework, subtle warm/cool accent glows.\n\nBlockers / unknowns\n- Browser favicon caching may mean a refresh or tab reopen is needed before it shows immediately.\n\nNext steps\n- Keep it unless haolun later wants a different icon style.",
-    "lane": "archive",
-    "createdAt": "2026-03-24T19:23:00.000Z",
-    "updatedAt": "2026-03-24T19:24:00.000Z"
-  },
-  {
-    "id": "task-telegram-setup",
-    "title": "Set up Telegram integration",
-    "notes": "Telegram DM-only setup is complete, tested successfully, and mirrored to main-memory rules.",
-    "description": "Project memory\n\nGoal\n- Finish Telegram integration so haolun can communicate with hazoc there when away from the computer.\n\nWhat is known\n- Telegram is intended for direct communication, not groups.\n- It should behave like Discord in memory terms: an extension channel, not a separate body.\n- Important requests and follow-ups there should be copied into main project memory.\n\nWhat has been done\n- Approved Telegram sender 8635838230.\n- Switched Telegram to dmPolicy=allowlist with that sender in allowFrom.\n- Disabled Telegram group use by setting groupPolicy=disabled and groups={}.\n- Confirmed Telegram channel health remains OK.\n- Ran a live Telegram DM test with the message \"this is a test message\" and confirmed it worked end to end.\n\nBlockers / unknowns\n- No blocker right now.\n\nNext steps\n- Use Telegram DMs normally.\n- Mirror important Telegram tasks/requests into the task board and workspace memory.",
-    "lane": "archive",
-    "createdAt": "2026-03-24T18:49:30.000Z",
-    "updatedAt": "2026-03-24T19:08:00.000Z"
-  },
-  {
-    "id": "task-manage-future-schedule",
-    "title": "Actively place future asks onto the schedule page",
-    "notes": "Standing planning rule now lives in Protocol instead of Workbench.",
-    "description": "Project memory\n\nGoal\n- Make sure time-bound asks actually land in schedule/event state instead of staying implicit in chat.\n\nWhat changed\n- This is now represented as a standing Protocol rule rather than a Workbench task.\n\nWhy\n- It is an ongoing behavior expectation, not a project backlog item.\n\nWhere it lives now\n- Mission Control > Protocol\n- Standing protocol: route time-bound asks into schedule or events.\n",
-    "lane": "archive",
-    "createdAt": "2026-03-24T17:19:00.000Z",
-    "updatedAt": "2026-03-26T02:10:50Z"
-  },
-  {
-    "id": "task-schedule-page",
-    "title": "Build a real schedule page for hazoc planned work",
-    "notes": "Built the schedule page, then evolved it into an event-first calendar with tasks shown separately.",
-    "description": "Project memory\n\nGoal\n- Expand mission control with a real schedule page for scheduled events and future commitments, while keeping hazoc work tasks separate.\n\nWhat is known\n- Haolun wants the schedule grounded in mission-control state rather than Google Calendar as the primary source of truth.\n- Times and dates should be correct.\n- Future requests from haolun should be trackable there.\n\nWhat has been done\n- Added scheduling fields to tasks (`scheduledStart`, `scheduledEnd`).\n- Added a real Schedule page with a monthly calendar and upcoming list.\n- Evolved the schedule into an event-first calendar backed by a dedicated events store, with scheduled work tasks shown separately.\n- Set the schedule display to America/New_York.\n- Added scheduling inputs to task detail editing.\n- Kept the old Google Calendar path as a placeholder API, separate from the main schedule page.\n\nBlockers / unknowns\n- Future scheduling still depends on hazoc actively assigning dates/times to the right container: Events for user-facing schedule items, Tasks for hazoc work.\n\nNext steps\n- As haolun asks for future scheduled items, record them in Events (or Tasks when the item is hazoc work) and keep the calendar aligned.",
-    "lane": "archive",
-    "createdAt": "2026-03-24T17:15:00.000Z",
-    "updatedAt": "2026-03-25T02:28:00.000Z"
-  },
-  {
-    "id": "task-youtube-video-combo",
-    "title": "Use youtube-watcher + video-frames together for video understanding",
-    "notes": "Installed and working; use transcript + frame extraction together by default for video links.",
-    "description": "Project memory\n\nGoal\n- Let hazoc do better YouTube/video understanding by combining spoken transcript with visual frame inspection.\n\nWhat is known\n- Haolun wants both tools used together by default for YouTube/video links.\n- youtube-watcher covers transcript text via yt-dlp.\n- video-frames covers visual sampling via ffmpeg.\n- Together they do not equal full human-style continuous watching, but they are good enough for many summaries, tutorials, demos, and walkthroughs.\n\nWhat has been done\n- Installed youtube-watcher and yt-dlp locally.\n- Installed video-frames and ffmpeg locally.\n- Fixed the video-frames script execute bit.\n- Verified end-to-end YouTube download plus frame extraction on a test video.\n- Promoted the rule that both tools should be used together by default.\n\nWhat has been done\n- Confirmed end-to-end YouTube download plus frame extraction works locally.\n\nBlockers / unknowns\n- This still depends on transcript availability for the spoken side.\n- Frame sampling is approximate, not full dense visual understanding.\n\nNext steps\n- Use both tools together by default when haolun sends a video link.",
-    "lane": "archive",
-    "createdAt": "2026-03-24T16:56:00.000Z",
-    "updatedAt": "2026-03-24T17:10:00.000Z"
-  },
-  {
-    "id": "task-grounded-evolver-default",
-    "title": "Use grounded-evolver as the default evolution framework",
-    "notes": "Grounded-evolver is now the default evolution framework; supporting skills remain available as modules.",
-    "description": "Project memory\n\nGoal\n- Make grounded-evolver the actual default framework hazoc uses for self-improvement and context preservation.\n\nWhat is known\n- grounded-evolver already combines the best safe parts of the reviewed skills.\n- The component skills are still useful, but they should support the main system instead of competing with it.\n\nWhat has been done\n- The rule has been written into AGENTS.md, USER.md, and today's memory note.\n- This task has been added to mission control for visibility.\n\nWhat has been done\n- Promoted grounded-evolver to the default framework in AGENTS.md, USER.md, and memory.\n\nBlockers / unknowns\n- No blocker; the main thing is consistent use.\n\nNext steps\n- Use grounded-evolver by default for future self-improvement work.",
-    "lane": "archive",
-    "createdAt": "2026-03-24T16:47:00.000Z",
-    "updatedAt": "2026-03-24T17:10:00.000Z"
-  },
-  {
-    "id": "task-default-memory-stack",
-    "title": "Use the workspace memory stack as the default continuity system",
-    "notes": "Default continuity stack has been chosen and adopted.",
-    "description": "Project memory\n\nGoal\n- Give hazoc a practical default way to preserve context without depending on extra cloud vendors or a sprawling parallel memory architecture.\n\nWhat is known\n- Haolun said to do what is best for hazoc to avoid losing context.\n- The best fit here is the grounded workspace stack: active-state for fragile current context, the mission-control task board for live project state, daily notes for timeline, and curated long-term files for durable promotion.\n- Larger abstract/cloud-heavy memory systems are not the right default for this workspace.\n\nWhat has been done\n- Created the workspace-memory-stack skill.\n- Adopted it as the default continuity approach in AGENTS.md, USER.md, and today's memory note.\n- Added this task so the choice is visible in mission control too.\n\nWhat has been done\n- Adopted active-state + task board + daily notes + curated memory as the default continuity stack.\n\nBlockers / unknowns\n- No blocker; the important part is consistent use.\n\nNext steps\n- Use the stack consistently during active work.",
-    "lane": "archive",
-    "createdAt": "2026-03-24T16:29:00.000Z",
-    "updatedAt": "2026-03-24T17:10:00.000Z"
-  },
-  {
-    "id": "task-youtube-skill-review",
-    "title": "Review and install a YouTube skill for future video links",
-    "notes": "Vetted and installed youtube-watcher; it is now the default path for future YouTube links.",
-    "description": "Project memory\n\nGoal\n- Add a safe YouTube-focused skill so hazoc can use it when haolun sends video links.\n\nWhat is known\n- Haolun wants this remembered as the default YouTube path in the future.\n- The skill is narrow: it uses yt-dlp to fetch captions/subtitles and print transcript text.\n\nWhat has been done\n- Inspected both shipped files: SKILL.md and scripts/get_transcript.py.\n- Vetted it as low risk and in-scope.\n- Installed the skill to skills/youtube-watcher.\n- Installed yt-dlp locally to ~/.local/bin/yt-dlp.\n- Verified the transcript path works on a test YouTube video.\n\nBlockers / unknowns\n- It depends on captions/subtitles existing for the video.\n\nNext steps\n- When haolun sends a YouTube video, use youtube-watcher first, then summarize or answer questions from the transcript.",
-    "lane": "archive",
-    "createdAt": "2026-03-24T16:49:00.000Z",
-    "updatedAt": "2026-03-24T16:52:00.000Z"
-  },
-  {
-    "id": "task-combined-evolution-skill",
-    "title": "Combine reviewed self-improving skills into one grounded evolving algorithm",
-    "notes": "Built a combined local evolution skill from the best safe parts of the reviewed memory/evolution skills.",
-    "description": "Project memory\n\nGoal\n- Combine the best safe parts of the reviewed self-improving skills into a single grounded evolving algorithm for hazoc.\n\nWhat is known\n- The useful pieces are proactive continuity, layered memory discipline, optional graph structure when relations matter, and a small human-supervised evolution loop.\n- The unsafe pieces are autonomous daemons, external task hubs/markets, cloud memory sprawl, git self-repair/reset, and auto-publishing.\n\nWhat has been done\n- Read the custom replacement skills workspace-continuity, workspace-memory-stack, workspace-graph, and safe-evolution-loop together.\n- Created a new combined skill named grounded-evolver.\n- Added a planner script that scores signals and recommends the smallest safe mutation plus write destinations and validation checks.\n- Tested the script and packaged the skill successfully to dist/grounded-evolver.skill.\n\nBlockers / unknowns\n- No blocker right now; the main thing is to use it as the default practical evolution frame.\n\nNext steps\n- Use grounded-evolver as the main synthesis layer when evolving behavior or preserving context.\n- Keep the separate underlying skills as modular references when needed.",
-    "lane": "archive",
-    "createdAt": "2026-03-24T16:43:00.000Z",
-    "updatedAt": "2026-03-24T16:46:00.000Z"
-  },
-  {
-    "id": "task-evolver-skill-review",
-    "title": "Review evolver skill and extract only safe evolution patterns",
-    "notes": "Vetted suspicious evolver skill and rebuilt only the safe human-supervised evolution frame locally.",
-    "description": "Project memory\n\nGoal\n- Inspect the suspicious evolver skill carefully and rebuild only the safe, useful evolution ideas in a local skill.\n\nWhat is known\n- The registry marks autogame-17/evolver as suspicious, and the warning is justified.\n- The safe core idea is a disciplined improvement loop: observe signals, choose a small change, validate, and record the result.\n- The unsafe parts include autonomous loops, external hubs/tasks, git self-repair/reset logic, auto-publishing, and broad self-modification machinery.\n\nWhat has been done\n- Performed static vetting of package.json, index.js, key src files, ops modules, and risk-signaling code paths.\n- Produced a short vetting report.\n- Created a local replacement skill named safe-evolution-loop.\n- Added a compact helper script for drafting safe evolution reports.\n\nBlockers / unknowns\n- No blocker; the key decision was to avoid copying the autonomous parts.\n\nNext steps\n- Use safe-evolution-loop when improving behavior from real failures or repeated friction.\n- Keep improvement human-supervised and low-blast-radius.",
-    "lane": "archive",
-    "createdAt": "2026-03-24T16:36:00.000Z",
-    "updatedAt": "2026-03-24T16:40:00.000Z"
-  },
-  {
-    "id": "task-elite-memory-skill-review",
-    "title": "Review elite-longterm-memory skill and make a custom version",
-    "notes": "Inspected elite-longterm-memory and created a grounded local replacement skill.",
-    "description": "Project memory\n\nGoal\n- Review the third-party elite-longterm-memory skill and create a custom version adapted to hazoc's real workspace.\n\nWhat is known\n- The third-party skill is flagged suspicious by the registry.\n- It is not obviously malicious, but it assumes a lot of plugins, cloud services, keys, and extra systems that do not fit the current workspace cleanly.\n- The good underlying idea is a memory stack with active state, daily logs, and curated memory.\n\nWhat has been done\n- Read all shipped files: SKILL.md, README.md, package.json, and bin/elite-memory.js.\n- Vetted it as medium risk / suspicious-but-not-malicious.\n- Created a custom local replacement skill named workspace-memory-stack.\n- Added a helper script for init/status/today/touch-active.\n- Tested the script and packaged the skill successfully to dist/workspace-memory-stack.skill.\n\nBlockers / unknowns\n- No blocker right now; next question is whether haolun wants to actually use active-state.md as part of the default workflow.\n\nNext steps\n- Use workspace-memory-stack when session startup, interruption recovery, or session-end handoff matters.\n- Keep it grounded and avoid adding external memory vendors unless there is a real need.",
-    "lane": "archive",
-    "createdAt": "2026-03-24T16:21:00.000Z",
-    "updatedAt": "2026-03-24T16:23:00.000Z"
-  },
-  {
-    "id": "task-ontology-skill-review",
-    "title": "Review ontology skill and make a custom version",
-    "notes": "Inspected oswalpalash/ontology and created a tighter local replacement skill.",
-    "description": "Project memory\n\nGoal\n- Review the third-party ontology skill and create a custom version that better fits hazoc's actual workspace and mission-control system.\n\nWhat is known\n- The third-party skill had a solid typed-entity idea, but it was too broad and abstract for the real work here.\n- Hazoc needs something more practical for projects, tasks, decisions, channels, sessions, and documents.\n\nWhat has been done\n- Inspected SKILL.md, schema reference, query reference, and the Python script.\n- Vetted it as low-to-medium risk and not malicious.\n- Created a custom local replacement skill named workspace-graph.\n- Added a tested local script at skills/workspace-graph/scripts/workspace_graph.py.\n- Packaged it successfully to dist/workspace-graph.skill.\n\nBlockers / unknowns\n- No blocker right now; next question is whether haolun wants to actually use the graph in workflow.\n\nNext steps\n- Use workspace-graph when structured relationships matter.\n- Keep task board and daily notes as the primary operational memory, with the graph as optional structured support.",
-    "lane": "archive",
-    "createdAt": "2026-03-24T16:16:00.000Z",
-    "updatedAt": "2026-03-24T16:19:00.000Z"
-  },
-  {
-    "id": "task-workspace-continuity-skill",
-    "title": "Create a custom workspace-continuity skill",
-    "notes": "Inspired by ivangdavila/self-improving, but adapted to hazoc's actual workspace and task system.",
-    "description": "Project memory\n\nGoal\n- Create a custom skill that captures the good parts of self-improving behavior without duplicating the workspace's existing memory system.\n\nWhat is known\n- The third-party skill had useful ideas around corrections, reflection, heartbeat review, and scoped memory.\n- It was also too sprawling for this workspace and wanted a parallel ~/self-improving tree that would compete with USER.md, MEMORY.md, daily notes, .learnings, and the mission-control task board.\n\nWhat has been done\n- Inspected the third-party skill files and produced a short vetting assessment.\n- Created a new local skill named workspace-continuity under skills/workspace-continuity.\n- Added concise references for routing decisions and task-memory structure.\n- Validated and packaged it successfully to dist/workspace-continuity.skill.\n\nBlockers / unknowns\n- No blocker right now; the next question is whether haolun wants this tuned further or renamed.\n\nNext steps\n- Use the skill when continuity, task-memory, cross-channel mirroring, or session-end summaries are relevant.\n- Iterate if haolun wants stronger automation later.",
-    "lane": "archive",
-    "createdAt": "2026-03-24T16:12:00.000Z",
-    "updatedAt": "2026-03-24T16:12:00.000Z"
-  },
-  {
-    "id": "task-discord-main-memory",
-    "title": "Mirror important Discord items into main project memory",
-    "notes": "Cross-channel continuity rule now lives in Protocol instead of Workbench.",
-    "description": "Project memory\n\nGoal\n- Make sure important Discord and Telegram items get copied back into main mission-control memory.\n\nWhat changed\n- This is now treated as standing Protocol, not active Workbench backlog.\n\nWhy\n- It is an ongoing operating rule for continuity, not a project waiting to be \"finished.\"\n\nWhere it lives now\n- Mission Control > Protocol\n- Standing protocol: mirror important Discord and Telegram items into main memory.\n",
-    "lane": "archive",
-    "createdAt": "2026-03-24T16:01:00.000Z",
-    "updatedAt": "2026-03-26T02:10:50Z"
-  },
-  {
-    "id": "task-mn4rikzn-l4lwy",
-    "title": "Run hourly memory optimization + task board update while active",
-    "notes": "Recurring memory-maintenance rhythm now lives in Protocol instead of Workbench.",
-    "description": "Project memory\n\nGoal\n- Keep hourly memory optimization and task-board maintenance visible and durable.\n\nWhat changed\n- This is no longer treated as live Workbench backlog.\n- The duty now belongs in Protocol as recurring operational rhythm.\n\nWhy\n- It is an upkeep loop, not a project to keep pretending is in active build.\n\nWhere it lives now\n- Mission Control > Protocol\n- Recurring rhythm: Run hourly memory optimization + task board update.\n",
-    "lane": "archive",
-    "createdAt": "2026-03-24T15:21:25.187Z",
-    "updatedAt": "2026-03-26T02:10:50Z"
   },
   {
     "id": "task-discord-digest",
@@ -239,6 +126,8 @@
     "notes": "Future delivery target for broader digest systems, including the planned market-moving news digest pipeline.",
     "description": "Project memory\n\nGoal\n- Configure Discord so hazoc can receive or synthesize daily digests that summarize what matters.\n\nWhy this exists\n- Haolun wants the website calendar to eventually represent hazoc's own planned tasks, not raw Google Calendar events.\n- One expected source for that future planning view is Discord daily digests.\n\nWhat is known right now\n- This work has not been configured yet.\n- It is a dependency for the later planned-task schedule.\n- It likely needs a clear digest format so hazoc can turn the digest into structured tasks or planning items.\n\nWhat has been done\n- Only the placeholder task and dependency tracking exist right now.\n- The website already has a task board where this work is recorded.\n\nBlockers / unknowns\n- Exact Discord setup flow is still unknown.\n- Need to decide whether the digest comes from a channel summary, bot message, cron job, or another workflow.\n\nNext steps\n- Configure the Discord side.\n- Decide digest structure.\n- Later connect that digest into hazoc's planning/calendar layer.",
     "lane": "parking",
+    "scheduledStart": "",
+    "scheduledEnd": "",
     "createdAt": "2026-03-24T15:05:00.000Z",
     "updatedAt": "2026-03-25T03:15:00.000Z"
   },
@@ -248,8 +137,175 @@
     "notes": "Future delivery target for broader digest systems, including the planned market-moving news digest pipeline.",
     "description": "Project memory\n\nGoal\n- Configure Telegram so hazoc can use daily digests as another input into planning and task formation.\n\nWhy this exists\n- Haolun said the current website calendar is only a placeholder.\n- The future version should show hazoc's planned tasks, and Telegram digests are one of the planned sources.\n\nWhat is known right now\n- This is not configured yet.\n- It is parallel to the Discord digest work.\n- The important outcome is not just getting Telegram connected, but turning digest content into useful planning memory.\n\nWhat has been done\n- The dependency is recorded in the mission-control task board.\n- The placeholder calendar decision has been written into workspace memory.\n\nBlockers / unknowns\n- Need the exact Telegram digest workflow.\n- Need to decide how hazoc should parse and store digest-derived tasks.\n\nNext steps\n- Configure Telegram digest flow.\n- Define what counts as planning-worthy information.\n- Connect it later to the planned-task schedule.",
     "lane": "parking",
+    "scheduledStart": "",
+    "scheduledEnd": "",
     "createdAt": "2026-03-24T15:05:00.000Z",
     "updatedAt": "2026-03-25T03:15:00.000Z"
+  },
+  {
+    "id": "task-task-menu",
+    "title": "Build the mission-control task menu",
+    "notes": "Task board exists and now uses three real sections: Workbench, On Hold, and Archived. The unused Capture Tray was removed.",
+    "description": "Project memory\n\nGoal\n- Build the website's task area into the shared memory for requests between haolun and hazoc.\n- It should hold both active requests and postponed ones, so chat is not the only source of truth.\n\nWhat has been decided\n- The task board should be the place where new requests get recorded.\n- The current task system uses three practical sections so it is easier to scan: Workbench, On Hold, and Archived.\n- Each task should be clickable and should contain enough long-form project context that hazoc can relearn the project after losing short-term memory.\n\nWhat has been done\n- Built a local task board in mission-control.\n- Added JSON-backed storage at mission-control/data/tasks.json.\n- Added lane movement and seeded current project tasks.\n- Restyled the site into a darker luxury look with gold accents.\n\nWhat still matters\n- Future new requests should be recorded here, not left only in chat.\n- Over time, each task description should become a compact project journal: goal, decisions, work done, blockers, next steps.\n\nNext steps\n- Keep task descriptions current as real work happens.\n\nWhat has been done\n- Built the task board, detailed task view, luxury styling, and intake-by-conversation model.",
+    "lane": "archive",
+    "scheduledStart": "",
+    "scheduledEnd": "",
+    "createdAt": "2026-03-24T15:05:00.000Z",
+    "updatedAt": "2026-03-25T02:31:00.000Z"
+  },
+  {
+    "id": "task-schedule-page",
+    "title": "Build a real schedule page for hazoc planned work",
+    "notes": "Built the schedule page, then evolved it into an event-first calendar with tasks shown separately.",
+    "description": "Project memory\n\nGoal\n- Expand mission control with a real schedule page for scheduled events and future commitments, while keeping hazoc work tasks separate.\n\nWhat is known\n- Haolun wants the schedule grounded in mission-control state rather than Google Calendar as the primary source of truth.\n- Times and dates should be correct.\n- Future requests from haolun should be trackable there.\n\nWhat has been done\n- Added scheduling fields to tasks (`scheduledStart`, `scheduledEnd`).\n- Added a real Schedule page with a monthly calendar and upcoming list.\n- Evolved the schedule into an event-first calendar backed by a dedicated events store, with scheduled work tasks shown separately.\n- Set the schedule display to America/New_York.\n- Added scheduling inputs to task detail editing.\n- Kept the old Google Calendar path as a placeholder API, separate from the main schedule page.\n\nBlockers / unknowns\n- Future scheduling still depends on hazoc actively assigning dates/times to the right container: Events for user-facing schedule items, Tasks for hazoc work.\n\nNext steps\n- As haolun asks for future scheduled items, record them in Events (or Tasks when the item is hazoc work) and keep the calendar aligned.",
+    "lane": "archive",
+    "scheduledStart": "",
+    "scheduledEnd": "",
+    "createdAt": "2026-03-24T17:15:00.000Z",
+    "updatedAt": "2026-03-25T02:28:00.000Z"
+  },
+  {
+    "id": "task-context-conservation",
+    "title": "Optimize memory and task entries for context conservation",
+    "notes": "Context-conservation rules are now written into AGENTS.md, USER.md, today's memory note, active-state, and MEMORY.md so fresh sessions can re-anchor from durable files instead of hauling old chat context.",
+    "description": "Project memory\n\nGoal\n- Reduce context waste by making memory, task, and journal use more retrieval-driven.\n\nWhat is known\n- Haolun wants hazoc to search memory for relevant prior context whenever a new question arrives.\n- Only the useful pieces should be loaded into working context.\n- After answering, hazoc should ask whether that context will matter for the next conversation; if not, write/store what matters and avoid carrying the larger context forward.\n\nWhat has been done\n- Wrote the retrieval-loop rule into AGENTS.md and USER.md.\n- Created MEMORY.md as a curated long-term anchor for mission-control direction, workflow rules, and current state.\n- Updated this task so the behavior stays visible in mission control.\n\nBlockers / unknowns\n- Current-session history cannot literally be deleted from the model context mid-thread, but future retrieval can be kept much tighter.\n\nNext steps\n- Use memory search at the start of new meaningful questions.\n- Keep retrieved context narrow.\n- Store the durable result and avoid reloading unnecessary context later.",
+    "lane": "workbench",
+    "scheduledStart": "",
+    "scheduledEnd": "",
+    "createdAt": "2026-03-24T20:07:00.000Z",
+    "updatedAt": "2026-03-25T00:40:00.000Z"
+  },
+  {
+    "id": "task-memory-page",
+    "title": "Build a Memory page for mission control",
+    "notes": "Built a Memory page that reads the real workspace memory files and presents them like a journal with a detail view.",
+    "description": "Project memory\n\nGoal\n- Add a website memory section that works like hazoc's journal and helps preserve important context for future responses.\n\nWhat is known\n- Haolun wants a memory section similar in spirit to tasks, but functioning more like a journal.\n- Important things should be written down via the existing workspace memory system so hazoc can remember them later and use them to improve responses.\n\nWhat has been done\n- Added an API endpoint that reads workspace memory sources directly.\n- Added a Memory page with journal-style cards and a detail panel.\n- Surfaced active state, curated context, and recent daily notes in one place.\n- Kept it tied to the real workspace files instead of inventing a second memory database.\n\nBlockers / unknowns\n- No blocker right now; future improvement should be driven by actual memory-use friction.\n\nNext steps\n- Keep writing important items into workspace memory during normal work so the Memory page stays valuable.",
+    "lane": "archive",
+    "scheduledStart": "",
+    "scheduledEnd": "",
+    "createdAt": "2026-03-24T19:38:00.000Z",
+    "updatedAt": "2026-03-24T19:41:00.000Z"
+  },
+  {
+    "id": "task-website-icon",
+    "title": "Give mission control a website icon",
+    "notes": "Added a custom SVG favicon matching the luxe dark-and-gold mission-control aesthetic.",
+    "description": "Project memory\n\nGoal\n- Give the mission-control website its own recognizable icon.\n\nWhat is known\n- Haolun asked to add a website icon after being satisfied with the current look.\n- The icon should fit the existing luxe dark + gold visual language.\n\nWhat has been done\n- Created a custom SVG favicon at mission-control/public/favicon.svg.\n- Wired it into mission-control/index.html with a standard rel=icon tag.\n- Kept the icon aligned with the site palette: dark base, gold linework, subtle warm/cool accent glows.\n\nBlockers / unknowns\n- Browser favicon caching may mean a refresh or tab reopen is needed before it shows immediately.\n\nNext steps\n- Keep it unless haolun later wants a different icon style.",
+    "lane": "archive",
+    "scheduledStart": "",
+    "scheduledEnd": "",
+    "createdAt": "2026-03-24T19:23:00.000Z",
+    "updatedAt": "2026-03-24T19:24:00.000Z"
+  },
+  {
+    "id": "task-telegram-setup",
+    "title": "Set up Telegram integration",
+    "notes": "Telegram DM-only setup is complete, tested successfully, and mirrored to main-memory rules.",
+    "description": "Project memory\n\nGoal\n- Finish Telegram integration so haolun can communicate with hazoc there when away from the computer.\n\nWhat is known\n- Telegram is intended for direct communication, not groups.\n- It should behave like Discord in memory terms: an extension channel, not a separate body.\n- Important requests and follow-ups there should be copied into main project memory.\n\nWhat has been done\n- Approved Telegram sender 8635838230.\n- Switched Telegram to dmPolicy=allowlist with that sender in allowFrom.\n- Disabled Telegram group use by setting groupPolicy=disabled and groups={}.\n- Confirmed Telegram channel health remains OK.\n- Ran a live Telegram DM test with the message \"this is a test message\" and confirmed it worked end to end.\n\nBlockers / unknowns\n- No blocker right now.\n\nNext steps\n- Use Telegram DMs normally.\n- Mirror important Telegram tasks/requests into the task board and workspace memory.",
+    "lane": "archive",
+    "scheduledStart": "",
+    "scheduledEnd": "",
+    "createdAt": "2026-03-24T18:49:30.000Z",
+    "updatedAt": "2026-03-24T19:08:00.000Z"
+  },
+  {
+    "id": "task-youtube-video-combo",
+    "title": "Use youtube-watcher + video-frames together for video understanding",
+    "notes": "Installed and working; use transcript + frame extraction together by default for video links.",
+    "description": "Project memory\n\nGoal\n- Let hazoc do better YouTube/video understanding by combining spoken transcript with visual frame inspection.\n\nWhat is known\n- Haolun wants both tools used together by default for YouTube/video links.\n- youtube-watcher covers transcript text via yt-dlp.\n- video-frames covers visual sampling via ffmpeg.\n- Together they do not equal full human-style continuous watching, but they are good enough for many summaries, tutorials, demos, and walkthroughs.\n\nWhat has been done\n- Installed youtube-watcher and yt-dlp locally.\n- Installed video-frames and ffmpeg locally.\n- Fixed the video-frames script execute bit.\n- Verified end-to-end YouTube download plus frame extraction on a test video.\n- Promoted the rule that both tools should be used together by default.\n\nWhat has been done\n- Confirmed end-to-end YouTube download plus frame extraction works locally.\n\nBlockers / unknowns\n- This still depends on transcript availability for the spoken side.\n- Frame sampling is approximate, not full dense visual understanding.\n\nNext steps\n- Use both tools together by default when haolun sends a video link.",
+    "lane": "archive",
+    "scheduledStart": "",
+    "scheduledEnd": "",
+    "createdAt": "2026-03-24T16:56:00.000Z",
+    "updatedAt": "2026-03-24T17:10:00.000Z"
+  },
+  {
+    "id": "task-grounded-evolver-default",
+    "title": "Use grounded-evolver as the default evolution framework",
+    "notes": "Grounded-evolver is now the default evolution framework; supporting skills remain available as modules.",
+    "description": "Project memory\n\nGoal\n- Make grounded-evolver the actual default framework hazoc uses for self-improvement and context preservation.\n\nWhat is known\n- grounded-evolver already combines the best safe parts of the reviewed skills.\n- The component skills are still useful, but they should support the main system instead of competing with it.\n\nWhat has been done\n- The rule has been written into AGENTS.md, USER.md, and today's memory note.\n- This task has been added to mission control for visibility.\n\nWhat has been done\n- Promoted grounded-evolver to the default framework in AGENTS.md, USER.md, and memory.\n\nBlockers / unknowns\n- No blocker; the main thing is consistent use.\n\nNext steps\n- Use grounded-evolver by default for future self-improvement work.",
+    "lane": "archive",
+    "scheduledStart": "",
+    "scheduledEnd": "",
+    "createdAt": "2026-03-24T16:47:00.000Z",
+    "updatedAt": "2026-03-24T17:10:00.000Z"
+  },
+  {
+    "id": "task-default-memory-stack",
+    "title": "Use the workspace memory stack as the default continuity system",
+    "notes": "Default continuity stack has been chosen and adopted.",
+    "description": "Project memory\n\nGoal\n- Give hazoc a practical default way to preserve context without depending on extra cloud vendors or a sprawling parallel memory architecture.\n\nWhat is known\n- Haolun said to do what is best for hazoc to avoid losing context.\n- The best fit here is the grounded workspace stack: active-state for fragile current context, the mission-control task board for live project state, daily notes for timeline, and curated long-term files for durable promotion.\n- Larger abstract/cloud-heavy memory systems are not the right default for this workspace.\n\nWhat has been done\n- Created the workspace-memory-stack skill.\n- Adopted it as the default continuity approach in AGENTS.md, USER.md, and today's memory note.\n- Added this task so the choice is visible in mission control too.\n\nWhat has been done\n- Adopted active-state + task board + daily notes + curated memory as the default continuity stack.\n\nBlockers / unknowns\n- No blocker; the important part is consistent use.\n\nNext steps\n- Use the stack consistently during active work.",
+    "lane": "archive",
+    "scheduledStart": "",
+    "scheduledEnd": "",
+    "createdAt": "2026-03-24T16:29:00.000Z",
+    "updatedAt": "2026-03-24T17:10:00.000Z"
+  },
+  {
+    "id": "task-youtube-skill-review",
+    "title": "Review and install a YouTube skill for future video links",
+    "notes": "Vetted and installed youtube-watcher; it is now the default path for future YouTube links.",
+    "description": "Project memory\n\nGoal\n- Add a safe YouTube-focused skill so hazoc can use it when haolun sends video links.\n\nWhat is known\n- Haolun wants this remembered as the default YouTube path in the future.\n- The skill is narrow: it uses yt-dlp to fetch captions/subtitles and print transcript text.\n\nWhat has been done\n- Inspected both shipped files: SKILL.md and scripts/get_transcript.py.\n- Vetted it as low risk and in-scope.\n- Installed the skill to skills/youtube-watcher.\n- Installed yt-dlp locally to ~/.local/bin/yt-dlp.\n- Verified the transcript path works on a test YouTube video.\n\nBlockers / unknowns\n- It depends on captions/subtitles existing for the video.\n\nNext steps\n- When haolun sends a YouTube video, use youtube-watcher first, then summarize or answer questions from the transcript.",
+    "lane": "archive",
+    "scheduledStart": "",
+    "scheduledEnd": "",
+    "createdAt": "2026-03-24T16:49:00.000Z",
+    "updatedAt": "2026-03-24T16:52:00.000Z"
+  },
+  {
+    "id": "task-combined-evolution-skill",
+    "title": "Combine reviewed self-improving skills into one grounded evolving algorithm",
+    "notes": "Built a combined local evolution skill from the best safe parts of the reviewed memory/evolution skills.",
+    "description": "Project memory\n\nGoal\n- Combine the best safe parts of the reviewed self-improving skills into a single grounded evolving algorithm for hazoc.\n\nWhat is known\n- The useful pieces are proactive continuity, layered memory discipline, optional graph structure when relations matter, and a small human-supervised evolution loop.\n- The unsafe pieces are autonomous daemons, external task hubs/markets, cloud memory sprawl, git self-repair/reset, and auto-publishing.\n\nWhat has been done\n- Read the custom replacement skills workspace-continuity, workspace-memory-stack, workspace-graph, and safe-evolution-loop together.\n- Created a new combined skill named grounded-evolver.\n- Added a planner script that scores signals and recommends the smallest safe mutation plus write destinations and validation checks.\n- Tested the script and packaged the skill successfully to dist/grounded-evolver.skill.\n\nBlockers / unknowns\n- No blocker right now; the main thing is to use it as the default practical evolution frame.\n\nNext steps\n- Use grounded-evolver as the main synthesis layer when evolving behavior or preserving context.\n- Keep the separate underlying skills as modular references when needed.",
+    "lane": "archive",
+    "scheduledStart": "",
+    "scheduledEnd": "",
+    "createdAt": "2026-03-24T16:43:00.000Z",
+    "updatedAt": "2026-03-24T16:46:00.000Z"
+  },
+  {
+    "id": "task-evolver-skill-review",
+    "title": "Review evolver skill and extract only safe evolution patterns",
+    "notes": "Vetted suspicious evolver skill and rebuilt only the safe human-supervised evolution frame locally.",
+    "description": "Project memory\n\nGoal\n- Inspect the suspicious evolver skill carefully and rebuild only the safe, useful evolution ideas in a local skill.\n\nWhat is known\n- The registry marks autogame-17/evolver as suspicious, and the warning is justified.\n- The safe core idea is a disciplined improvement loop: observe signals, choose a small change, validate, and record the result.\n- The unsafe parts include autonomous loops, external hubs/tasks, git self-repair/reset logic, auto-publishing, and broad self-modification machinery.\n\nWhat has been done\n- Performed static vetting of package.json, index.js, key src files, ops modules, and risk-signaling code paths.\n- Produced a short vetting report.\n- Created a local replacement skill named safe-evolution-loop.\n- Added a compact helper script for drafting safe evolution reports.\n\nBlockers / unknowns\n- No blocker; the key decision was to avoid copying the autonomous parts.\n\nNext steps\n- Use safe-evolution-loop when improving behavior from real failures or repeated friction.\n- Keep improvement human-supervised and low-blast-radius.",
+    "lane": "archive",
+    "scheduledStart": "",
+    "scheduledEnd": "",
+    "createdAt": "2026-03-24T16:36:00.000Z",
+    "updatedAt": "2026-03-24T16:40:00.000Z"
+  },
+  {
+    "id": "task-elite-memory-skill-review",
+    "title": "Review elite-longterm-memory skill and make a custom version",
+    "notes": "Inspected elite-longterm-memory and created a grounded local replacement skill.",
+    "description": "Project memory\n\nGoal\n- Review the third-party elite-longterm-memory skill and create a custom version adapted to hazoc's real workspace.\n\nWhat is known\n- The third-party skill is flagged suspicious by the registry.\n- It is not obviously malicious, but it assumes a lot of plugins, cloud services, keys, and extra systems that do not fit the current workspace cleanly.\n- The good underlying idea is a memory stack with active state, daily logs, and curated memory.\n\nWhat has been done\n- Read all shipped files: SKILL.md, README.md, package.json, and bin/elite-memory.js.\n- Vetted it as medium risk / suspicious-but-not-malicious.\n- Created a custom local replacement skill named workspace-memory-stack.\n- Added a helper script for init/status/today/touch-active.\n- Tested the script and packaged the skill successfully to dist/workspace-memory-stack.skill.\n\nBlockers / unknowns\n- No blocker right now; next question is whether haolun wants to actually use active-state.md as part of the default workflow.\n\nNext steps\n- Use workspace-memory-stack when session startup, interruption recovery, or session-end handoff matters.\n- Keep it grounded and avoid adding external memory vendors unless there is a real need.",
+    "lane": "archive",
+    "scheduledStart": "",
+    "scheduledEnd": "",
+    "createdAt": "2026-03-24T16:21:00.000Z",
+    "updatedAt": "2026-03-24T16:23:00.000Z"
+  },
+  {
+    "id": "task-ontology-skill-review",
+    "title": "Review ontology skill and make a custom version",
+    "notes": "Inspected oswalpalash/ontology and created a tighter local replacement skill.",
+    "description": "Project memory\n\nGoal\n- Review the third-party ontology skill and create a custom version that better fits hazoc's actual workspace and mission-control system.\n\nWhat is known\n- The third-party skill had a solid typed-entity idea, but it was too broad and abstract for the real work here.\n- Hazoc needs something more practical for projects, tasks, decisions, channels, sessions, and documents.\n\nWhat has been done\n- Inspected SKILL.md, schema reference, query reference, and the Python script.\n- Vetted it as low-to-medium risk and not malicious.\n- Created a custom local replacement skill named workspace-graph.\n- Added a tested local script at skills/workspace-graph/scripts/workspace_graph.py.\n- Packaged it successfully to dist/workspace-graph.skill.\n\nBlockers / unknowns\n- No blocker right now; next question is whether haolun wants to actually use the graph in workflow.\n\nNext steps\n- Use workspace-graph when structured relationships matter.\n- Keep task board and daily notes as the primary operational memory, with the graph as optional structured support.",
+    "lane": "archive",
+    "scheduledStart": "",
+    "scheduledEnd": "",
+    "createdAt": "2026-03-24T16:16:00.000Z",
+    "updatedAt": "2026-03-24T16:19:00.000Z"
+  },
+  {
+    "id": "task-workspace-continuity-skill",
+    "title": "Create a custom workspace-continuity skill",
+    "notes": "Inspired by ivangdavila/self-improving, but adapted to hazoc's actual workspace and task system.",
+    "description": "Project memory\n\nGoal\n- Create a custom skill that captures the good parts of self-improving behavior without duplicating the workspace's existing memory system.\n\nWhat is known\n- The third-party skill had useful ideas around corrections, reflection, heartbeat review, and scoped memory.\n- It was also too sprawling for this workspace and wanted a parallel ~/self-improving tree that would compete with USER.md, MEMORY.md, daily notes, .learnings, and the mission-control task board.\n\nWhat has been done\n- Inspected the third-party skill files and produced a short vetting assessment.\n- Created a new local skill named workspace-continuity under skills/workspace-continuity.\n- Added concise references for routing decisions and task-memory structure.\n- Validated and packaged it successfully to dist/workspace-continuity.skill.\n\nBlockers / unknowns\n- No blocker right now; the next question is whether haolun wants this tuned further or renamed.\n\nNext steps\n- Use the skill when continuity, task-memory, cross-channel mirroring, or session-end summaries are relevant.\n- Iterate if haolun wants stronger automation later.",
+    "lane": "archive",
+    "scheduledStart": "",
+    "scheduledEnd": "",
+    "createdAt": "2026-03-24T16:12:00.000Z",
+    "updatedAt": "2026-03-24T16:12:00.000Z"
   },
   {
     "id": "task-planned-schedule",
@@ -257,6 +313,8 @@
     "notes": "Use Discord and Telegram daily digests as future input.",
     "description": "Project memory\n\nGoal\n- Replace the current placeholder calendar in mission-control with hazoc's own planned-task schedule.\n\nWhy this changed\n- The website briefly showed Google Calendar events through gog.\n- Haolun clarified that this is not the real point of the calendar.\n- The real purpose is to show hazoc's planned work and priorities.\n\nWhat has been done\n- Built a schedule view that talks to Google Calendar.\n- Verified the integration worked, but there were no events in the next 7 days.\n- Left it as a placeholder instead of pretending that Google Calendar is the final model.\n\nCurrent product direction\n- The future schedule should be derived from hazoc's planning.\n- Discord and Telegram daily digests are likely inputs.\n- The website task system will probably feed into this too.\n\nWhat remains\n- Define how planning items are created.\n- Decide how to distinguish hard schedule vs soft intent.\n- Build the schedule UI once the digest/task pipeline exists.\n\nNext steps\n- First configure Discord and Telegram digest flows.\n- Then design the planned-task scheduling model.",
     "lane": "parking",
+    "scheduledStart": "",
+    "scheduledEnd": "",
     "createdAt": "2026-03-24T15:05:00.000Z",
     "updatedAt": "2026-03-24T15:15:00.000Z"
   }

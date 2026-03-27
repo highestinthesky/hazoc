@@ -10,10 +10,16 @@ def clamp(v: int, lo: int = 1, hi: int = 5) -> int:
 
 
 def build_actions(args) -> list[str]:
-    actions: list[str] = []
+    actions: list[str] = [
+        'state the root cause in plain language',
+        'generalize the root cause into a reusable moral before mutating',
+    ]
 
     if args.loss_risk >= 4:
         actions.append('update memory/active-state.md')
+
+    if args.ui:
+        actions.append('run a direct UI validation pass in the affected real view/state')
 
     if args.project or args.category in {'request', 'blocker', 'progress', 'cross-channel', 'decision', 'drift'}:
         actions.append('update mission-control task board')
@@ -61,12 +67,44 @@ def choose_mutation_target(args) -> str:
     return 'daily-memory-capture'
 
 
+def generalized_moral(args) -> str:
+    if args.moral:
+        return args.moral
+    if args.ui:
+        return 'Do not trust visual improvement alone; validate the real interaction model and behavior before accepting UI work.'
+    if args.repeat_count >= 2:
+        return 'When the same friction repeats, fix the class of mistake instead of patching one more instance.'
+    if args.rule:
+        return 'Turn incident-specific friction into a reusable operating rule before changing behavior or code.'
+    return 'Identify the broader failure mode before mutating so the fix applies beyond the current incident.'
+
+
+def root_cause_summary(args) -> str:
+    if args.root_cause:
+        return args.root_cause
+    if args.ui:
+        return 'The visible symptom was treated before the underlying interaction model and real-state behavior were fully tested.'
+    if args.repeat_count >= 2:
+        return 'The same failure pattern was allowed to recur without being generalized into a durable rule or workflow fix.'
+    return 'The local incident was clearer than the underlying failure mode, so the first fix risked being too narrow.'
+
+
 def validation_checks(args) -> list[str]:
     checks = [
         'Confirm the signal is concrete, not vague self-improvement language.',
+        'State the root cause in plain language before proposing a fix.',
+        'Generalize that root cause into a reusable moral, not just an incident-specific patch note.',
+        'Check that the moral could help on unrelated future tasks, not only this exact one.',
         'State the smallest safe change before making it.',
         'Choose explicit write destinations instead of leaving it in chat only.',
     ]
+
+    if args.ui:
+        checks.extend([
+            'Check for visual bugs in the real affected layout/state, not just in isolation.',
+            'Test the interaction end to end instead of assuming the UI implies correct behavior.',
+            'Verify the control behaves the way it visually suggests (immediate vs saved, safe vs destructive).',
+        ])
 
     target = choose_mutation_target(args)
     if target == 'workflow-or-skill-patch':
@@ -104,6 +142,9 @@ def main() -> None:
     p.add_argument('--cross-channel', action='store_true')
     p.add_argument('--project', action='store_true')
     p.add_argument('--structure-needed', action='store_true')
+    p.add_argument('--ui', action='store_true')
+    p.add_argument('--root-cause', default='')
+    p.add_argument('--moral', default='')
     p.add_argument('--preference', action='store_true')
     p.add_argument('--rule', action='store_true')
     p.add_argument('--json', action='store_true')
@@ -117,11 +158,13 @@ def main() -> None:
     plan = {
         'signal': args.signal,
         'category': args.category,
+        'root_cause': root_cause_summary(args),
+        'generalized_moral': generalized_moral(args),
         'priority_score': priority_score(args),
         'mutation_target': choose_mutation_target(args),
         'recommended_actions': build_actions(args),
         'validation_checks': validation_checks(args),
-        'next_step': 'Make the smallest safe change, then record the outcome in task memory or daily notes.',
+        'next_step': 'Generalize first, then make the smallest safe change, then record the outcome in task memory or daily notes.',
     }
 
     if args.json:
@@ -131,6 +174,8 @@ def main() -> None:
     print('# Grounded Evolution Plan\n')
     print(f"Signal\n- {plan['signal']}\n")
     print(f"Category\n- {plan['category']}\n")
+    print(f"Root Cause\n- {plan['root_cause']}\n")
+    print(f"Generalized Moral\n- {plan['generalized_moral']}\n")
     print(f"Priority Score\n- {plan['priority_score']}\n")
     print(f"Mutation Target\n- {plan['mutation_target']}\n")
     print('Recommended Actions')
