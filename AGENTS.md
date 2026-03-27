@@ -187,6 +187,7 @@ You are free to edit `HEARTBEAT.md` with a short checklist or reminders. Keep it
 - You want a different model or thinking level for the task
 - One-shot reminders ("remind me in 20 minutes")
 - Output should deliver directly to a channel without main session involvement
+- For visible chat reminders, the job must use explicit chat delivery / announce behavior; do not rely on an internal main-session `systemEvent` alone to surface the message
 
 **Tip:** Batch similar periodic checks into `HEARTBEAT.md` instead of creating multiple cron jobs. Use cron for precise schedules and standalone tasks.
 

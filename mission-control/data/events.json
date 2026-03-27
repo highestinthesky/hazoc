@@ -15,12 +15,12 @@
     "id": "event-english-speech-booking-reminder-20260326-2030",
     "title": "Get English Speech Booking Done",
     "notes": "Reminder requested from Discord #control-center for today at 8:30 PM America/New_York.",
-    "description": "Project memory\n\nGoal\n- Remind haolun in #control-center to get the English speech booking done.\n\nWhat is known\n- Request came from Discord on 2026-03-26.\n- The requested reminder time is today at 8:30 PM America/New_York.\n- The exact reminder wording requested was: \"Get English Speech Booking Done\".\n\nWhat has been done\n- Scheduled a one-shot cron reminder for the same time in the current Discord session.\n- Added this event so the request is reflected in mission-control event memory.\n\nBlockers / unknowns\n- No blocker right now.\n\nNext steps\n- Fire the reminder in-channel at the requested time.",
+    "description": "Project memory\n\nGoal\n- Remind haolun in #control-center to get the English speech booking done.\n\nWhat is known\n- Request came from Discord on 2026-03-26.\n- The requested reminder time is today at 8:30 PM America/New_York.\n- The exact reminder wording requested was: \"Get English Speech Booking Done\".\n\nWhat has been done\n- Scheduled a one-shot cron reminder for the same time in the current Discord session.\n- Added this event so the request is reflected in mission-control event memory.\n- Fired the reminder in-channel at the scheduled time and archived the event.\n\nBlockers / unknowns\n- No blocker right now.\n\nNext steps\n- None.",
     "owner": "haolun",
-    "status": "active",
+    "status": "archived",
     "scheduledStart": "2026-03-27T00:30:00.000Z",
     "scheduledEnd": "2026-03-27T00:30:00.000Z",
     "createdAt": "2026-03-26T22:25:00.000Z",
-    "updatedAt": "2026-03-26T22:25:00.000Z"
+    "updatedAt": "2026-03-27T00:32:17.000Z"
   }
 ]

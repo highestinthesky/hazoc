@@ -35,6 +35,11 @@ Things like:
 
 Skills are shared. Your setup is yours. Keeping them apart means you can update skills without losing your notes, and share skills without leaking your infrastructure.
 
+## OpenClaw reminders
+
+- For **visible timed pings in a chat/channel**, do not rely on a `cron` job that only injects a main-session `systemEvent`; that can wake the agent with an internal reminder without guaranteeing a surfaced channel message.
+- Prefer a reminder path with explicit chat delivery / announce behavior when the user asked to be pinged in-channel.
+
 ---
 
 Add whatever helps you do your job. This is your cheat sheet.

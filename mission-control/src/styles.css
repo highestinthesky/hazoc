@@ -195,8 +195,64 @@ button { cursor: pointer; }
     linear-gradient(180deg, rgba(255, 248, 235, 0.05) 0%, rgba(255, 248, 235, 0.025) 100%);
 }
 .memory-grid { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr); }
-.skills-grid { grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.38fr); }
-.skills-board { grid-template-columns: 1fr; max-height: calc(100vh - 240px); overflow: auto; padding-right: 4px; }
+.skills-grid { grid-template-columns: minmax(300px, 0.66fr) minmax(0, 1.64fr); }
+.skills-board {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  max-height: calc(100vh - 240px);
+  overflow: auto;
+  padding: 18px;
+}
+.skills-group {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.skills-group + .skills-group {
+  padding-top: 18px;
+  border-top: 1px solid rgba(212, 184, 133, 0.1);
+}
+.skills-group-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14px;
+}
+.skills-group-header h3 {
+  margin: 0;
+  color: #fff8ec;
+  font-size: 1.08rem;
+}
+.skills-card-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.skill-list-card {
+  padding: 16px 18px;
+}
+.skill-list-card-header {
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+.skill-list-card-header > span {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.skill-list-description {
+  margin: 0 0 12px;
+  color: #dccdb9;
+  line-height: 1.55;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.skill-list-meta-row {
+  margin-bottom: 0;
+}
 
 .hero-card, .panel {
   border: 1px solid rgba(212, 184, 133, 0.1);
@@ -808,6 +864,7 @@ button { cursor: pointer; }
   display: flex;
   flex-direction: column;
   gap: 14px;
+  padding: 20px 22px 24px;
 }
 .skill-summary-block,
 .skill-flow-panel {
@@ -817,6 +874,201 @@ button { cursor: pointer; }
   margin: 0;
   color: #dfd0bd;
   line-height: 1.65;
+}
+.skill-meta-chip-accent {
+  border-color: rgba(223, 188, 129, 0.2);
+  background: rgba(183, 131, 61, 0.14);
+  color: #ffeecf;
+}
+.flowchart-stage {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.flowchart-stage-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.flowchart-stage-header h3 {
+  margin: 0;
+  color: #fff8ec;
+}
+.flowchart-subtitle {
+  margin: 6px 0 0;
+  color: #cfbda6;
+  line-height: 1.5;
+}
+.flowchart-legend-card {
+  min-width: 180px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(212, 184, 133, 0.12);
+  background: linear-gradient(180deg, rgba(255, 248, 235, 0.06) 0%, rgba(255, 248, 235, 0.03) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 248, 235, 0.03);
+}
+.flowchart-legend-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.flowchart-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #eadfce;
+  font-size: 0.9rem;
+}
+.flowchart-legend-shape {
+  position: relative;
+  display: inline-flex;
+  width: 24px;
+  height: 16px;
+  border-radius: 999px;
+  background: #6ea8ef;
+  flex: 0 0 auto;
+}
+.flowchart-legend-shape.kind-process {
+  border-radius: 8px;
+  background: #8b83ff;
+}
+.flowchart-legend-shape.kind-data {
+  border-radius: 0;
+  background: #0fbea8;
+  transform: skew(-18deg);
+}
+.flowchart-legend-shape.kind-decision {
+  width: 16px;
+  height: 16px;
+  border-radius: 2px;
+  background: transparent;
+  border: 2px solid #ff72cb;
+  transform: rotate(45deg);
+}
+.flowchart-viewport {
+  width: 100%;
+}
+.flowchart-scale-wrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 6px 0 10px;
+}
+.flowchart-canvas {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  border: 1px solid rgba(212, 184, 133, 0.12);
+  background:
+    linear-gradient(rgba(255, 248, 235, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 248, 235, 0.04) 1px, transparent 1px),
+    linear-gradient(rgba(255, 248, 235, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 248, 235, 0.02) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(34, 25, 18, 0.94) 0%, rgba(20, 16, 13, 0.92) 100%);
+  background-size: 28px 28px, 28px 28px, 7px 7px, 7px 7px, auto;
+  background-position: 0 0, 0 0, 0 0, 0 0, 0 0;
+  box-shadow: inset 0 1px 0 rgba(255, 248, 235, 0.03), 0 18px 36px rgba(0, 0, 0, 0.18);
+}
+.flowchart-canvas-inner {
+  position: relative;
+  transform-origin: top left;
+}
+.flowchart-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  color: rgba(245, 238, 229, 0.92);
+}
+.flowchart-edge {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.flowchart-edge-label rect {
+  fill: rgba(19, 16, 14, 0.95);
+  stroke: rgba(255, 248, 235, 0.08);
+}
+.flowchart-edge-label text {
+  fill: #f8edde;
+  font-size: 12px;
+  font-weight: 700;
+}
+.flowchart-node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #fff7ea;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.2);
+}
+.flowchart-node.kind-terminator {
+  width: 108px;
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #78b3ff 0%, #5a94eb 100%);
+}
+.flowchart-node.kind-process {
+  width: 148px;
+  min-height: 64px;
+  padding: 10px 14px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #9690ff 0%, #7d76ef 100%);
+}
+.flowchart-node.kind-data {
+  width: 144px;
+  min-height: 60px;
+  padding: 0 10px;
+}
+.flowchart-node.kind-data::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #14c3ae 0%, #0ea694 100%);
+  transform: skew(-14deg);
+}
+.flowchart-node.kind-decision {
+  width: 96px;
+  height: 96px;
+}
+.flowchart-node.kind-decision::before {
+  content: '';
+  position: absolute;
+  inset: 9px;
+  border-radius: 10px;
+  background: rgba(32, 22, 26, 0.96);
+  border: 2px solid #ff74ce;
+  transform: rotate(45deg);
+}
+.flowchart-node-label {
+  position: relative;
+  z-index: 1;
+  padding: 0 10px;
+  line-height: 1.28;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.flowchart-node.kind-decision .flowchart-node-label {
+  max-width: 64px;
+}
+.skill-fallback-block {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.skill-fallback-copy {
+  margin: 0;
+  color: #d7c7b1;
+  line-height: 1.6;
 }
 .skill-flow-list {
   display: flex;
@@ -841,6 +1093,9 @@ button { cursor: pointer; }
     radial-gradient(circle at 10% 18%, rgba(233, 188, 106, 0.11), transparent 26%),
     linear-gradient(180deg, rgba(255, 248, 235, 0.06) 0%, rgba(255, 248, 235, 0.03) 100%);
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.14), inset 0 1px 0 rgba(255, 248, 235, 0.03);
+}
+.compact-skill-flow-step {
+  padding: 12px 14px;
 }
 .skill-flow-index {
   width: 42px;

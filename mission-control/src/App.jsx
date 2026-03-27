@@ -57,6 +57,261 @@ function SegmentedControl({ ariaLabel, className = '', onChange, options, value 
   )
 }
 
+const FLOWCHART_KEY = [
+  { kind: 'terminator', label: 'Terminator' },
+  { kind: 'process', label: 'Process' },
+  { kind: 'data', label: 'Data / record' },
+  { kind: 'decision', label: 'Decision' },
+]
+
+const GRAPHABLE_SKILLS = new Set([
+  'grounded-evolver',
+  'learning-loop',
+  'safe-evolution-loop',
+  'workspace-continuity',
+  'workspace-memory-stack',
+  'workspace-graph',
+])
+
+const SKILL_FLOWCHARTS = {
+  'grounded-evolver': {
+    title: 'Grounded-evolver algorithm',
+    subtitle: 'Signal → generalize → score → mutate → validate → record',
+    cols: 6,
+    rows: 8,
+    nodes: [
+      { id: 'start', label: 'Start', kind: 'terminator', col: 1, row: 1 },
+      { id: 'signal', label: 'Observe signal', kind: 'process', col: 2.2, row: 1 },
+      { id: 'root', label: 'State root cause', kind: 'process', col: 3.5, row: 1 },
+      { id: 'moral', label: 'Generalize reusable moral', kind: 'data', col: 4.8, row: 1 },
+      { id: 'score', label: 'Score impact / loss / repeat / structure', kind: 'process', col: 4.8, row: 2.35 },
+      { id: 'decision', label: 'Memory / task / rule enough?', kind: 'decision', col: 4.8, row: 3.7 },
+      { id: 'small', label: 'Choose smallest safe mutation', kind: 'process', col: 2.7, row: 5 },
+      { id: 'patch', label: 'Patch workflow / skill', kind: 'process', col: 6, row: 5 },
+      { id: 'validate', label: 'Fix follows\nthat moral?', kind: 'decision', col: 4.8, row: 6.2 },
+      { id: 'record', label: 'Record + re-anchor', kind: 'data', col: 4.8, row: 7.4 },
+      { id: 'stop', label: 'Stop', kind: 'terminator', col: 6, row: 7.4 },
+    ],
+    edges: [
+      { from: 'start', to: 'signal', fromAnchor: 'right', toAnchor: 'left' },
+      { from: 'signal', to: 'root', fromAnchor: 'right', toAnchor: 'left' },
+      { from: 'root', to: 'moral', fromAnchor: 'right', toAnchor: 'left' },
+      { from: 'moral', to: 'score', fromAnchor: 'bottom', toAnchor: 'top' },
+      { from: 'score', to: 'decision', fromAnchor: 'bottom', toAnchor: 'top' },
+      { from: 'decision', to: 'small', fromAnchor: 'left', toAnchor: 'top', via: [[3.75, 3.7], [2.7, 3.7], [2.7, 4.45]], label: 'Yes', labelAt: [3.12, 3.5] },
+      { from: 'decision', to: 'patch', fromAnchor: 'right', toAnchor: 'top', via: [[5.85, 3.7], [6, 3.7], [6, 4.45]], label: 'No', labelAt: [5.72, 3.5] },
+      { from: 'small', to: 'validate', fromAnchor: 'bottom', toAnchor: 'left', via: [[2.7, 5.65], [3.7, 5.65], [3.7, 6.2]] },
+      { from: 'patch', to: 'validate', fromAnchor: 'bottom', toAnchor: 'right', via: [[6, 5.65], [5.9, 5.65], [5.9, 6.2]] },
+      { from: 'validate', to: 'record', fromAnchor: 'bottom', toAnchor: 'top', label: 'Pass', labelAt: [5.15, 6.8] },
+      { from: 'record', to: 'stop', fromAnchor: 'right', toAnchor: 'left' },
+    ],
+  },
+  'learning-loop': {
+    title: 'Learning-loop algorithm',
+    subtitle: 'Notice friction → route lesson → promote when stable',
+    cols: 6,
+    rows: 9,
+    nodes: [
+      { id: 'start', label: 'Start', kind: 'terminator', col: 1, row: 1 },
+      { id: 'trigger', label: 'Notice correction / failure / request', kind: 'process', col: 2.35, row: 1 },
+      { id: 'exists', label: 'Existing\nlesson fits?', kind: 'decision', col: 3.9, row: 1 },
+      { id: 'merge', label: 'Merge into existing lesson', kind: 'process', col: 2.3, row: 3.1 },
+      { id: 'route', label: 'Choose smallest durable destination', kind: 'process', col: 5.35, row: 3.1 },
+      { id: 'stable', label: 'Ready to\npromote?', kind: 'decision', col: 3.9, row: 4.9 },
+      { id: 'promote', label: 'Promote to durable home', kind: 'process', col: 2.4, row: 6.8 },
+      { id: 'log', label: 'Log raw lesson / daily note', kind: 'data', col: 5.4, row: 6.8 },
+      { id: 'stop', label: 'Stop', kind: 'terminator', col: 3.9, row: 8.1 },
+    ],
+    edges: [
+      { from: 'start', to: 'trigger', fromAnchor: 'right', toAnchor: 'left' },
+      { from: 'trigger', to: 'exists', fromAnchor: 'right', toAnchor: 'left' },
+      { from: 'exists', to: 'merge', fromAnchor: 'bottom', toAnchor: 'top', via: [[3.9, 1.8], [2.3, 1.8], [2.3, 2.35]], label: 'Yes', labelAt: [2.7, 1.55] },
+      { from: 'exists', to: 'route', fromAnchor: 'right', toAnchor: 'top', via: [[4.8, 1], [5.35, 1], [5.35, 2.35]], label: 'No', labelAt: [5.05, 1.35] },
+      { from: 'merge', to: 'stable', fromAnchor: 'bottom', toAnchor: 'left', via: [[2.3, 4.05], [3.2, 4.05], [3.2, 4.9]] },
+      { from: 'route', to: 'stable', fromAnchor: 'bottom', toAnchor: 'right', via: [[5.35, 4.05], [4.6, 4.05], [4.6, 4.9]] },
+      { from: 'stable', to: 'promote', fromAnchor: 'left', toAnchor: 'top', via: [[3.15, 4.9], [2.4, 4.9], [2.4, 6.1]], label: 'Yes', labelAt: [2.72, 5.2] },
+      { from: 'stable', to: 'log', fromAnchor: 'right', toAnchor: 'top', via: [[4.65, 4.9], [5.4, 4.9], [5.4, 6.1]], label: 'No', labelAt: [5.08, 5.2] },
+      { from: 'promote', to: 'stop', fromAnchor: 'bottom', toAnchor: 'left', via: [[2.4, 7.55], [2.95, 7.55], [2.95, 8.1]] },
+      { from: 'log', to: 'stop', fromAnchor: 'bottom', toAnchor: 'right', via: [[5.4, 7.55], [4.85, 7.55], [4.85, 8.1]] },
+    ],
+  },
+  'workspace-memory-stack': {
+    title: 'Workspace-memory-stack routing',
+    subtitle: 'Capture fragile context in the smallest layer that will survive the next interruption',
+    cols: 6,
+    rows: 9,
+    nodes: [
+      { id: 'start', label: 'Start', kind: 'terminator', col: 1, row: 1 },
+      { id: 'detail', label: 'New detail / progress appears', kind: 'process', col: 2.4, row: 1 },
+      { id: 'fragile', label: 'Easy to lose\nbefore replying?', kind: 'decision', col: 4, row: 1 },
+      { id: 'active', label: 'Write active state', kind: 'data', col: 2.2, row: 3.05 },
+      { id: 'project', label: 'Project work\nor follow-up?', kind: 'decision', col: 5.5, row: 3.05 },
+      { id: 'tasks', label: 'Update task board', kind: 'data', col: 5.5, row: 4.6 },
+      { id: 'meaningful', label: 'Meaningful\nprogress / decision?', kind: 'decision', col: 3.9, row: 5.9 },
+      { id: 'daily', label: 'Append daily note', kind: 'data', col: 2.2, row: 7.3 },
+      { id: 'durable', label: 'Curated-memory\nworthy?', kind: 'decision', col: 5.45, row: 7.3 },
+      { id: 'curated', label: 'Promote to USER / MEMORY / AGENTS', kind: 'data', col: 5.45, row: 8.65 },
+      { id: 'stop', label: 'Stop / handoff', kind: 'terminator', col: 3.9, row: 8.65 },
+    ],
+    edges: [
+      { from: 'start', to: 'detail' },
+      { from: 'detail', to: 'fragile' },
+      { from: 'fragile', to: 'active', via: [[3.1, 1], [2.2, 1], [2.2, 3.05]], label: 'Yes', labelAt: [2.55, 1.35] },
+      { from: 'fragile', to: 'project', via: [[4.95, 1], [5.5, 1], [5.5, 3.05]], label: 'No', labelAt: [5.2, 1.35] },
+      { from: 'active', to: 'meaningful', via: [[2.2, 5.9], [3.9, 5.9]] },
+      { from: 'project', to: 'tasks', label: 'Yes', labelAt: [5.85, 3.85] },
+      { from: 'project', to: 'meaningful', via: [[4.6, 3.05], [3.9, 3.05], [3.9, 5.9]], label: 'No', labelAt: [4.15, 3.25] },
+      { from: 'tasks', to: 'meaningful', via: [[5.5, 5.9], [3.9, 5.9]] },
+      { from: 'meaningful', to: 'daily', via: [[3.1, 5.9], [2.2, 5.9], [2.2, 7.3]], label: 'Yes', labelAt: [2.55, 6.15] },
+      { from: 'meaningful', to: 'durable', via: [[4.85, 5.9], [5.45, 5.9], [5.45, 7.3]], label: 'No', labelAt: [5.15, 6.15] },
+      { from: 'daily', to: 'stop', via: [[2.2, 8.65], [3.9, 8.65]] },
+      { from: 'durable', to: 'curated', label: 'Yes', labelAt: [5.82, 8.0] },
+      { from: 'durable', to: 'stop', via: [[4.7, 7.3], [3.9, 7.3], [3.9, 8.65]], label: 'No', labelAt: [4.2, 7.55] },
+      { from: 'curated', to: 'stop' },
+    ],
+  },
+}
+
+function getFlowchartMetrics(chart) {
+  const cellWidth = chart.cellWidth || 126
+  const cellHeight = chart.cellHeight || 78
+  const paddingX = chart.paddingX || 60
+  const paddingY = chart.paddingY || 58
+  const width = paddingX * 2 + (chart.cols - 1) * cellWidth
+  const height = paddingY * 2 + (chart.rows - 1) * cellHeight
+  return { cellWidth, cellHeight, paddingX, paddingY, width, height }
+}
+
+function getNodeDimensions(kind) {
+  if (kind === 'terminator') return { width: 108, height: 44 }
+  if (kind === 'process') return { width: 148, height: 64 }
+  if (kind === 'data') return { width: 144, height: 60 }
+  if (kind === 'decision') return { width: 96, height: 96 }
+  return { width: 140, height: 60 }
+}
+
+function gridToCanvasPoint(point, metrics) {
+  const [col, row] = point
+  return {
+    x: metrics.paddingX + (col - 1) * metrics.cellWidth,
+    y: metrics.paddingY + (row - 1) * metrics.cellHeight,
+  }
+}
+
+function nodeAnchorPoint(node, anchor, metrics) {
+  const center = gridToCanvasPoint([node.col, node.row], metrics)
+  const { width, height } = getNodeDimensions(node.kind)
+
+  if (anchor === 'left') return { x: center.x - width / 2, y: center.y }
+  if (anchor === 'right') return { x: center.x + width / 2, y: center.y }
+  if (anchor === 'top') return { x: center.x, y: center.y - height / 2 }
+  if (anchor === 'bottom') return { x: center.x, y: center.y + height / 2 }
+  return center
+}
+
+function FlowchartLegend() {
+  return (
+    <div className="flowchart-legend-card">
+      <p className="panel-kicker">flowchart key</p>
+      <div className="flowchart-legend-list">
+        {FLOWCHART_KEY.map((item) => (
+          <div key={item.kind} className="flowchart-legend-item">
+            <span className={`flowchart-legend-shape kind-${item.kind}`} aria-hidden="true" />
+            <span>{item.label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function SkillFlowchart({ chart }) {
+  const metrics = getFlowchartMetrics(chart)
+  const nodesById = Object.fromEntries(chart.nodes.map((node) => [node.id, node]))
+  const viewportRef = useRef(null)
+  const [scale, setScale] = useState(1)
+
+  useEffect(() => {
+    if (!viewportRef.current) return undefined
+
+    const updateScale = () => {
+      const width = viewportRef.current?.clientWidth || 0
+      if (!width) return
+      const gutter = Math.max(56, Math.min(110, width * 0.1))
+      const usableWidth = Math.max(width - gutter * 2, width * 0.78)
+      setScale(Math.max(0.82, usableWidth / metrics.width))
+    }
+
+    updateScale()
+    const observer = new ResizeObserver(() => updateScale())
+    observer.observe(viewportRef.current)
+    return () => observer.disconnect()
+  }, [metrics.width])
+
+  return (
+    <div className="flowchart-stage">
+      <div className="flowchart-stage-header">
+        <div>
+          <p className="panel-kicker">algorithm chart</p>
+          <h3>{chart.title}</h3>
+          <p className="flowchart-subtitle">{chart.subtitle}</p>
+        </div>
+        <FlowchartLegend />
+      </div>
+
+      <div ref={viewportRef} className="flowchart-viewport">
+        <div className="flowchart-scale-wrap">
+          <div className="flowchart-canvas" style={{ width: metrics.width * scale, height: metrics.height * scale }}>
+            <div className="flowchart-canvas-inner" style={{ width: metrics.width, height: metrics.height, transform: `scale(${scale})` }}>
+              <svg className="flowchart-svg" viewBox={`0 0 ${metrics.width} ${metrics.height}`} preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+              <defs>
+                <marker id="flowchart-arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+                  <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor" />
+                </marker>
+              </defs>
+
+              {chart.edges.map((edge) => {
+                const fromNode = nodesById[edge.from]
+                const toNode = nodesById[edge.to]
+                if (!fromNode || !toNode) return null
+                const points = [
+                  nodeAnchorPoint(fromNode, edge.fromAnchor, metrics),
+                  ...(edge.via || []).map((point) => gridToCanvasPoint(point, metrics)),
+                  nodeAnchorPoint(toNode, edge.toAnchor, metrics),
+                ]
+                const polylinePoints = points.map((point) => `${point.x},${point.y}`).join(' ')
+                const labelPoint = edge.labelAt ? gridToCanvasPoint(edge.labelAt, metrics) : null
+
+                return (
+                  <g key={`${edge.from}-${edge.to}-${edge.label || 'path'}`} className="flowchart-edge-group">
+                    <polyline className="flowchart-edge" points={polylinePoints} markerEnd="url(#flowchart-arrow)" />
+                    {edge.label && labelPoint ? (
+                      <g className="flowchart-edge-label" transform={`translate(${labelPoint.x}, ${labelPoint.y})`}>
+                        <rect x="-18" y="-11" width="36" height="22" rx="11" />
+                        <text textAnchor="middle" dominantBaseline="central">{edge.label}</text>
+                      </g>
+                    ) : null}
+                  </g>
+                )
+              })}
+              </svg>
+
+              {chart.nodes.map((node) => {
+                const point = gridToCanvasPoint([node.col, node.row], metrics)
+                return (
+                  <div key={node.id} className={`flowchart-node kind-${node.kind}`} style={{ left: point.x, top: point.y }}>
+                    <div className="flowchart-node-label">{node.label}</div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function TasksView({
   activeLaneId,
   activeLaneTasks,
@@ -805,34 +1060,65 @@ function MemoryView({ error, loading, memoryEntries, memoryLoaded, selectedMemor
 }
 
 function SkillsView({ error, loading, selectedSkill, selectedSkillId, setSelectedSkillId, skills, skillsLoaded }) {
-  return (
-    <section className="tasks-layout">
-      <div className="hero-row">
-        <HeroCard label="Skills" title={String(skills.length)} primary />
-        <HeroCard label="Workspace" title={String(skills.filter((skill) => skill.source === 'workspace').length)} />
-        <HeroCard label="System" title={String(skills.filter((skill) => skill.source === 'system').length)} />
+  const workspaceSkills = skills.filter((skill) => skill.source === 'workspace')
+  const graphableWorkspaceSkills = workspaceSkills.filter((skill) => GRAPHABLE_SKILLS.has(skill.name))
+  const referenceWorkspaceSkills = workspaceSkills.filter((skill) => !GRAPHABLE_SKILLS.has(skill.name))
+  const systemSkills = skills.filter((skill) => skill.source === 'system')
+  const algorithmicChartCount = graphableWorkspaceSkills.length
+  const selectedChart = selectedSkill ? SKILL_FLOWCHARTS[selectedSkill.name] : null
+
+  const renderSkillSection = (title, kicker, items) => (
+    <section className="skills-group">
+      <div className="skills-group-header">
+        <div>
+          <p className="panel-kicker">{kicker}</p>
+          <h3>{title}</h3>
+        </div>
+        <span className="task-badge">{items.length}</span>
       </div>
 
-      {error ? <div className="error-banner">{error}</div> : null}
-
-      <section className="workspace-grid skills-grid">
-        <section className="board-grid skills-board">
-          {skills.map((skill) => (
-            <article key={skill.id} className={`task-card memory-card ${selectedSkillId === skill.id ? 'active' : ''}`} onClick={() => setSelectedSkillId(skill.id)}>
-              <div className="task-card-header">
+      <div className="skills-card-stack">
+        {items.map((skill) => {
+          const hasChart = GRAPHABLE_SKILLS.has(skill.name)
+          const hasAuthoredChart = Boolean(SKILL_FLOWCHARTS[skill.name])
+          return (
+            <article key={skill.id} className={`task-card skill-list-card ${selectedSkillId === skill.id ? 'active' : ''}`} onClick={() => setSelectedSkillId(skill.id)}>
+              <div className="task-card-header skill-list-card-header">
                 <div className="task-card-title-wrap">
                   <strong>{skill.name}</strong>
                 </div>
                 <span>{skill.sourceLabel}</span>
               </div>
-              <p>{skill.description}</p>
-              <div className="task-card-meta-row">
-                <span className="meta-chip">{skill.flow.length} flow steps</span>
+              <p className="skill-list-description">{skill.description}</p>
+              <div className="task-card-meta-row skill-list-meta-row">
+                {hasChart ? <span className="meta-chip skill-meta-chip-accent">graph-worthy</span> : <span className="meta-chip">reference-style</span>}
+                {hasAuthoredChart ? <span className="meta-chip">chart ready</span> : null}
+                <span className="meta-chip">{skill.flow.length} steps</span>
                 <span className="meta-chip">{skill.referencesCount} refs</span>
                 <span className="meta-chip">{skill.scriptsCount} scripts</span>
               </div>
             </article>
-          ))}
+          )
+        })}
+      </div>
+    </section>
+  )
+
+  return (
+    <section className="tasks-layout">
+      <div className="hero-row">
+        <HeroCard label="Skills" title={String(skills.length)} primary />
+        <HeroCard label="Algorithm charts" title={String(algorithmicChartCount)} />
+        <HeroCard label="System" title={String(systemSkills.length)} />
+      </div>
+
+      {error ? <div className="error-banner">{error}</div> : null}
+
+      <section className="workspace-grid skills-grid">
+        <section className="skills-board panel">
+          {renderSkillSection('User-edited / created · graph-worthy', 'workspace skills', graphableWorkspaceSkills)}
+          {renderSkillSection('User-edited / created · reference-style', 'workspace skills', referenceWorkspaceSkills)}
+          {renderSkillSection('System', 'system skills', systemSkills)}
         </section>
 
         <aside className="detail-panel panel skills-detail-panel">
@@ -860,19 +1146,30 @@ function SkillsView({ error, loading, selectedSkill, selectedSkillId, setSelecte
               <section className="form-section form-section-accent skill-flow-panel">
                 <div className="section-heading">
                   <p className="panel-kicker">thinking flow</p>
-                  <h3>How I would reason through it</h3>
+                  <h3>{selectedChart ? 'Algorithm chart' : 'Process notes'}</h3>
                 </div>
-                <div className="skill-flow-list">
-                  {selectedSkill.flow.map((step, index) => (
-                    <div key={`${selectedSkill.id}-${index}`} className="skill-flow-step-wrap">
-                      <article className="skill-flow-step">
-                        <span className="skill-flow-index">{index + 1}</span>
-                        <div className="skill-flow-copy">{step}</div>
-                      </article>
-                      {index < selectedSkill.flow.length - 1 ? <div className="skill-flow-connector" aria-hidden="true" /> : null}
+                {selectedChart ? (
+                  <SkillFlowchart chart={selectedChart} />
+                ) : (
+                  <div className="skill-fallback-block">
+                    <p className="skill-fallback-copy">
+                      {GRAPHABLE_SKILLS.has(selectedSkill.name)
+                        ? 'This skill is graph-worthy because it has a reusable algorithmic workflow, but its full chart has not been authored yet.'
+                        : 'This skill is more reference-driven than algorithmic right now, so it stays in a lighter reference-style view instead of forcing a formal chart.'}
+                    </p>
+                    <div className="skill-flow-list compact-skill-flow-list">
+                      {selectedSkill.flow.slice(0, 6).map((step, index) => (
+                        <div key={`${selectedSkill.id}-${index}`} className="skill-flow-step-wrap">
+                          <article className="skill-flow-step compact-skill-flow-step">
+                            <span className="skill-flow-index">{index + 1}</span>
+                            <div className="skill-flow-copy">{step}</div>
+                          </article>
+                          {index < Math.min(selectedSkill.flow.length, 6) - 1 ? <div className="skill-flow-connector" aria-hidden="true" /> : null}
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  </div>
+                )}
               </section>
             </>
           ) : (
@@ -1068,7 +1365,9 @@ export default function App() {
   }, [memoryEntries, selectedMemory, selectedMemoryId])
 
   useEffect(() => {
-    if (skills.length && (!selectedSkillId || !selectedSkill)) setSelectedSkillId(skills[0].id)
+    if (!skills.length || (selectedSkillId && selectedSkill)) return
+    const preferredSkill = skills.find((skill) => Boolean(SKILL_FLOWCHARTS[skill.name])) || skills[0]
+    setSelectedSkillId(preferredSkill.id)
   }, [selectedSkill, selectedSkillId, skills])
 
   useEffect(() => {
