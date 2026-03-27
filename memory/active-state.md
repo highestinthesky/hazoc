@@ -46,10 +46,12 @@
 - Current polish direction also includes richer sidebar/navigation selection and small whole-site fit-and-finish improvements where they make the interface feel smoother without adding clutter.
 
 ## Handoff for tomorrow
-- First confirm the Protocol page / Workbench split feels right in the live UI.
-- If continuing mission-control UI work, start with the safest/highest-signal polish slices: visual hierarchy first, then task/event scanability.
-- If switching to the digest build, start under `skills/market-watch` with the bounded source allowlist, `sources.json`, observation schema, and polling loop before scoring or delivery.
-- For multi-user scheduling, the next key design choice is whether “add to another user” means shared attendees or separate personal copies, then define reminder-channel rules.
+- Highest-priority unresolved UI issue is now the Skills-page flowcharts, not the old page-polish items.
+- Real stopping point: the chart renderer was tightened structurally (orthogonal, rounded, one-turn schema), but the visible layout is still not reliably satisfying the chart rules because node placement has not been fully re-planned around those constraints.
+- First move tomorrow: re-layout the authored charts visually from scratch so every current arrow can be straight or one-turn only, with text fully inside shapes and no clipping/merging. Do not count code cleanup as success unless the rendered charts visibly satisfy the rules.
+- Current chart rules to enforce: text fully inside shapes; avoid line intersections/merging; align branches; clarity/legibility first, elegance second; arrows streamlined; orthogonal only; rounded turns; max one total turn by default; graph box large but nodes comfortably smaller within it.
+- After the chart cleanup is visibly correct, continue authoring the remaining graph-worthy skills (`safe-evolution-loop`, `workspace-continuity`, `workspace-graph`) using the same diagram rules from the start.
+- Market-digest design and multi-user schedule architecture remain open workbench items, but the immediate UX debt tomorrow is still the Skills chart layout/legibility pass.
 - Mission control should already auto-recover and be reachable at `http://192.168.12.188:4180/` after login/reboot via the watchdog + bootstrap path.
 
 ## Latest upgrade

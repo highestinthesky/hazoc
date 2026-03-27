@@ -98,10 +98,10 @@ const SKILL_FLOWCHARTS = {
       { from: 'root', to: 'moral', fromAnchor: 'right', toAnchor: 'left' },
       { from: 'moral', to: 'score', fromAnchor: 'bottom', toAnchor: 'top' },
       { from: 'score', to: 'decision', fromAnchor: 'bottom', toAnchor: 'top' },
-      { from: 'decision', to: 'small', fromAnchor: 'left', toAnchor: 'top', via: [[3.75, 3.7], [2.7, 3.7], [2.7, 4.45]], label: 'Yes', labelAt: [3.12, 3.5] },
-      { from: 'decision', to: 'patch', fromAnchor: 'right', toAnchor: 'top', via: [[5.85, 3.7], [6, 3.7], [6, 4.45]], label: 'No', labelAt: [5.72, 3.5] },
-      { from: 'small', to: 'validate', fromAnchor: 'bottom', toAnchor: 'left', via: [[2.7, 5.65], [3.7, 5.65], [3.7, 6.2]] },
-      { from: 'patch', to: 'validate', fromAnchor: 'bottom', toAnchor: 'right', via: [[6, 5.65], [5.9, 5.65], [5.9, 6.2]] },
+      { from: 'decision', to: 'small', fromAnchor: 'left', toAnchor: 'top', turn: 'hv', label: 'Yes', labelAt: [3.12, 3.5] },
+      { from: 'decision', to: 'patch', fromAnchor: 'right', toAnchor: 'top', turn: 'hv', label: 'No', labelAt: [5.72, 3.5] },
+      { from: 'small', to: 'validate', fromAnchor: 'bottom', toAnchor: 'left', turn: 'vh' },
+      { from: 'patch', to: 'validate', fromAnchor: 'bottom', toAnchor: 'right', turn: 'vh' },
       { from: 'validate', to: 'record', fromAnchor: 'bottom', toAnchor: 'top', label: 'Pass', labelAt: [5.15, 6.8] },
       { from: 'record', to: 'stop', fromAnchor: 'right', toAnchor: 'left' },
     ],
@@ -125,14 +125,14 @@ const SKILL_FLOWCHARTS = {
     edges: [
       { from: 'start', to: 'trigger', fromAnchor: 'right', toAnchor: 'left' },
       { from: 'trigger', to: 'exists', fromAnchor: 'right', toAnchor: 'left' },
-      { from: 'exists', to: 'merge', fromAnchor: 'bottom', toAnchor: 'top', via: [[3.9, 1.8], [2.3, 1.8], [2.3, 2.35]], label: 'Yes', labelAt: [2.7, 1.55] },
-      { from: 'exists', to: 'route', fromAnchor: 'right', toAnchor: 'top', via: [[4.8, 1], [5.35, 1], [5.35, 2.35]], label: 'No', labelAt: [5.05, 1.35] },
-      { from: 'merge', to: 'stable', fromAnchor: 'bottom', toAnchor: 'left', via: [[2.3, 4.05], [3.2, 4.05], [3.2, 4.9]] },
-      { from: 'route', to: 'stable', fromAnchor: 'bottom', toAnchor: 'right', via: [[5.35, 4.05], [4.6, 4.05], [4.6, 4.9]] },
-      { from: 'stable', to: 'promote', fromAnchor: 'left', toAnchor: 'top', via: [[3.15, 4.9], [2.4, 4.9], [2.4, 6.1]], label: 'Yes', labelAt: [2.72, 5.2] },
-      { from: 'stable', to: 'log', fromAnchor: 'right', toAnchor: 'top', via: [[4.65, 4.9], [5.4, 4.9], [5.4, 6.1]], label: 'No', labelAt: [5.08, 5.2] },
-      { from: 'promote', to: 'stop', fromAnchor: 'bottom', toAnchor: 'left', via: [[2.4, 7.55], [2.95, 7.55], [2.95, 8.1]] },
-      { from: 'log', to: 'stop', fromAnchor: 'bottom', toAnchor: 'right', via: [[5.4, 7.55], [4.85, 7.55], [4.85, 8.1]] },
+      { from: 'exists', to: 'merge', fromAnchor: 'bottom', toAnchor: 'top', turn: 'vh', label: 'Yes', labelAt: [2.7, 1.55] },
+      { from: 'exists', to: 'route', fromAnchor: 'right', toAnchor: 'top', turn: 'hv', label: 'No', labelAt: [5.05, 1.35] },
+      { from: 'merge', to: 'stable', fromAnchor: 'bottom', toAnchor: 'left', turn: 'vh' },
+      { from: 'route', to: 'stable', fromAnchor: 'bottom', toAnchor: 'right', turn: 'vh' },
+      { from: 'stable', to: 'promote', fromAnchor: 'left', toAnchor: 'top', turn: 'hv', label: 'Yes', labelAt: [2.72, 5.2] },
+      { from: 'stable', to: 'log', fromAnchor: 'right', toAnchor: 'top', turn: 'hv', label: 'No', labelAt: [5.08, 5.2] },
+      { from: 'promote', to: 'stop', fromAnchor: 'bottom', toAnchor: 'left', turn: 'vh' },
+      { from: 'log', to: 'stop', fromAnchor: 'bottom', toAnchor: 'right', turn: 'vh' },
     ],
   },
   'workspace-memory-stack': {
@@ -154,39 +154,49 @@ const SKILL_FLOWCHARTS = {
       { id: 'stop', label: 'Stop / handoff', kind: 'terminator', col: 3.9, row: 8.65 },
     ],
     edges: [
-      { from: 'start', to: 'detail' },
-      { from: 'detail', to: 'fragile' },
-      { from: 'fragile', to: 'active', via: [[3.1, 1], [2.2, 1], [2.2, 3.05]], label: 'Yes', labelAt: [2.55, 1.35] },
-      { from: 'fragile', to: 'project', via: [[4.95, 1], [5.5, 1], [5.5, 3.05]], label: 'No', labelAt: [5.2, 1.35] },
-      { from: 'active', to: 'meaningful', via: [[2.2, 5.9], [3.9, 5.9]] },
-      { from: 'project', to: 'tasks', label: 'Yes', labelAt: [5.85, 3.85] },
-      { from: 'project', to: 'meaningful', via: [[4.6, 3.05], [3.9, 3.05], [3.9, 5.9]], label: 'No', labelAt: [4.15, 3.25] },
-      { from: 'tasks', to: 'meaningful', via: [[5.5, 5.9], [3.9, 5.9]] },
-      { from: 'meaningful', to: 'daily', via: [[3.1, 5.9], [2.2, 5.9], [2.2, 7.3]], label: 'Yes', labelAt: [2.55, 6.15] },
-      { from: 'meaningful', to: 'durable', via: [[4.85, 5.9], [5.45, 5.9], [5.45, 7.3]], label: 'No', labelAt: [5.15, 6.15] },
-      { from: 'daily', to: 'stop', via: [[2.2, 8.65], [3.9, 8.65]] },
-      { from: 'durable', to: 'curated', label: 'Yes', labelAt: [5.82, 8.0] },
-      { from: 'durable', to: 'stop', via: [[4.7, 7.3], [3.9, 7.3], [3.9, 8.65]], label: 'No', labelAt: [4.2, 7.55] },
-      { from: 'curated', to: 'stop' },
+      { from: 'start', to: 'detail', fromAnchor: 'right', toAnchor: 'left' },
+      { from: 'detail', to: 'fragile', fromAnchor: 'right', toAnchor: 'left' },
+      { from: 'fragile', to: 'active', fromAnchor: 'bottom', toAnchor: 'top', turn: 'vh', label: 'Yes', labelAt: [2.8, 1.55] },
+      { from: 'fragile', to: 'project', fromAnchor: 'right', toAnchor: 'top', turn: 'hv', label: 'No', labelAt: [5.12, 1.35] },
+      { from: 'active', to: 'meaningful', fromAnchor: 'bottom', toAnchor: 'left', turn: 'vh' },
+      { from: 'project', to: 'tasks', fromAnchor: 'bottom', toAnchor: 'top', label: 'Yes', labelAt: [5.86, 3.82] },
+      { from: 'project', to: 'meaningful', fromAnchor: 'left', toAnchor: 'top', turn: 'hv', label: 'No', labelAt: [4.18, 3.25] },
+      { from: 'tasks', to: 'meaningful', fromAnchor: 'bottom', toAnchor: 'right', turn: 'vh' },
+      { from: 'meaningful', to: 'daily', fromAnchor: 'left', toAnchor: 'top', turn: 'hv', label: 'Yes', labelAt: [2.62, 6.12] },
+      { from: 'meaningful', to: 'durable', fromAnchor: 'right', toAnchor: 'top', turn: 'hv', label: 'No', labelAt: [5.1, 6.12] },
+      { from: 'daily', to: 'stop', fromAnchor: 'bottom', toAnchor: 'left', turn: 'vh' },
+      { from: 'durable', to: 'curated', fromAnchor: 'bottom', toAnchor: 'top', label: 'Yes', labelAt: [5.82, 8.0] },
+      { from: 'durable', to: 'stop', fromAnchor: 'left', toAnchor: 'top', turn: 'hv', label: 'No', labelAt: [4.15, 7.55] },
+      { from: 'curated', to: 'stop', fromAnchor: 'left', toAnchor: 'right' },
     ],
   },
 }
 
 function getFlowchartMetrics(chart) {
-  const cellWidth = chart.cellWidth || 126
-  const cellHeight = chart.cellHeight || 78
-  const paddingX = chart.paddingX || 60
-  const paddingY = chart.paddingY || 58
-  const width = paddingX * 2 + (chart.cols - 1) * cellWidth
-  const height = paddingY * 2 + (chart.rows - 1) * cellHeight
+  const cellWidth = chart.cellWidth || 122
+  const cellHeight = chart.cellHeight || 74
+  const paddingX = chart.paddingX || 62
+  const paddingY = chart.paddingY || 60
+
+  let width = paddingX * 2 + (chart.cols - 1) * cellWidth
+  let height = paddingY * 2 + (chart.rows - 1) * cellHeight
+
+  for (const node of chart.nodes) {
+    const { width: nodeWidth, height: nodeHeight } = getNodeDimensions(node.kind)
+    const centerX = paddingX + (node.col - 1) * cellWidth
+    const centerY = paddingY + (node.row - 1) * cellHeight
+    width = Math.max(width, centerX + nodeWidth / 2 + paddingX)
+    height = Math.max(height, centerY + nodeHeight / 2 + paddingY)
+  }
+
   return { cellWidth, cellHeight, paddingX, paddingY, width, height }
 }
 
 function getNodeDimensions(kind) {
-  if (kind === 'terminator') return { width: 108, height: 44 }
-  if (kind === 'process') return { width: 148, height: 64 }
-  if (kind === 'data') return { width: 144, height: 60 }
-  if (kind === 'decision') return { width: 96, height: 96 }
+  if (kind === 'terminator') return { width: 96, height: 40 }
+  if (kind === 'process') return { width: 128, height: 56 }
+  if (kind === 'data') return { width: 126, height: 54 }
+  if (kind === 'decision') return { width: 84, height: 84 }
   return { width: 140, height: 60 }
 }
 
@@ -207,6 +217,84 @@ function nodeAnchorPoint(node, anchor, metrics) {
   if (anchor === 'top') return { x: center.x, y: center.y - height / 2 }
   if (anchor === 'bottom') return { x: center.x, y: center.y + height / 2 }
   return center
+}
+
+function buildEdgePoints(fromPoint, toPoint, turn) {
+  if (fromPoint.x === toPoint.x || fromPoint.y === toPoint.y || !turn) return [fromPoint, toPoint]
+  if (turn === 'hv') return [fromPoint, { x: toPoint.x, y: fromPoint.y }, toPoint]
+  if (turn === 'vh') return [fromPoint, { x: fromPoint.x, y: toPoint.y }, toPoint]
+  return [fromPoint, toPoint]
+}
+
+function orthogonalizePoints(points) {
+  const cleaned = []
+
+  for (const point of points) {
+    if (!point) continue
+    const last = cleaned[cleaned.length - 1]
+    if (!last) {
+      cleaned.push(point)
+      continue
+    }
+
+    if (last.x === point.x && last.y === point.y) continue
+
+    if (last.x !== point.x && last.y !== point.y) {
+      cleaned.push({ x: point.x, y: last.y })
+    }
+
+    cleaned.push(point)
+  }
+
+  return cleaned.filter((point, index, array) => {
+    if (index === 0 || index === array.length - 1) return true
+    const prev = array[index - 1]
+    const next = array[index + 1]
+    const sameVertical = prev.x === point.x && point.x === next.x
+    const sameHorizontal = prev.y === point.y && point.y === next.y
+    return !sameVertical && !sameHorizontal
+  })
+}
+
+function buildRoundedOrthogonalPath(points, radius = 12) {
+  const routed = orthogonalizePoints(points)
+  if (routed.length < 2) return ''
+
+  let path = `M ${routed[0].x} ${routed[0].y}`
+
+  for (let i = 1; i < routed.length - 1; i += 1) {
+    const prev = routed[i - 1]
+    const curr = routed[i]
+    const next = routed[i + 1]
+
+    const inDx = curr.x - prev.x
+    const inDy = curr.y - prev.y
+    const outDx = next.x - curr.x
+    const outDy = next.y - curr.y
+
+    const inLen = Math.abs(inDx) + Math.abs(inDy)
+    const outLen = Math.abs(outDx) + Math.abs(outDy)
+
+    if (!inLen || !outLen) continue
+
+    const sameDirection = (inDx === 0 && outDx === 0) || (inDy === 0 && outDy === 0)
+    if (sameDirection) {
+      path += ` L ${curr.x} ${curr.y}`
+      continue
+    }
+
+    const trim = Math.min(radius, inLen / 2, outLen / 2)
+    const inUnit = { x: Math.sign(inDx), y: Math.sign(inDy) }
+    const outUnit = { x: Math.sign(outDx), y: Math.sign(outDy) }
+    const entry = { x: curr.x - inUnit.x * trim, y: curr.y - inUnit.y * trim }
+    const exit = { x: curr.x + outUnit.x * trim, y: curr.y + outUnit.y * trim }
+
+    path += ` L ${entry.x} ${entry.y} Q ${curr.x} ${curr.y} ${exit.x} ${exit.y}`
+  }
+
+  const last = routed[routed.length - 1]
+  path += ` L ${last.x} ${last.y}`
+  return path
 }
 
 function FlowchartLegend() {
@@ -274,17 +362,17 @@ function SkillFlowchart({ chart }) {
                 const fromNode = nodesById[edge.from]
                 const toNode = nodesById[edge.to]
                 if (!fromNode || !toNode) return null
-                const points = [
+                const points = buildEdgePoints(
                   nodeAnchorPoint(fromNode, edge.fromAnchor, metrics),
-                  ...(edge.via || []).map((point) => gridToCanvasPoint(point, metrics)),
                   nodeAnchorPoint(toNode, edge.toAnchor, metrics),
-                ]
-                const polylinePoints = points.map((point) => `${point.x},${point.y}`).join(' ')
+                  edge.turn,
+                )
+                const edgePath = buildRoundedOrthogonalPath(points)
                 const labelPoint = edge.labelAt ? gridToCanvasPoint(edge.labelAt, metrics) : null
 
                 return (
                   <g key={`${edge.from}-${edge.to}-${edge.label || 'path'}`} className="flowchart-edge-group">
-                    <polyline className="flowchart-edge" points={polylinePoints} markerEnd="url(#flowchart-arrow)" />
+                    <path className="flowchart-edge" d={edgePath} markerEnd="url(#flowchart-arrow)" />
                     {edge.label && labelPoint ? (
                       <g className="flowchart-edge-label" transform={`translate(${labelPoint.x}, ${labelPoint.y})`}>
                         <rect x="-18" y="-11" width="36" height="22" rx="11" />

@@ -89,6 +89,10 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 
 **Default evolution framework:** use `grounded-evolver` as the main synthesis layer for self-improvement and context preservation. Treat `workspace-continuity`, `workspace-memory-stack`, `workspace-graph`, and `safe-evolution-loop` as supporting modules, not competing defaults.
 
+**Diagram routing rule:** when authoring flowcharts/skill graphs, use orthogonal connectors with rounded corners and at most one turn per arrow by default. Keep text fully inside shapes, prefer aligned branches, and optimize first for clarity/legibility and then for elegance.
+
+**Visible UI fix rule:** when fixing a visual or interaction complaint, do not count under-the-hood refactors as success unless the rendered result visibly addresses the exact complaint. After each meaningful UI/layout pass, check the actual rendered outcome against the stated rules before declaring it fixed.
+
 **Discord extension rule:** treat Discord (especially `#control-center`) as an extension arm, not a separate body. Important tasks, requests, decisions, and follow-ups from Discord should be copied back into main project memory: the website task board and relevant workspace memory files.
 
 **Telegram extension rule:** treat Telegram DMs the same way: as an extension channel, not a separate body. Important tasks, requests, decisions, and follow-ups from Telegram should also be copied back into main project memory: the website task board and relevant workspace memory files.
