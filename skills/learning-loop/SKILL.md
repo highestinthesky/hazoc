@@ -105,6 +105,19 @@ Examples:
 - Bad: “There was a time when the Windows browser failed because...”
 - Good: “If Control UI says device signature expired in Windows+WSL, check for clock skew and try `wsl --shutdown`.”
 
+## Request-friction protocol
+
+When a request reveals friction, failure, or a workflow miss, use the chart-derived protocol in:
+
+- `skills/learning-loop/references/request-friction-protocol.md`
+
+Use it as a two-branch workflow:
+
+- first-time problems -> record, generalize, get a clean sub-agent take, combine, vet, then promote
+- repeated problems / failed protocols -> review the failed rule, get an outside diagnosis, plan deeper system/code changes if needed, vet, then implement
+
+Always do a safety/security check before integrating new protocols or changes into permanent memory or code.
+
 ## Review habit
 
 Review `.learnings/` at natural pauses:
@@ -119,3 +132,4 @@ Review `.learnings/` at natural pauses:
 For promotion heuristics and workspace-specific destination guidance, read:
 
 - `skills/learning-loop/references/promotion-map.md`
+- `skills/learning-loop/references/request-friction-protocol.md`

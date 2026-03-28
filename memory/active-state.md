@@ -65,3 +65,9 @@
 - Longer-term schedule plan still pending: support 4 schedule profiles (hazoc, haolun, and two more users), allow one request to place an event onto another user's schedule too, and eventually connect profiles to Google Calendar plus Discord/Telegram reminders.
 - While haolun is away, default to low-risk internal work: keep uptime healthy, tighten active/task memory, turn rough mission-control polish goals into smaller slices, and refine the market-digest / multi-user schedule plans into cleaner next steps.
 - Planning refinement completed in task memory: mission-control polish is now split into visual hierarchy, scanability, schedule/events distinction, and a small QA sweep; the market-digest and multi-user schedule tasks now include cleaner ordered execution slices.
+
+## Learning-system workflow update (2026-03-28 14:50 EDT)
+- Haolun's chart for handling workflow problems has now been received via screenshot and translated into a first operational text workflow.
+- New durable reference: `skills/learning-loop/references/request-friction-protocol.md`.
+- The learning-loop skill now points at that protocol, and `AGENTS.md` now carries the short trigger rule: after each meaningful request, do a quick friction check; if a problem occurred, route it through the first-time-vs-repeated problem branches instead of relying on ad hoc memory.
+- Next validation step is practical: use the protocol on real failures/friction, then tighten any ambiguous branches discovered during use.

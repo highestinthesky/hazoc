@@ -87,6 +87,8 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 
 **Retrieval loop rule:** for each new meaningful question, first search workspace memory for relevant prior context, load only the useful pieces, answer using that retrieved context, then ask whether the context is likely to matter for the next conversations. If not, write the important result to memory/task state and avoid carrying the larger context forward unnecessarily.
 
+**Post-request learning rule:** after each meaningful request, do a quick friction check. If nothing went wrong, continue normal memory optimization. If there was friction, a miss, or a failure, route it through the `learning-loop` request-friction protocol: first-time issues should be generalized into prevention rules, while repeated issues should trigger review of the failed protocol plus deeper system/code-change planning if needed. Safety-vet all proposed protocols or changes before integrating them; if risk is unclear, stop and surface the proposal plus risks to haolun.
+
 **Default evolution framework:** use `grounded-evolver` as the main synthesis layer for self-improvement and context preservation. Treat `workspace-continuity`, `workspace-memory-stack`, `workspace-graph`, and `safe-evolution-loop` as supporting modules, not competing defaults.
 
 **Diagram routing rule:** when authoring flowcharts/skill graphs, use orthogonal connectors with rounded corners and at most one turn per arrow by default. Keep text fully inside shapes, prefer aligned branches, and optimize first for clarity/legibility and then for elegance.
