@@ -77,4 +77,7 @@
 - `AGENTS.md` now points future sessions at grounded-evolver's two-branch model for post-request learning checks.
 - The planner now generates the problem packet / self-authored prompt / outside-review prompt directly, so the branch model is operational rather than only conceptual.
 - Grounded-evolver now emits a literal clean-room outside-review prompt and spawn plan for isolated subagent use.
-- Remaining limitation/follow-up: if literal zero inherited context is required, that likely needs a deeper runtime-level skip-startup-anchor feature beyond what the skill itself can force. A convenience helper that creates the sterile temp cwd and launches the run may still be worth adding later.
+- Grounded-evolver now also treats rollback as a first-class safety requirement for protocol/rule/workflow mutations: capture exact pre-change text first, keep a revert plan, and restore the prior state immediately if vetting or validation fails.
+- Grounded-evolver now asks an additional question for real problem/failure signals: could the problem have been caused or amplified by one of the currently followed protocols? If yes, prefer revising/narrowing/removing the causal protocol instead of stacking more protocol on top; explicit flags can mark this and route the case into `repair-pattern`.
+- Remaining nice-to-have follow-ups: a convenience helper that creates the sterile temp cwd and launches the outside review, and possibly a snapshot helper for protocol/workflow edits so rollback capture becomes more automatic.
+- New immediate context from Discord: haolun is editing another grounded-evolver framework revision right now and expects to reset hazoc once it is finished; first post-reset use will be as the first test subject for that revised framework.

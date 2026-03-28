@@ -37,6 +37,7 @@ This includes:
 Use when the current pattern/protection is **already known to be insufficient**.
 Trigger when either is true:
 - an existing protocol/protection failed
+- a followed protocol appears to have caused or amplified the problem
 - undesirable friction repeated strongly enough to prove the current pattern is insufficient
 
 This includes:
@@ -44,6 +45,17 @@ This includes:
 - repeat failure
 - repeated undesirable request-friction
 - recurring skipped step / correction / workflow miss
+
+### Protocol-causation question inside both branches
+
+For problem/failure signals in either branch, explicitly ask:
+- could this problem have been caused or amplified by one of the protocols currently being followed?
+
+If the answer is yes:
+- identify the specific protocol, rule, or checklist pattern if possible
+- explain how it caused or amplified the problem
+- prefer revising, narrowing, or removing that causal protocol instead of stacking another protocol on top
+- if the evidence is strong enough, treat this as a `repair-pattern` case even if it first looked like a `build-pattern` case
 
 ### Request-friction inside the universal model
 
@@ -120,6 +132,20 @@ When outside review is required:
 - treat the packet as the only allowed problem context
 
 Important: this creates a best-effort clean room. If OpenClaw injects startup anchoring or other platform-level context into brand-new subagents, that behavior cannot be fully disabled from grounded-evolver alone; the prompt should explicitly instruct the reviewer to ignore any ambient context and rely only on the packet.
+
+### Reversible protocol-mutation rule
+
+When the planned mutation changes a protocol, rule, workflow, or skill behavior:
+- capture the exact pre-change text before editing
+- prefer surgical edits over whole-file overwrite so rollback is precise
+- record the exact inserted block for new additions
+- keep a revert plan before the mutation is accepted
+- if vetting or post-change validation fails, restore the prior state immediately instead of leaving the mutation half-active
+
+A good planner run should emit:
+- whether revert handling is required
+- a revert plan with pre-change capture steps
+- rollback actions tied to the mutation surface
 
 ## Phase 2 — Generalize the root cause
 

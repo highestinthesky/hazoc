@@ -40,6 +40,11 @@ Use these two universal branches:
 - **build-pattern** -> no failed or clearly insufficient protection is known yet; capture the signal, generalize it, and extend durable state or rules as needed
 - **repair-pattern** -> an existing protection failed, or undesirable friction repeated strongly enough to prove the current pattern is insufficient; diagnose the failed layer and repair it at the right level
 
+Within either branch, when the signal is a real problem/failure, ask:
+- **Could this problem have been caused or amplified by one of the protocols currently being followed?**
+
+If yes, prefer revising, narrowing, or removing the causal protocol instead of stacking another protocol on top.
+
 A `request-friction` signal is just one important signal kind inside this two-branch model, not a separate top-level evolution path.
 
 ### 2. Generalize the root cause into a reusable moral
@@ -88,6 +93,11 @@ Every evolution must answer:
 - What proves it helped?
 - Where is the result recorded?
 - Does the chosen change actually honor the generalized moral from step 2?
+
+If the proposed mutation changes a protocol, rule, workflow, or skill behavior:
+- capture the exact pre-change text before editing
+- keep a rollback path for every inserted or modified block
+- if vetting or validation fails, revert the provisional change before treating the run as complete
 
 For UI work, validation must include both display and behavior:
 - check for visual bugs in the real layout/state where the change lives
@@ -217,6 +227,8 @@ Useful packet-filling flags when the default inference is too vague:
 - `--outcome-type`
 - `--failed-layer`
 - `--protocol-name`
+- `--protocol-caused-problem`
+- `--causal-protocol`
 
 For outside review, use the planner output literally:
 - spawn the isolated reviewer with `task = outside_review_prompt`

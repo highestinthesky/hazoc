@@ -69,6 +69,7 @@ Capture, at minimum:
 - signal kind
 - chosen branch
 - problem packet
+- protocol-causation assessment
 - root cause
 - generalized moral
 - chosen mutation target
@@ -131,4 +132,5 @@ A good request-friction run should usually leave behind:
 - Do not silently integrate risky changes.
 - Keep sub-agent inputs scoped and sanitized when outside review is used.
 - When outside review is used, send the generated `outside_review_prompt` as the exact subagent task instead of paraphrasing it.
+- If a protocol/rule/workflow mutation is provisional, capture the exact pre-change text and be ready to revert it immediately if vetting or validation fails.
 - Prefer the smallest durable write that preserves the lesson.

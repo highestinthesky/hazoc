@@ -81,6 +81,8 @@ def observed_signals(args) -> list[str]:
 def protection_state(args) -> str:
     if args.protocol_failed:
         return 'failed-existing-protection'
+    if undesirable_signal(args) and args.protocol_caused_problem:
+        return 'causal-followed-protocol'
     if undesirable_signal(args) and args.protocol_existed:
         return 'existing-protection-present'
     if undesirable_signal(args):
@@ -91,6 +93,8 @@ def protection_state(args) -> str:
 def choose_analysis_branch(args) -> str:
     kind = signal_kind(args)
     if args.protocol_failed:
+        return 'repair-pattern'
+    if undesirable_signal(args) and args.protocol_caused_problem:
         return 'repair-pattern'
     if kind == 'repeat-failure':
         return 'repair-pattern'
@@ -103,6 +107,8 @@ def branch_reason(args) -> str:
     kind = signal_kind(args)
     if args.protocol_failed:
         return 'an existing protection explicitly failed'
+    if undesirable_signal(args) and args.protocol_caused_problem:
+        return 'the problem appears to have been caused or amplified by a followed protocol'
     if kind == 'repeat-failure':
         return 'the signal kind itself is repeat-failure'
     if undesirable_signal(args) and args.protocol_existed:
@@ -195,6 +201,10 @@ def packet_fields(args) -> list[str]:
 
     if args.protocol_name or args.protocol_existed or args.protocol_failed:
         fields.append('protection_reference')
+    if undesirable_signal(args):
+        fields.append('protocol_causation_assessment')
+    if args.causal_protocol:
+        fields.append('causal_protocol_reference')
     if observed_signals(args):
         fields.append('observed_signals')
     if branch == 'repair-pattern':
@@ -231,6 +241,17 @@ def build_problem_packet(args) -> dict:
 
     if args.protocol_name or args.protocol_existed or args.protocol_failed:
         packet['protection_reference'] = args.protocol_name or 'unnamed-existing-protection'
+    if undesirable_signal(args):
+        if args.protocol_caused_problem:
+            packet['protocol_causation_assessment'] = 'caused-or-amplified-by-followed-protocol'
+        elif args.protocol_failed:
+            packet['protocol_causation_assessment'] = 'possible-existing-protocol-failure'
+        elif args.protocol_existed:
+            packet['protocol_causation_assessment'] = 'check-whether-existing-protocol-contributed'
+        else:
+            packet['protocol_causation_assessment'] = 'unknown'
+    if args.causal_protocol:
+        packet['causal_protocol_reference'] = args.causal_protocol
     signals = observed_signals(args)
     if signals:
         packet['observed_signals'] = signals
@@ -240,31 +261,71 @@ def build_problem_packet(args) -> dict:
     return packet
 
 
+def protocol_causation_check(args) -> dict:
+    if not undesirable_signal(args):
+        return {
+            'required': False,
+            'question': 'Could this problem have been caused by one of the protocols that I follow?',
+            'note': 'Not applicable because the current signal is not a problem/failure case.',
+        }
+
+    if args.protocol_caused_problem:
+        assessment = 'yes'
+    elif args.protocol_failed:
+        assessment = 'possible-failed-protocol'
+    elif args.protocol_existed:
+        assessment = 'possible-existing-protocol-contribution'
+    else:
+        assessment = 'unknown'
+
+    result = {
+        'required': True,
+        'question': 'Could this problem have been caused or amplified by one of the protocols currently being followed?',
+        'assessment': assessment,
+        'if_yes': [
+            'Identify the specific protocol, rule, or checklist pattern that appears causal.',
+            'Explain how it caused or amplified the problem.',
+            'Prefer revising, narrowing, or removing the causal protocol instead of stacking another protocol on top.',
+        ],
+        'if_no': 'Continue with the normal build/repair logic and treat the issue as missing or insufficient protection rather than protocol-caused.',
+    }
+    if args.causal_protocol:
+        result['causal_protocol_reference'] = args.causal_protocol
+    return result
+
+
 def artifact_checklist(args) -> list[str]:
     branch = choose_analysis_branch(args)
     if branch == 'repair-pattern':
-        return [
+        items = [
             'problem packet',
+            'protocol-causation assessment',
             'self-authored repair plan',
             'clean outside diagnosis prompt',
             'clean-room subagent spawn spec',
             'merged repair decision',
             'durable write in the chosen destination',
         ]
-    if undesirable_signal(args):
-        return [
+    elif undesirable_signal(args):
+        items = [
             'problem packet',
+            'protocol-causation assessment',
             'self-authored prevention/update list',
             'clean outside review prompt',
             'clean-room subagent spawn spec',
             'merged generalized draft',
             'durable write in the chosen destination',
         ]
-    return [
-        'signal-capture packet',
-        'chosen durable write(s)',
-        'validation note or proof',
-    ]
+    else:
+        items = [
+            'signal-capture packet',
+            'chosen durable write(s)',
+            'validation note or proof',
+        ]
+
+    if revert_required(args):
+        items.append('pre-change snapshot and revert plan')
+    return items
 
 
 def build_actions(args) -> list[str]:
@@ -279,6 +340,7 @@ def build_actions(args) -> list[str]:
         if undesirable_signal(args):
             actions.extend([
                 'build a compact problem packet',
+                'ask whether one of the currently followed protocols caused or amplified the problem',
                 'draft a self-authored prevention/update list',
             ])
             if outside_review_required(args):
@@ -295,6 +357,7 @@ def build_actions(args) -> list[str]:
         actions.extend([
             'review the protection or workflow that should have prevented the issue',
             'build a compact failure packet',
+            'ask whether one of the currently followed protocols caused or amplified the problem',
         ])
         if outside_review_required(args):
             actions.append('get a clean outside diagnosis')
@@ -303,6 +366,11 @@ def build_actions(args) -> list[str]:
             'produce self and third-party change plans',
             'repair the failed protection at the right layer',
         ])
+
+    if revert_required(args):
+        actions.append('capture exact pre-change text before mutating any protocol/rule/workflow file')
+        actions.append('prepare a rollback path for each protocol addition or edit')
+        actions.append('revert provisional protocol/workflow changes immediately if vetting or validation fails')
 
     if args.loss_risk >= 4:
         actions.append('update memory/active-state.md')
@@ -327,6 +395,9 @@ def build_actions(args) -> list[str]:
 
     if args.structure_needed:
         actions.append('add workspace-graph entities/relations')
+
+    if args.protocol_caused_problem:
+        actions.append('prefer revising, narrowing, or removing the causal protocol instead of stacking another protocol on top')
 
     if branch == 'repair-pattern':
         if args.blast_radius <= 3:
@@ -364,6 +435,53 @@ def choose_mutation_target(args) -> str:
     return 'daily-memory-capture'
 
 
+def revert_required(args) -> bool:
+    target = choose_mutation_target(args)
+    return target in {'operating-rule', 'workflow-or-skill-patch', 'rule-or-workflow-repair'} or args.rule or args.protocol_existed or args.protocol_failed
+
+
+def revert_plan(args) -> dict:
+    if not revert_required(args):
+        return {}
+
+    target = choose_mutation_target(args)
+    plan = {
+        'required': True,
+        'trigger': 'If safety/security vetting rejects the proposed protocol/workflow change, or if post-change validation shows the mutation was wrong or unsafe.',
+        'surface': target,
+        'before_change': [
+            'Capture the exact pre-change text for every file/block that will be edited.',
+            'Prefer surgical edits over whole-file overwrite so rollback can restore the previous state precisely.',
+            'For a new inserted rule/block, record the exact inserted text and destination.',
+            'For a newly created file, record that it is new so rollback can delete it cleanly if needed.',
+        ],
+    }
+
+    if target == 'operating-rule':
+        plan['rollback_actions'] = [
+            'Restore the previous AGENTS/rule text exactly, or remove the newly inserted rule block entirely.',
+            'Re-run the relevant validation checks so the reverted state is confirmed stable.',
+            'Only then surface the failed proposal and why it was rejected.',
+        ]
+        plan['success_condition'] = 'The prior rule state is restored exactly and no rejected protocol addition remains active.'
+    elif target == 'workflow-or-skill-patch':
+        plan['rollback_actions'] = [
+            'Restore the exact pre-change contents of the affected skill/workflow/helper files.',
+            'Delete any newly created protocol/helper file that was added provisionally.',
+            'Re-run smoke tests so the previous behavior is confirmed back in place before reporting the failure.',
+        ]
+        plan['success_condition'] = 'The skill/workflow returns to the exact prior behavior and no rejected helper/protocol addition remains.'
+    else:
+        plan['rollback_actions'] = [
+            'Restore the prior rule/workflow text or structure exactly.',
+            'If multiple files were touched, revert them as one coherent set rather than leaving a mixed state.',
+            'Re-run the relevant validation checks before treating the rollback as complete.',
+        ]
+        plan['success_condition'] = 'The prior workflow/rule set is restored as a coherent whole and the rejected repair does not remain partially active.'
+
+    return plan
+
+
 def generalized_moral(args) -> str:
     if args.moral:
         return args.moral
@@ -372,6 +490,8 @@ def generalized_moral(args) -> str:
     branch = choose_analysis_branch(args)
 
     if branch == 'repair-pattern':
+        if args.protocol_caused_problem:
+            return 'When a followed protocol causes or amplifies a problem, revise or remove the causal protocol instead of layering more protocol on top.'
         if kind == 'request-friction':
             return 'When a request reveals that the current protection is insufficient, repair the failed layer instead of repeating the workaround.'
         return 'When the current pattern or protection is insufficient, repair the right layer instead of normalizing the repeat failure.'
@@ -399,6 +519,8 @@ def root_cause_summary(args) -> str:
     branch = choose_analysis_branch(args)
 
     if branch == 'repair-pattern':
+        if args.protocol_caused_problem:
+            return 'A real signal suggested that one of the currently followed protocols was itself causing or amplifying the problem, so the protocol set needs revision rather than simple expansion.'
         return 'A real signal showed that the current protection, workflow, or implementation was missing, skipped, too weak, or applied at the wrong layer.'
     if kind == 'progress':
         return 'Meaningful project state changed, but without durable capture the progress would fade and future work would restart from partial memory.'
@@ -430,6 +552,12 @@ def validation_checks(args) -> list[str]:
             'Name the concrete request-friction signals that were observed.',
         ])
 
+    if undesirable_signal(args):
+        checks.extend([
+            'Ask whether one of the currently followed protocols caused or amplified the problem.',
+            'If yes, prefer revising, narrowing, or removing the causal protocol instead of stacking another protocol on top.',
+        ])
+
     if branch == 'build-pattern':
         if undesirable_signal(args):
             checks.extend([
@@ -458,6 +586,14 @@ def validation_checks(args) -> list[str]:
             'Use a clean-room spawn configuration: one-shot run, delete cleanup, sandbox require, and a sterile temp cwd outside the workspace.',
             'Do not attach extra files or prepend parent-session summary when booting the outside reviewer.',
             'Treat literal zero inherited platform context as not guaranteed unless OpenClaw itself exposes a skip-startup-anchor feature; design the prompt so the packet is the only allowed problem context.',
+        ])
+
+    if revert_required(args):
+        checks.extend([
+            'Before mutating protocol/rule/workflow files, capture the exact old text or exact inserted block so rollback is precise.',
+            'Do not make a protocol addition you cannot cleanly remove if vetting fails.',
+            'If vetting fails after a provisional protocol/workflow mutation, revert the change before treating the run as complete.',
+            'If validation fails, restore the pre-change state instead of leaving a half-accepted protocol mutation active.',
         ])
 
     if args.ui:
@@ -501,9 +637,11 @@ def priority_score(args) -> int:
 def next_step(args) -> str:
     branch = choose_analysis_branch(args)
     if branch == 'repair-pattern':
-        return 'Use the generated failure packet and the exact outside_review_prompt in a clean-room subagent run, compare self and outside repair plans, then implement the smallest safe fix at the right layer.'
+        if args.protocol_caused_problem:
+            return 'Capture the pre-change state first, confirm which followed protocol caused or amplified the problem, use the generated outside-review prompt, then revise/narrow/remove the causal protocol instead of layering more protocol on top and revert immediately if vetting fails.'
+        return 'Capture the pre-change state first, use the generated failure packet and the exact outside_review_prompt in a clean-room subagent run, compare self and outside repair plans, then implement the smallest safe fix at the right layer and revert immediately if vetting fails.'
     if undesirable_signal(args):
-        return 'Use the generated problem packet and the exact outside_review_prompt in a clean-room subagent run, write a first prevention/update draft, then promote the smallest safe generalized change.'
+        return 'Capture the pre-change state first, ask whether one of the followed protocols caused the problem, use the generated problem packet and the exact outside_review_prompt in a clean-room subagent run, write a first prevention/update draft, then promote the smallest safe generalized change and revert immediately if vetting fails.'
     return 'Capture the signal in the smallest durable state, then validate that future-you could recover from that record.'
 
 
@@ -515,17 +653,21 @@ def self_authored_prompt(args) -> str:
     if branch == 'repair-pattern':
         task_lines = [
             'Review the packet and identify the failed protection or insufficient pattern.',
+            'Ask whether one of the currently followed protocols caused or amplified the problem; if yes, name it or describe its pattern.',
             'Write a self-authored repair plan that fixes the issue at the right layer.',
             'Prefer the smallest durable repair that actually addresses the failure class.',
             'Do not default to cosmetic rule rewrites if the workflow, skill, or implementation layer is the real problem.',
-            'End with: root cause, generalized moral, repair options, preferred smallest safe change, risks/unknowns.',
+            'If a followed protocol appears causal, prefer revising, narrowing, or removing it instead of stacking another protocol on top.',
+            'End with: root cause, generalized moral, protocol-causation assessment, repair options, preferred smallest safe change, risks/unknowns.',
         ]
     elif undesirable_signal(args):
         task_lines = [
-            'Review the packet and draft a self-authored prevention/update list.',
+            'Review the packet and ask whether one of the currently followed protocols caused or amplified the problem.',
+            'Draft a self-authored prevention/update list.',
             'Generalize the lesson so it prevents the class of mistake, not just this instance.',
             'Prefer the smallest durable change that would have prevented the friction.',
-            'End with: root cause, generalized moral, candidate protections/updates, preferred smallest safe change, risks/unknowns.',
+            'If a followed protocol appears causal, prefer revising, narrowing, or removing it instead of stacking another protocol on top.',
+            'End with: root cause, generalized moral, protocol-causation assessment, candidate protections/updates, preferred smallest safe change, risks/unknowns.',
         ]
     else:
         task_lines = [
@@ -549,6 +691,7 @@ def self_authored_prompt(args) -> str:
         '- Prefer the smallest safe change.\n'
         '- Do not assume hidden context beyond the packet.\n'
         '- Do not propose risky autonomy, unsafe access expansion, or secret storage.\n'
+        '- If you recommend protocol/rule/workflow changes, keep them reversible and state what would need to be restored if vetting fails.\n'
     )
 
 
@@ -563,17 +706,21 @@ def outside_review_prompt(args) -> str:
     if branch == 'repair-pattern':
         asks = [
             'Explain why the current protection or pattern still failed.',
+            'Assess whether one of the currently followed protocols appears to have caused or amplified the problem.',
             'Identify the layer that most likely needs repair (memory, rule, workflow, skill/helper, implementation, or UI).',
             'Propose the smallest durable repair that addresses the failure class.',
             'Say whether a rule-only change is insufficient and why, if applicable.',
-            'Return: diagnosis, failed layer, repair options, preferred smallest safe change, risks/unknowns.',
+            'If a followed protocol appears causal, say whether it should be revised, narrowed, or removed instead of layering more protocol on top.',
+            'Return: diagnosis, protocol-causation assessment, failed layer, repair options, preferred smallest safe change, risks/unknowns.',
         ]
     else:
         asks = [
             'Generalize the packet into a reusable prevention/update pattern.',
+            'Assess whether one of the currently followed protocols appears to have caused or amplified the problem.',
             'Propose protections or changes that would prevent this class of friction in the future.',
             'Prefer the smallest durable change that solves the class of problem.',
-            'Return: diagnosis, generalized pattern, candidate protections, preferred smallest safe change, risks/unknowns.',
+            'If a followed protocol appears causal, say whether it should be revised, narrowed, or removed instead of layering more protocol on top.',
+            'Return: diagnosis, protocol-causation assessment, generalized pattern, candidate protections, preferred smallest safe change, risks/unknowns.',
         ]
 
     ask_block = '\n'.join(f'- {line}' for line in asks)
@@ -595,6 +742,7 @@ def outside_review_prompt(args) -> str:
         '- Do not propose unsafe autonomy or access expansion.\n'
         '- Call out uncertainty instead of inventing facts.\n'
         '- Optimize for generalizable, durable guidance rather than incident-specific wording.\n'
+        '- If you recommend protocol/rule/workflow changes, also note how they could be reverted cleanly if vetting rejects them.\n'
     )
 
 
@@ -654,6 +802,8 @@ def main() -> None:
     p.add_argument('--outcome-type', default='')
     p.add_argument('--failed-layer', default='')
     p.add_argument('--protocol-name', default='')
+    p.add_argument('--protocol-caused-problem', action='store_true')
+    p.add_argument('--causal-protocol', default='')
     p.add_argument('--json', action='store_true')
     args = p.parse_args()
 
@@ -674,11 +824,14 @@ def main() -> None:
         'outside_review_required': outside_review_required(args),
         'packet_fields': packet_fields(args),
         'problem_packet': build_problem_packet(args),
+        'protocol_causation_check': protocol_causation_check(args),
         'artifact_checklist': artifact_checklist(args),
         'self_authored_prompt': self_authored_prompt(args),
         'outside_review_prompt': outside_review_prompt(args),
         'outside_review_spawn_plan': subagent_spawn_plan(args),
         'outside_review_spawn_notes': spawn_isolation_notes() if outside_review_required(args) else [],
+        'revert_required': revert_required(args),
+        'revert_plan': revert_plan(args),
         'root_cause': root_cause_summary(args),
         'generalized_moral': generalized_moral(args),
         'priority_score': priority_score(args),
@@ -710,9 +863,13 @@ def main() -> None:
     for item in plan['packet_fields']:
         print(f'- {item}')
     print(f"\nProblem Packet\n{json_block(plan['problem_packet'])}\n")
+    print(f"Protocol-Causation Check\n{json_block(plan['protocol_causation_check'])}\n")
     print('Artifact Checklist')
     for item in plan['artifact_checklist']:
         print(f'- {item}')
+    if plan['revert_required']:
+        print(f"Revert Required\n- {plan['revert_required']}\n")
+        print(f"Revert Plan\n{json_block(plan['revert_plan'])}\n")
     print(f"\nRoot Cause\n- {plan['root_cause']}\n")
     print(f"Generalized Moral\n- {plan['generalized_moral']}\n")
     print(f"Priority Score\n- {plan['priority_score']}\n")
