@@ -25,3 +25,27 @@ If gog auth fails under WSL/headless, switch to file keyring and ensure GOG_KEYR
 - See Also: none
 
 ---
+
+## [LRN-20260328-001] keep-skill-source-in-skills-and-generated-skill-
+
+**Logged**: 2026-03-28T10:38:07-04:00
+**Priority**: medium
+**Status**: pending
+**Area**: git
+
+### Summary
+Keep skill source in skills/ and generated .skill bundles in ignored dist/
+
+### Details
+The editable source of custom skills should live under skills/<name>/. Packaged .skill archives are generated artifacts and should be written to the ignored dist/ directory rather than tracked at the repo root. Root-level packaged duplicates created confusion during git review because they looked like standalone source files even though they matched the skill folders byte-for-byte.
+
+### Suggested Action
+When packaging local skills, write exports to dist/ and avoid tracking root-level .skill files unless there is a specific release/distribution reason.
+
+### Metadata
+- Source: workflow_observation
+- Related Files: none
+- Tags: git, skills, packaging, repo-layout
+- See Also: none
+
+---
