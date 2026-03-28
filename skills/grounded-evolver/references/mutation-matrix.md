@@ -1,5 +1,11 @@
 # Mutation Matrix
 
+Choose the learning branch first:
+- `build-pattern` when no failed or clearly insufficient protection is known yet
+- `repair-pattern` when an existing protection failed or undesirable friction repeated strongly enough to prove the current pattern is insufficient
+
+Then use the matrix below to choose the smallest useful mutation.
+
 | Situation | Best first move | Possible second move |
 | --- | --- | --- |
 | New request | task board | daily note |

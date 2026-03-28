@@ -29,6 +29,19 @@ Start from a real trigger:
 - decision that changes the plan
 - meaningful progress worth preserving
 
+### 1a. Take exactly one learning branch
+
+Every signal must take **exactly one** of two branches. There is no separate peer `general-evolution` branch anymore.
+
+Signal kind is tracked separately (`request-friction`, `progress`, `decision`, `blocker`, `correction`, `cross-channel`, etc.).
+The branch answers a different question: **are we building/extending the current pattern, or repairing an insufficient one?**
+
+Use these two universal branches:
+- **build-pattern** -> no failed or clearly insufficient protection is known yet; capture the signal, generalize it, and extend durable state or rules as needed
+- **repair-pattern** -> an existing protection failed, or undesirable friction repeated strongly enough to prove the current pattern is insufficient; diagnose the failed layer and repair it at the right level
+
+A `request-friction` signal is just one important signal kind inside this two-branch model, not a separate top-level evolution path.
+
 ### 2. Generalize the root cause into a reusable moral
 
 Before changing anything, ask:
@@ -176,6 +189,22 @@ python3 skills/grounded-evolver/scripts/grounded_evolve.py \
   --project \
   --rule \
   --ui
+```
+
+For request-friction signals, use the integrated branch fields explicitly:
+
+```bash
+python3 skills/grounded-evolver/scripts/grounded_evolve.py \
+  --signal "I followed the request, but skipped a protocol step and needed a correction" \
+  --category request-friction \
+  --meaningful-request \
+  --user-correction \
+  --skipped-step \
+  --protocol-existed \
+  --impact 4 \
+  --loss-risk 3 \
+  --project \
+  --json
 ```
 
 ## References

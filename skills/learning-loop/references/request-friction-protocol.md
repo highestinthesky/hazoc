@@ -1,178 +1,132 @@
-# Request Friction Protocol
+# Request-Friction Logging Handoff
 
-Use this when improving the learning process itself, or when a request revealed friction, failure, or a workflow miss.
+Grounded-evolver now owns the branch logic.
+This file is **not** a separate peer learning engine anymore.
 
-## Trigger
+Use it only after grounded-evolver has already classified the signal into one of its two universal branches:
 
-Run a quick friction check after each meaningful request:
+- `build-pattern`
+- `repair-pattern`
 
-- Did anything go wrong?
-- Was there avoidable friction?
-- Did a protocol fail, get skipped, or prove insufficient?
+Signal kind remains separate.
+`request-friction` is one signal kind inside grounded-evolver, not its own top-level evolution framework.
 
-If **no**, end this protocol and continue normal memory optimization.
+## Ownership split
 
-If **yes**, choose the branch below.
+### Grounded-evolver owns
 
-## Branch A — first-time or not-yet-recurring problem
+- signal intake
+- signal-kind classification
+- branch choice (`build-pattern` vs `repair-pattern`)
+- root-cause extraction
+- generalized moral
+- mutation-target selection
+- validation planning
+- deciding whether deeper workflow/skill/code repair is needed
 
-Use this when the problem does **not** appear to be a repeat failure of an existing protocol.
+See:
+- `skills/grounded-evolver/SKILL.md`
+- `skills/grounded-evolver/references/algorithm.md`
+- `skills/grounded-evolver/scripts/grounded_evolve.py`
 
-### 1) Record the problem set
+### Learning-loop owns
+
+- durable logging
+- promotion to the right memory layer
+- `.learnings/` entry creation
+- keeping the result from disappearing into chat
+
+## When to use this handoff
+
+Use this file when:
+- grounded-evolver identified the signal kind as `request-friction`
+- and you now need to persist the outcome cleanly
+
+A `request-friction` signal means:
+- a meaningful request occurred
+- and there was evidence of friction, failure, a skipped step, repeat friction, or protocol weakness
+
+Common indicators:
+- user correction
+- tool failure
+- skipped step
+- protocol existed / protocol failed
+- avoidable detour
+- bad local fix
+- repeat friction
+
+## Handoff flow
+
+1. Run grounded-evolver first.
+2. Read the resulting branch, packet fields, actions, and validation checks.
+3. Carry out the branch-specific work.
+4. Use learning-loop to store the result in the smallest correct home.
+5. Report what changed.
+
+## What to persist from grounded-evolver
 
 Capture, at minimum:
+- signal kind
+- chosen branch
+- root cause
+- generalized moral
+- chosen mutation target
+- what changed
+- how it was validated
+- what should happen next
 
-- request / task context
-- what went wrong or felt rough
-- likely cause
-- risk if repeated
-- whether any existing protocol already covered it
+## Branch-specific logging guidance
 
-### 2) Generate a self-authored prevention list
+### If grounded-evolver chose `build-pattern`
 
-Write your own first pass at general rules or protocols that would have prevented this class of mistake.
+Typical persistence shape:
+- daily note entry for the incident
+- `.learnings/LEARNINGS.md` if the lesson is still raw or unresolved
+- `AGENTS.md` only if the prevention rule is already stable and clearly reusable
 
-Bias toward:
+Good fit:
+- first-time request friction
+- first-pass correction where no prior protection failed
+- a new prevention rule that still needs observation
 
-- generalizable rules, not one-off patches
-- prevention, not just postmortems
-- small durable changes first
+### If grounded-evolver chose `repair-pattern`
 
-### 3) Get a clean third-party take
+Typical persistence shape:
+- daily note entry for the failure and repair
+- `.learnings/ERRORS.md` for the repeatable failure / failed protection
+- `AGENTS.md`, `TOOLS.md`, or grounded-evolver/skill docs when the repaired rule/workflow is stable
+- mission-control task memory if implementation work is still open
 
-Spawn an isolated sub-agent with **no current conversational baggage beyond the problem packet**.
-Ask it to:
-
-- review the problem set as if advising a third party
-- generalize the pattern
-- propose protocols that would prevent similar failures in the future
-
-### 4) Combine and generalize
-
-Combine the self-authored list and the third-party list.
-Feed the combined draft back through a clean rewrite step with the explicit goal of making the protocols as general, reusable, and non-fragile as possible.
-
-### 5) Revise once more yourself
-
-Do one more human-facing pass yourself before promotion:
-
-- remove overfitting
-- tighten wording
-- split mixed rules apart
-- make the operational trigger obvious
-
-### 6) Safety/security vet
-
-Before integrating, ask:
-
-- could this expand access unsafely?
-- could this normalize risky autonomous behavior?
-- could this write sensitive information into memory?
-- could this cause future overreach or brittle behavior?
-
-If risk is non-trivial or unclear, **stop** and present the proposed protocols plus risks to haolun instead of integrating them silently.
-
-### 7) Merge with current protocol set
-
-If safe, review existing protocols:
-
-- if overlapping, expand or merge the existing rule rather than duplicating it
-- if non-overlapping, add the new rule in the smallest correct home
-
-### 8) Save + report
-
-Write the durable result to the correct destinations and tell haolun what changed.
-
-## Branch B — repeated problem or protocol failure
-
-Use this when the same problem happened again, or when an existing protocol clearly failed.
-
-### 1) Review the existing protocol
-
-Look up the already-written protocol, rule, or workflow that was supposed to prevent the issue.
-Then record:
-
-- which protocol existed
-- how reality diverged from it
-- why it failed (ambiguity, missing trigger, too weak, not implemented, etc.)
-
-### 2) Record the failure explicitly
-
-Log:
-
-- the error / friction
-- the failed protocol(s)
-- your own diagnosis of why the protection failed
-
-### 3) Get a clean outside diagnosis
-
-Spawn an isolated sub-agent with only the failure packet.
-Ask it to explain:
-
-- why the system still failed
-- what the root issue seems to be
-- what class of fix is required
-
-### 4) Produce two change plans
-
-Create:
-
-- a **self-generated change plan** for fixing the failure
-- a **third-party suggested change plan** from the clean sub-agent
-
-Do **not** limit either plan to light protocol rewording if the failure points to a deeper implementation or workflow gap.
-It is valid to propose system, tooling, or code changes when the protocol itself is not enough.
-
-### 5) Combine into finalized revisions
-
-Merge the two plans into one revised set of changes.
-Prefer:
-
-- smallest change that actually fixes the class of failure
-- durable implementation over cosmetic wording
-- explicit triggers and validation steps
-
-### 6) Safety/security vet
-
-Vet the proposed revisions before applying them.
-If risky or unclear, **stop** and present the suggested changes plus risks to haolun.
-
-### 7) Implement when safe
-
-If safe:
-
-- implement the approved revisions
-- update the relevant protocol / skill / code / task memory
-- save the learning into permanent memory
-- report the new learning and the concrete change back to haolun
+Good fit:
+- failed existing protocol
+- repeated request-friction
+- deeper workflow/skill/code repair prompted by recurring failure
 
 ## Destination map
 
 Route outputs to the smallest correct home:
 
-- `memory/YYYY-MM-DD.md` → raw incident note, context, what happened today
-- `.learnings/ERRORS.md` → reproducible failures, broken workflows, failed protocols
-- `.learnings/LEARNINGS.md` → not-yet-promoted lessons and recurring patterns
-- `AGENTS.md` → durable operating rules for hazoc
-- `TOOLS.md` → tool or environment-specific fixes
-- skill `SKILL.md` / references → workflow-specific operating logic
-- mission-control task board → project work, implementation tasks, follow-ups
+- `memory/YYYY-MM-DD.md` -> raw incident note, context, what happened today
+- `.learnings/ERRORS.md` -> reproducible failures, broken workflows, failed protections
+- `.learnings/LEARNINGS.md` -> not-yet-promoted lessons and recurring patterns
+- `AGENTS.md` -> durable operating rules
+- `TOOLS.md` -> tool or environment-specific fixes
+- grounded-evolver / skill docs -> stable workflow logic
+- mission-control task board -> project work, implementation tasks, follow-ups
 
 ## Standard artifacts
 
-When this protocol runs well, it should usually produce these artifacts:
+A good request-friction run should usually leave behind:
 
-1. problem packet
-2. self-generated list or change plan
-3. clean sub-agent take
-4. combined draft
-5. finalized vetted rule/change set
-6. durable write(s) in the right home
+1. grounded-evolver plan output
+2. chosen branch
+3. durable write(s) in the right destination
+4. explicit note of what changed and why
+5. next step, if any remains
 
 ## Boundary conditions
 
-- Keep sub-agent inputs scoped and sanitized.
-- Do not leak sensitive chat content unless needed.
+- Do not redefine branch semantics here; grounded-evolver is the source of truth.
 - Do not silently integrate risky changes.
-- Prefer general protocols for first-time issues.
-- Escalate to deeper system/code changes when a repeated failure proves the protocol layer alone is insufficient.
+- Keep sub-agent inputs scoped and sanitized when outside review is used.
+- Prefer the smallest durable write that preserves the lesson.

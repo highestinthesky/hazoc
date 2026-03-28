@@ -105,16 +105,23 @@ Examples:
 - Bad: “There was a time when the Windows browser failed because...”
 - Good: “If Control UI says device signature expired in Windows+WSL, check for clock skew and try `wsl --shutdown`.”
 
-## Request-friction protocol
+## Grounded-evolver handoff
 
-When a request reveals friction, failure, or a workflow miss, use the chart-derived protocol in:
+Grounded-evolver now owns the main learning-branch logic.
+Do **not** treat learning-loop as a separate peer evolution system.
 
-- `skills/learning-loop/references/request-friction-protocol.md`
+When a request or other signal reveals friction, failure, or a workflow miss:
 
-Use it as a two-branch workflow:
+- use `skills/grounded-evolver/scripts/grounded_evolve.py` to choose exactly one branch:
+  - `build-pattern`
+  - `repair-pattern`
+- use `skills/grounded-evolver/references/algorithm.md` as the source of truth for branch semantics
+- use `skills/learning-loop/references/request-friction-protocol.md` only as the logging/promotion handoff for request-friction outcomes
 
-- first-time problems -> record, generalize, get a clean sub-agent take, combine, vet, then promote
-- repeated problems / failed protocols -> review the failed rule, get an outside diagnosis, plan deeper system/code changes if needed, vet, then implement
+Learning-loop's role is to persist the result cleanly:
+- log `.learnings/` entries when useful
+- promote stable lessons into AGENTS / TOOLS / USER / MEMORY / daily notes
+- avoid leaving the learning trapped only in chat
 
 Always do a safety/security check before integrating new protocols or changes into permanent memory or code.
 

@@ -66,8 +66,13 @@
 - While haolun is away, default to low-risk internal work: keep uptime healthy, tighten active/task memory, turn rough mission-control polish goals into smaller slices, and refine the market-digest / multi-user schedule plans into cleaner next steps.
 - Planning refinement completed in task memory: mission-control polish is now split into visual hierarchy, scanability, schedule/events distinction, and a small QA sweep; the market-digest and multi-user schedule tasks now include cleaner ordered execution slices.
 
-## Learning-system workflow update (2026-03-28 14:50 EDT)
-- Haolun's chart for handling workflow problems has now been received via screenshot and translated into a first operational text workflow.
-- New durable reference: `skills/learning-loop/references/request-friction-protocol.md`.
-- The learning-loop skill now points at that protocol, and `AGENTS.md` now carries the short trigger rule: after each meaningful request, do a quick friction check; if a problem occurred, route it through the first-time-vs-repeated problem branches instead of relying on ad hoc memory.
-- Next validation step is practical: use the protocol on real failures/friction, then tighten any ambiguous branches discovered during use.
+## Learning-system workflow update (2026-03-28 16:20 EDT)
+- Haolun's learning-process chart has now been fully folded into grounded-evolver rather than left as an adjacent system.
+- Grounded-evolver now owns branch logic for all signals, with exactly two universal branches:
+  - `build-pattern` -> no failed or clearly insufficient protection is known yet
+  - `repair-pattern` -> an existing protection failed, or undesirable friction repeated strongly enough to prove the current pattern is insufficient
+- Signal kind now stays separate from branch choice (`request-friction`, `progress`, `decision`, `blocker`, `correction`, `cross-channel`, etc.).
+- `skills/grounded-evolver/scripts/grounded_evolve.py` was rewritten so every signal chooses exactly one branch and emits branch-specific packet fields, actions, validation checks, and next-step guidance.
+- Grounded-evolver docs now reflect the same model, and learning-loop has been reduced to a logging/promotion handoff role instead of a competing evolution engine.
+- `AGENTS.md` now points future sessions at grounded-evolver's two-branch model for post-request learning checks.
+- Remaining nice-to-have follow-up: decide whether to add an automatic helper for generating the problem packet / outside-review prompt, but the architectural merge itself is done.

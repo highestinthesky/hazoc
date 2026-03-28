@@ -13,6 +13,85 @@ Start from something real:
 
 Write the signal in one sentence.
 
+## Phase 1a — Choose the learning branch
+
+Every signal must take **exactly one** of two branches.
+There is no third peer `general-evolution` branch.
+
+Keep **signal kind** separate from **branch**:
+- signal kind = what type of signal this is (`request-friction`, `progress`, `decision`, `blocker`, `correction`, `cross-channel`, etc.)
+- branch = whether the current pattern is being built/extended or repaired
+
+### Branch 1 — `build-pattern`
+
+Use when there is **no known failed or clearly insufficient protection yet**.
+This includes:
+- progress worth preserving
+- decisions that should become durable state
+- first-pass blockers/corrections/friction
+- first-time request-friction
+- new state that should be captured before it drifts away
+
+### Branch 2 — `repair-pattern`
+
+Use when the current pattern/protection is **already known to be insufficient**.
+Trigger when either is true:
+- an existing protocol/protection failed
+- undesirable friction repeated strongly enough to prove the current pattern is insufficient
+
+This includes:
+- failed existing protocol
+- repeat failure
+- repeated undesirable request-friction
+- recurring skipped step / correction / workflow miss
+
+### Request-friction inside the universal model
+
+A **request-friction** signal means:
+- a meaningful request occurred
+- and there is evidence of friction, failure, a skipped step, repeat friction, or protocol weakness
+
+Typical request-friction indicators:
+- user correction
+- tool failure
+- skipped step
+- protocol existed / protocol failed
+- avoidable detour
+- bad local fix
+- repeat friction
+
+### Packet guidance
+
+If the signal is `request-friction`, capture at minimum:
+- signal_kind
+- request_context
+- symptom_type
+- impact
+- repeat_count
+- protection_state
+- loss_risk
+- blast_radius
+
+If the signal is other undesirable friction, capture:
+- signal_kind
+- context
+- failure_mode
+- impact
+- repeat_count
+- protection_state
+- loss_risk
+- blast_radius
+
+If the signal is constructive/neutral (for example progress or decisions), capture:
+- signal_kind
+- context
+- outcome_type
+- impact
+- repeat_count
+- protection_state
+- loss_risk
+- blast_radius
+
 ## Phase 2 — Generalize the root cause
 
 Before mutating, force one layer of abstraction.
