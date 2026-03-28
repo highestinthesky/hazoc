@@ -191,21 +191,40 @@ python3 skills/grounded-evolver/scripts/grounded_evolve.py \
   --ui
 ```
 
-For request-friction signals, use the integrated branch fields explicitly:
+For request-friction signals, use the integrated branch fields explicitly. The planner now emits a structured problem packet plus self-authored and outside-review prompts:
 
 ```bash
 python3 skills/grounded-evolver/scripts/grounded_evolve.py \
   --signal "I followed the request, but skipped a protocol step and needed a correction" \
   --category request-friction \
   --meaningful-request \
+  --request-context "User asked for X; I did Y and then needed a correction." \
   --user-correction \
   --skipped-step \
   --protocol-existed \
+  --protocol-name "post-request learning check" \
   --impact 4 \
   --loss-risk 3 \
   --project \
   --json
 ```
+
+Useful packet-filling flags when the default inference is too vague:
+- `--context`
+- `--request-context`
+- `--symptom-type`
+- `--failure-mode`
+- `--outcome-type`
+- `--failed-layer`
+- `--protocol-name`
+
+For outside review, use the planner output literally:
+- spawn the isolated reviewer with `task = outside_review_prompt`
+- do not rewrite that prompt from memory
+- prefer a sterile temp `cwd` outside the workspace (the planner now emits a spawn plan for this)
+- do not attach extra files or prepend parent-session summary
+
+Treat this as a **best-effort clean room**. If OpenClaw itself injects startup anchoring for new subagents, that is a platform/runtime behavior rather than something the skill can fully disable from inside the prompt alone.
 
 ## References
 

@@ -58,7 +58,7 @@ Common indicators:
 ## Handoff flow
 
 1. Run grounded-evolver first.
-2. Read the resulting branch, packet fields, actions, and validation checks.
+2. Read the resulting branch, problem packet, self-authored prompt, outside-review prompt (when present), clean-room spawn plan (when present), actions, and validation checks.
 3. Carry out the branch-specific work.
 4. Use learning-loop to store the result in the smallest correct home.
 5. Report what changed.
@@ -68,6 +68,7 @@ Common indicators:
 Capture, at minimum:
 - signal kind
 - chosen branch
+- problem packet
 - root cause
 - generalized moral
 - chosen mutation target
@@ -129,4 +130,5 @@ A good request-friction run should usually leave behind:
 - Do not redefine branch semantics here; grounded-evolver is the source of truth.
 - Do not silently integrate risky changes.
 - Keep sub-agent inputs scoped and sanitized when outside review is used.
+- When outside review is used, send the generated `outside_review_prompt` as the exact subagent task instead of paraphrasing it.
 - Prefer the smallest durable write that preserves the lesson.

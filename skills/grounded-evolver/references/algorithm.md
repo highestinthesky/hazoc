@@ -92,6 +92,35 @@ If the signal is constructive/neutral (for example progress or decisions), captu
 - loss_risk
 - blast_radius
 
+Optional fields when relevant:
+- protection_reference
+- observed_signals
+- failed_layer
+
+### Operational artifacts
+
+The planner should not stop at branch classification.
+For each signal, generate the artifacts needed to execute the branch:
+
+- a structured problem/signal packet
+- a self-authored prompt for the first pass
+- an outside-review prompt when outside review is required
+- a clean-room subagent spawn plan when outside review is required
+- an artifact checklist showing what the run should leave behind
+
+Use these artifacts to make the branch operational rather than leaving it as a conceptual diagram.
+
+### Clean-room outside review rule
+
+When outside review is required:
+- use the generated `outside_review_prompt` as the **exact** subagent task
+- do not rewrite it from memory
+- do not attach extra files or parent-chat summaries
+- prefer a sterile temp `cwd` outside the workspace
+- treat the packet as the only allowed problem context
+
+Important: this creates a best-effort clean room. If OpenClaw injects startup anchoring or other platform-level context into brand-new subagents, that behavior cannot be fully disabled from grounded-evolver alone; the prompt should explicitly instruct the reviewer to ignore any ambient context and rely only on the packet.
+
 ## Phase 2 — Generalize the root cause
 
 Before mutating, force one layer of abstraction.

@@ -75,4 +75,6 @@
 - `skills/grounded-evolver/scripts/grounded_evolve.py` was rewritten so every signal chooses exactly one branch and emits branch-specific packet fields, actions, validation checks, and next-step guidance.
 - Grounded-evolver docs now reflect the same model, and learning-loop has been reduced to a logging/promotion handoff role instead of a competing evolution engine.
 - `AGENTS.md` now points future sessions at grounded-evolver's two-branch model for post-request learning checks.
-- Remaining nice-to-have follow-up: decide whether to add an automatic helper for generating the problem packet / outside-review prompt, but the architectural merge itself is done.
+- The planner now generates the problem packet / self-authored prompt / outside-review prompt directly, so the branch model is operational rather than only conceptual.
+- Grounded-evolver now emits a literal clean-room outside-review prompt and spawn plan for isolated subagent use.
+- Remaining limitation/follow-up: if literal zero inherited context is required, that likely needs a deeper runtime-level skip-startup-anchor feature beyond what the skill itself can force. A convenience helper that creates the sterile temp cwd and launches the run may still be worth adding later.
