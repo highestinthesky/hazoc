@@ -2,7 +2,7 @@
   {
     "id": "recurring-task-board-review",
     "title": "Run hourly memory optimization + task board update",
-    "summary": "Each hour while active: capture anything meaningful from the last hour, record passive work like push IDs, reread curated memory + today's note for accuracy, tighten stale task/event state, and lightly optimize today's memory without rewriting older daily files.",
+    "summary": "Each hour while active: capture anything meaningful from the last hour, record passive work like push IDs, reread curated memory + today's note for accuracy, tighten stale task/event state, freshness-check future-looking handoff bullets so superseded expectations are cleared or demoted, and lightly optimize today's memory without rewriting older daily files.",
     "cadence": "hourly",
     "everyHours": 1,
     "category": "workflow"

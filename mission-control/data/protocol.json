@@ -139,5 +139,21 @@
     ],
     "createdAt": "2026-03-29T03:38:00.000Z",
     "updatedAt": "2026-03-29T03:38:00.000Z"
+  },
+  {
+    "id": "protocol-reset-anchor-freshness",
+    "title": "Treat older handoff predictions as unconfirmed until freshness-checked",
+    "summary": "When re-anchoring from active-state and daily notes, do not present older \"expected next move\" notes as current truth unless the newest note or current conversation still corroborates them. Keep active-state live-only and leave historical handoff prose in daily notes.",
+    "category": "continuity",
+    "cadence": "on reset/session anchor and memory re-anchor",
+    "status": "active",
+    "scope": "global",
+    "owner": "main",
+    "canonicalPaths": [
+      "AGENTS.md",
+      "memory/active-state.md"
+    ],
+    "createdAt": "2026-03-29T19:05:00.000Z",
+    "updatedAt": "2026-03-29T19:05:00.000Z"
   }
 ]

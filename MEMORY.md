@@ -57,7 +57,7 @@
 ## Operating rules for continuity
 
 - For each meaningful message from haolun: identify the implied task/follow-up, create or update it in the mission-control task board, and keep the lane marking current.
-- Run a full memory optimization + task board update roughly hourly while actively working: capture meaningful changes from the last hour, record passive work like push IDs, reread curated memory + today's note for accuracy, tighten stale task/event state, and lightly optimize today's memory without rewriting prior daily files.
+- Run a full memory optimization + task board update roughly hourly while actively working: capture meaningful changes from the last hour, record passive work like push IDs, reread curated memory + today's note for accuracy, tighten stale task/event state, explicitly freshness-check and clear/supersede future-looking handoff bullets that are no longer current, and lightly optimize today's memory without rewriting prior daily files.
 - Keep the local mission-control site up while hazoc is actively running.
 - Push meaningful workspace changes to GitHub once per hour while active, aligned to `:30`.
 - A visible recurring duty does not count as done by itself; it only counts after a real commit/push or a verified clean/no-change check.

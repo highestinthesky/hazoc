@@ -1,99 +1,37 @@
 # Active State
 
-## Fresh-chat anchor
+## Live anchor (updated 2026-03-29 3:05 PM EDT)
 - Mission control is the shared local-first workspace between haolun and hazoc.
-- Use `http://127.0.0.1:4180/` locally for mission control right now; 4173 had stale/dev-server issues.
-- Current LAN URL is `http://192.168.12.188:4180/`.
+- Local URL: `http://127.0.0.1:4180/`.
+- Current LAN URL: `http://192.168.12.188:4180/`.
+- Treat this file as live state only. Historical handoffs belong in daily notes, and older "expected next move" bullets should not be surfaced as current truth unless a newer note or the current conversation still corroborates them.
 
-## What exists now
-- Tasks page with detailed task memory and section management across Workbench, On Hold, and Archived; the old Capture Tray has been removed.
-- Protocol page now holds standing operating rules plus recurring rhythm, so Workbench stays focused on real project work instead of duties.
-- Schedule page is now event-first in `America/New_York`, with scheduled user events separated from hazoc work tasks.
-- Events page stores scheduled events separately so they can be reviewed and archived cleanly.
-- Memory page reads real workspace memory files.
+## Current product state
+- Mission control currently has Tasks, Protocol, Schedule, Events, and Memory pages.
+- Tasks use Workbench, On Hold, and Archived.
+- Protocol holds standing rules plus recurring rhythm.
+- Schedule is event-first in `America/New_York`, with scheduled user events separated from hazoc work tasks.
+- Main notable open product issue: the site works, but the UI still feels visually clunky and needs more polish.
 
-## Core operating rules
-- Per meaningful message: triage task -> create/update task -> adjust lane.
-- Run a full hourly memory optimization + task board update while active, not just a superficial board skim.
+## Current active threads
+- Mission-control UI polish.
+- Market-moving news digest design.
+- Multi-user schedule architecture.
+- Learning-system / grounded-evolver refinement.
+
+## Freshest learning-system state
+- Grounded-evolver's two-branch model is already in place: `build-pattern` vs `repair-pattern`.
+- The revised framework/chart handoff already happened after the restart; do not treat it as a pending next step.
+- Current likely follow-ups if learning-system work resumes: clean-room outside-review helper, snapshot/revert helper, and gradual protocol-registry backfill.
+
+## Operating rhythm to preserve
+- For each meaningful message: triage the implied task/follow-up and update durable state.
+- Run a full hourly memory optimization + task board update while active.
 - Mirror important Discord/Telegram items back into main project memory.
-- Push meaningful GitHub changes once per hour while active, aligned to `:30`; a recurring reminder only counts after a real commit/push or a verified clean/no-change check.
+- Push meaningful GitHub changes once per hour while active, aligned to `:30`; a reminder only counts after a real commit/push or a verified clean/no-change check.
 - Keep mission control up while active.
-- Before any meaningful action, do a quick harm check: could this be harmful in any way? If yes or unclear, reduce blast radius or ask.
+- Before meaningful actions, do a quick harm check.
 - Use memory retrieval before answering new meaningful questions.
 
-## Default systems
-- Continuity stack: active-state + task board + daily note + curated memory.
-- Evolution framework: `grounded-evolver` first; supporting modules only as needed.
-- Video analysis: `youtube-watcher` + `video-frames` together by default.
-
-## Messaging state
-- Discord: configured; control-center is the main server channel; haolun is the intended command source.
-- Telegram: DM-only; allowlisted sender `8635838230`.
-
-## Important next-step reminder
-- Start the next conversation fresh and re-anchor from this file + today's memory note instead of dragging the old thread forward.
-
-## Current session anchor (2026-03-26 18:16 EDT)
-- Re-anchored after reset from active-state, today's note, curated memory, and the mission-control task board.
-- Current workbench priorities remain:
-  - mission-control UI polish, starting with visual hierarchy and scanability
-  - market-moving news digest design, starting with a bounded source allowlist and observation schema
-  - multi-user schedule architecture, starting with profile registry + event ownership rules
-- No new blocker surfaced during re-anchor; the main known open issue is still that mission control works but the UI feels visually clunky and needs another polish pass.
-- If work resumes immediately, default first move is to either do the visual hierarchy polish slice or formalize the digest source/schema spec.
-- Fresh UI preference from haolun: strip self-explanatory page/context boxes and keep mission control utility-first rather than explaining pages back to ourselves.
-- Fresh interaction preference from haolun: selected task/detail state should read clearly at a glance; stronger selected-card affordances are now the preferred direction for mission-control lists.
-- Current polish direction also includes richer sidebar/navigation selection and small whole-site fit-and-finish improvements where they make the interface feel smoother without adding clutter.
-
-## Handoff for tomorrow
-- Highest-priority unresolved UI issue is now the Skills-page flowcharts, not the old page-polish items.
-- Real stopping point: the chart renderer was tightened structurally (orthogonal, rounded, one-turn schema), but the visible layout is still not reliably satisfying the chart rules because node placement has not been fully re-planned around those constraints.
-- First move tomorrow: re-layout the authored charts visually from scratch so every current arrow can be straight or one-turn only, with text fully inside shapes and no clipping/merging. Do not count code cleanup as success unless the rendered charts visibly satisfy the rules.
-- Current chart rules to enforce: text fully inside shapes; avoid line intersections/merging; align branches; clarity/legibility first, elegance second; arrows streamlined; orthogonal only; rounded turns; max one total turn by default; graph box large but nodes comfortably smaller within it.
-- After the chart cleanup is visibly correct, continue authoring the remaining graph-worthy skills (`safe-evolution-loop`, `workspace-continuity`, `workspace-graph`) using the same diagram rules from the start.
-- Market-digest design and multi-user schedule architecture remain open workbench items, but the immediate UX debt tomorrow is still the Skills chart layout/legibility pass.
-- Mission control should already auto-recover and be reachable at `http://192.168.12.188:4180/` after login/reboot via the watchdog + bootstrap path.
-
-## Latest upgrade
-- Mission control now runs stably on port 4180 with `HOST=0.0.0.0`.
-- LAN bridge is working and the current Wi-Fi/LAN URL is `http://192.168.12.188:4180/`.
-- Mission-control uptime is now boot-persistent in two layers: a real `systemd --user` service (`mission-control-watchdog.service`) inside WSL plus a Windows logon task (`HazocMissionControlBootstrap`) that wakes WSL and starts the watchdog after reboot/login.
-- Protocol page was added so standing rules and recurring duties have their own home, and the obvious duty-items were moved out of Workbench into Protocol/archived history.
-- New feedback from haolun: the site now works over LAN, but the current UI still feels visually ugly/clunky and needs another polish pass.
-- Schedule page now has a direct-to-hazoc request textbox with inline replies / clarifying questions.
-- Scheduled events are now separated from tasks: dedicated `mission-control/data/events.json`, event API/routes, event-first schedule calendar, and a separate Events page with archiving.
-- Longer-term schedule plan still pending: support 4 schedule profiles (hazoc, haolun, and two more users), allow one request to place an event onto another user's schedule too, and eventually connect profiles to Google Calendar plus Discord/Telegram reminders.
-- While haolun is away, default to low-risk internal work: keep uptime healthy, tighten active/task memory, turn rough mission-control polish goals into smaller slices, and refine the market-digest / multi-user schedule plans into cleaner next steps.
-- Planning refinement completed in task memory: mission-control polish is now split into visual hierarchy, scanability, schedule/events distinction, and a small QA sweep; the market-digest and multi-user schedule tasks now include cleaner ordered execution slices.
-
-## Learning-system workflow update (2026-03-28 16:20 EDT)
-- Haolun's learning-process chart has now been fully folded into grounded-evolver rather than left as an adjacent system.
-- Grounded-evolver now owns branch logic for all signals, with exactly two universal branches:
-  - `build-pattern` -> no failed or clearly insufficient protection is known yet
-  - `repair-pattern` -> an existing protection failed, or undesirable friction repeated strongly enough to prove the current pattern is insufficient
-- Signal kind now stays separate from branch choice (`request-friction`, `progress`, `decision`, `blocker`, `correction`, `cross-channel`, etc.).
-- `skills/grounded-evolver/scripts/grounded_evolve.py` was rewritten so every signal chooses exactly one branch and emits branch-specific packet fields, actions, validation checks, and next-step guidance.
-- Grounded-evolver docs now reflect the same model, and learning-loop has been reduced to a logging/promotion handoff role instead of a competing evolution engine.
-- `AGENTS.md` now points future sessions at grounded-evolver's two-branch model for post-request learning checks.
-- The planner now generates the problem packet / self-authored prompt / outside-review prompt directly, so the branch model is operational rather than only conceptual.
-- Grounded-evolver now emits a literal clean-room outside-review prompt and spawn plan for isolated subagent use.
-- Grounded-evolver now also treats rollback as a first-class safety requirement for protocol/rule/workflow mutations: capture exact pre-change text first, keep a revert plan, and restore the prior state immediately if vetting or validation fails.
-- Grounded-evolver now asks an additional question for real problem/failure signals: could the problem have been caused or amplified by one of the currently followed protocols? If yes, prefer revising/narrowing/removing the causal protocol instead of stacking more protocol on top; explicit flags can mark this and route the case into `repair-pattern`.
-- Lessons/protocol storage is now split cleanly: `.learnings/` is the draft/evidence area, while accepted protocols are indexed in `mission-control/data/protocol.json` and promoted into canonical operating files like `AGENTS.md`, `TOOLS.md`, or skill docs.
-- There is now a global subtask protocol-check rule: when a request is decomposed into smaller subtasks, re-check applicable protocols for each subtask instead of assuming the parent scan covers the children.
-- Hazoc identity now has a modest first-pass shape in durable files: SOUL frames hazoc as a companion/workshop partner rather than just a function, and IDENTITY currently uses `machine familiar` + `grounded, resourceful, slightly sharp, quietly warm` + `🛠️`.
-- There is now a standing nightly identity-curation rule: when haolun wraps the session for the night, review today's memory for unusually defining moments, but default to no change and keep personality-file edits extremely selective.
-- Remaining nice-to-have follow-ups: a convenience helper that creates the sterile temp cwd and launches the outside review, a snapshot helper for protocol/workflow edits so rollback capture becomes more automatic, gradual backfill of older important protocols into the registry, and a later deeper identity/avatar pass if wanted.
-- Learning-loop error storage is now normalized: `.learnings/errors.md` is the short landing page, while actual error entries live in `.learnings/errors/YYYY-MM.md` with one day heading per date and compact entries per error.
-- Git hygiene was tightened for continuous sync: Python cache artifacts are now ignored/untracked, and the existing hourly git auto-sync path remains the active preservation rhythm.
-- The one-time git-hygiene cleanup task has since been archived; the ongoing responsibility now lives in the hourly sync rhythm rather than Workbench.
-- Main-only Discord completion updates are now configured locally through `mission-control/data/notifications.json`, using a tested one-shot cron announce delivery path directly to `hzwp / #main_updates` (`1487645227421536327`), with `#control-center` (`1485016833819021495`) kept as fallback.
-- Live config/task/protocol references were cleaned up so the fallback text now consistently points to `#control-center` instead of the older `#protected-space` route.
-- New immediate context from Discord: haolun is editing another grounded-evolver framework revision right now and expects to reset hazoc once it is finished; first post-reset use will be as the first test subject for that revised framework.
-
-## Night wrap-up handoff (2026-03-28 23:43 EDT)
-- Reviewed today's memory for identity curation and made no further SOUL/IDENTITY edits tonight. The current first-pass identity shape still feels selective enough: companion/workshop-partner, machine familiar, grounded/resourceful/slightly sharp/quietly warm.
-- Learning-system work is no longer at the sketch stage; the core grounded-evolver architecture, storage split, rollback rules, protocol-causation checks, and subtask protocol-check rule are all in place.
-- Best next improvements if haolun returns to the learning system tomorrow: (1) helper automation for clean-room outside-review launch, (2) helper automation for snapshot/revert during protocol edits, (3) gradual protocol-registry backfill via `task-protocol-registry-backfill`.
-- Main-completion Discord notifications are live to `hzwp / #main_updates` (`1487645227421536327`) with `#control-center` fallback.
-- Re-anchor tomorrow from this section + today's daily note instead of the older UI-polish handoff sections.
+## Current caution
+- When anchoring after resets or interruptions, distinguish between confirmed current state and last recorded historical expectation. If there is any mismatch, report the uncertainty instead of collapsing them together.
