@@ -167,13 +167,13 @@
   {
     "id": "task-context-conservation",
     "title": "Optimize memory and task entries for context conservation",
-    "notes": "Context-conservation rules are now written into AGENTS.md, USER.md, today's memory note, active-state, and MEMORY.md so fresh sessions can re-anchor from durable files instead of hauling old chat context.",
+    "notes": "Context-conservation rules are now written into AGENTS.md, USER.md, today's memory note, active-state, and MEMORY.md so fresh sessions can re-anchor from durable files instead of hauling old chat context. OpenClaw runtime compaction was tuned on 2026-03-29 so native auto-compaction now uses `mode: safeguard`, `reserveTokensFloor: 27200` (roughly a 90% threshold for the currently reported 272k session window), and a custom pre-compaction memory flush prompt that appends durable notes only to `memory/YYYY-MM-DD.md`.",
     "description": "Project memory\n\nGoal\n- Reduce context waste by making memory, task, and journal use more retrieval-driven.\n\nWhat is known\n- Haolun wants hazoc to search memory for relevant prior context whenever a new question arrives.\n- Only the useful pieces should be loaded into working context.\n- After answering, hazoc should ask whether that context will matter for the next conversation; if not, write/store what matters and avoid carrying the larger context forward.\n\nWhat has been done\n- Wrote the retrieval-loop rule into AGENTS.md and USER.md.\n- Created MEMORY.md as a curated long-term anchor for mission-control direction, workflow rules, and current state.\n- Updated this task so the behavior stays visible in mission control.\n\nBlockers / unknowns\n- Current-session history cannot literally be deleted from the model context mid-thread, but future retrieval can be kept much tighter.\n\nNext steps\n- Use memory search at the start of new meaningful questions.\n- Keep retrieved context narrow.\n- Store the durable result and avoid reloading unnecessary context later.",
     "lane": "workbench",
     "scheduledStart": "",
     "scheduledEnd": "",
     "createdAt": "2026-03-24T20:07:00.000Z",
-    "updatedAt": "2026-03-25T00:40:00.000Z"
+    "updatedAt": "2026-03-29T21:25:00.000Z"
   },
   {
     "id": "task-memory-page",

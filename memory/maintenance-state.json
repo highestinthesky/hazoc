@@ -1,11 +1,11 @@
 {
-  "lastRunAt": "2026-03-29T20:05:00Z",
-  "lastRunLocal": "2026-03-29T16:05:00-0400",
+  "lastRunAt": "2026-03-29T21:05:00Z",
+  "lastRunLocal": "2026-03-29T17:05:00-0400",
   "lookbackMinutes": 60,
-  "lastGitHead": "2776da5",
+  "lastGitHead": "41fb0c6",
   "lastSummary": [
-    "Checked the past hour and found one passive-work git sync commit: 2776da5 at 3:30 PM EDT.",
-    "Verified the hour's meaningful learning-system and Discord-closeout workflow changes were already captured in today's daily note, active state, curated memory, and task memory.",
-    "Reread tasks, events, recurring duties, and current anchors; no additional compact stale-state fixes were needed this pass."
+    "Checked the past hour and found one passive-work git sync commit: 41fb0c6 at 4:30 PM EDT.",
+    "Verified the hour's meaningful Skills-page direction change and Discord closeout workflow repair were already captured in today's daily note, active state, curated memory, and task memory.",
+    "Removed a duplicated block from today's daily note and updated curated memory so the current mission-control page list includes Skills."
   ]
 }

@@ -44,7 +44,7 @@
 ## Current mission-control state
 
 - Reliable local URL: `http://127.0.0.1:4180/`.
-- The site currently has Tasks, Protocol, Schedule, Events, and Memory pages.
+- The site currently has Tasks, Protocol, Schedule, Events, Memory, and Skills pages.
 - Tasks are stored locally and act as shared project memory.
 - The current Tasks page uses three practical sections: Workbench, On Hold, and Archived. The old Capture Tray concept was dropped because it was not actually being used.
 - Workbench is now meant for active project work only; standing operating rules and recurring duties have been split into a dedicated Protocol section.
