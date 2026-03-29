@@ -95,7 +95,7 @@ Good fit:
 
 Typical persistence shape:
 - daily note entry for the failure and repair
-- `.learnings/ERRORS.md` for the repeatable failure / failed protection
+- `.learnings/errors.md` + `.learnings/errors/YYYY-MM.md` for repeatable failures / failed protections
 - `AGENTS.md`, `TOOLS.md`, or grounded-evolver/skill docs when the repaired rule/workflow is stable
 - mission-control task memory if implementation work is still open
 
@@ -109,7 +109,7 @@ Good fit:
 Route outputs to the smallest correct home:
 
 - `memory/YYYY-MM-DD.md` -> raw incident note, context, what happened today
-- `.learnings/ERRORS.md` -> reproducible failures, broken workflows, failed protections
+- `.learnings/errors.md` / `.learnings/errors/YYYY-MM.md` -> reproducible failures, broken workflows, failed protections
 - `.learnings/LEARNINGS.md` -> not-yet-promoted lessons and recurring patterns
 - `AGENTS.md` -> durable operating rules
 - `TOOLS.md` -> tool or environment-specific fixes

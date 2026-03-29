@@ -8,3 +8,5 @@ mission-control/node_modules/
 mission-control/dist/
 mission-control/logs/
 mission-control/.keepalive.lock
+__pycache__/
+*.pyc

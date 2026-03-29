@@ -27,7 +27,7 @@ Use this routing table before writing anything.
 | Tool/env/integration gotcha | `TOOLS.md` |
 | Important session event or deferred follow-up | `memory/YYYY-MM-DD.md` |
 | Correction, knowledge gap, best practice not ready for promotion | `.learnings/LEARNINGS.md` |
-| Repeatable failure, broken command, bad assumption | `.learnings/ERRORS.md` |
+| Repeatable failure, broken command, bad assumption | `.learnings/errors.md` + `.learnings/errors/YYYY-MM.md` |
 | Missing capability or future build request | `.learnings/FEATURE_REQUESTS.md` |
 | Time-based follow-up the user explicitly wants later | `cron` reminder, plus memory if useful |
 
@@ -86,6 +86,7 @@ python3 skills/learning-loop/scripts/log_entry.py --type feature --summary "..."
 ```
 
 The script auto-creates `.learnings/` and the log files if missing.
+For errors, it now keeps `.learnings/errors.md` as a short landing page and writes actual error entries into one monthly file per month under `.learnings/errors/YYYY-MM.md`, grouped by day.
 
 ## Promotion rules for this workspace
 

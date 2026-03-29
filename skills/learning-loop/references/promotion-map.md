@@ -87,7 +87,7 @@ Use for:
 - better practices
 - recurring patterns
 
-### `ERRORS.md`
+### `errors.md` + `errors/YYYY-MM.md`
 
 Use for:
 
@@ -95,6 +95,9 @@ Use for:
 - tool failures
 - config mistakes
 - reproducible bugs
+
+Keep `errors.md` short as the landing page/index.
+Store the actual entries in one monthly file per month under `errors/YYYY-MM.md`, grouped by day.
 
 ### `FEATURE_REQUESTS.md`
 
