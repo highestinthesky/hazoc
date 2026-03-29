@@ -97,6 +97,8 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 
 **Discord extension rule:** treat Discord (especially `#control-center`) as an extension arm, not a separate body. Important tasks, requests, decisions, and follow-ups from Discord should be copied back into main project memory: the website task board and relevant workspace memory files.
 
+**Main-completion Discord update rule:** when main (this agent in direct chat with haolun) fully completes a task assigned directly by haolun, send one brief completion ping through the configured Discord target in `mission-control/data/notifications.json`. Keep it to one short line, mention haolun, include an extremely brief analogy, and say the full report is in the control UI. Do not send these for subagent-only work, partial progress, or tasks not directly assigned by haolun. If `#main_updates` does not exist/bind yet, use the configured fallback Discord channel.
+
 **Telegram extension rule:** treat Telegram DMs the same way: as an extension channel, not a separate body. Important tasks, requests, decisions, and follow-ups from Telegram should also be copied back into main project memory: the website task board and relevant workspace memory files.
 
 ## Group Chats

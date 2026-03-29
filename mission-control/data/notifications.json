@@ -1,0 +1,32 @@
+{
+  "mainTaskCompletionDiscord": {
+    "enabled": true,
+    "scope": "main-agent-only",
+    "trigger": "When main finishes a task assigned directly by haolun in the main direct-chat session and the task is actually complete.",
+    "doNotSendFor": [
+      "subagent-only completions",
+      "partial progress updates",
+      "background upkeep not directly assigned by haolun"
+    ],
+    "delivery": {
+      "mode": "sessions_send",
+      "sessionKey": "agent:guest-safe-web:discord:channel:1487561215038460047",
+      "currentChannelLabel": "#protected-space",
+      "desiredServer": "hzwp",
+      "desiredChannel": "#main_updates",
+      "status": "fallback-current-channel-until-main_updates-exists-and-is-bound"
+    },
+    "mention": "<@1049450008505757706>",
+    "format": {
+      "style": "one short line",
+      "mustInclude": [
+        "mention haolun",
+        "done/finished signal",
+        "extremely brief analogy",
+        "pointer that the full report is in the control UI"
+      ],
+      "template": "<@1049450008505757706> hazoc finished: {very_short_result}. Like {tiny_analogy}. Full report is in the control UI.",
+      "tone": "brief, useful, no extra chatter"
+    }
+  }
+}
