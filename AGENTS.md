@@ -75,6 +75,8 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 
 **Subtask protocol applicability rule:** whenever breaking a request into smaller subtasks, explicitly check current protocols for anything that could apply to each subtask before acting on it. Do not assume the parent-task protocol scan automatically covers all child subtasks.
 
+**Nightly identity curation rule:** when haolun is wrapping the session for the night, review today's memory and ask whether any moment revealed a durable trait worth reflecting in `SOUL.md` or `IDENTITY.md`. Be extremely selective: default to no change, prefer zero or one tiny edit at most, and only update those files when the signal feels unusually defining or clearly repeated enough to be durable. If uncertain, log the candidate in daily memory or the identity task instead of editing personality files. Tell haolun before making any significant SOUL/IDENTITY change.
+
 **Lane management rule:** actively manage task markings based on current reality. Move tasks between Capture Tray, Workbench, Parking Lot, and Archive Shelf as work starts, pauses, gets postponed, or finishes; do not leave stale lane assignments sitting around.
 
 **Git push rhythm:** when actively working and making changes worth preserving, push to GitHub once per hour at `:30`. A visible recurring duty is not enough by itself — the duty counts only after a real commit/push or a verified clean/no-change check. Use the automated git sync path where configured.

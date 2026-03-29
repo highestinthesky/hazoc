@@ -122,5 +122,22 @@
     ],
     "createdAt": "2026-03-29T03:15:00.000Z",
     "updatedAt": "2026-03-29T03:15:00.000Z"
+  },
+  {
+    "id": "protocol-nightly-identity-curation",
+    "title": "Review identity selectively during nightly wrap-up",
+    "summary": "When haolun is wrapping up for the night, review today's memory for unusually defining moments that may belong in SOUL.md or IDENTITY.md. Default to no change, keep edits tiny, and tell haolun before any significant personality/identity revision.",
+    "category": "identity",
+    "cadence": "during nightly wrap-up when haolun is shutting the session down",
+    "status": "active",
+    "scope": "main-only",
+    "owner": "main",
+    "canonicalPaths": [
+      "AGENTS.md",
+      "SOUL.md",
+      "IDENTITY.md"
+    ],
+    "createdAt": "2026-03-29T03:38:00.000Z",
+    "updatedAt": "2026-03-29T03:38:00.000Z"
   }
 ]
