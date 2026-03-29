@@ -72,3 +72,29 @@ Live anchor state and historical predicted-next-step notes were mixed together, 
 The protocol was advisory rather than gating: a direct task could still be treated as finished without explicitly resolving whether the required Discord completion update had been sent, was not applicable, or was blocked/deferred.
 
 ---
+
+## [PRT-20260329-004] discord-completion-closeout-needed-a-durable-queue-and-restart-s
+
+**Logged**: 2026-03-29T17:47:00-04:00
+**Status**: accepted
+**Area**: workflow
+**Source Run**: RUN-20260329-003
+
+### Protocol Outcomes
+- For qualifying main-task completions, queue the Discord ping durably before task closure, then hand it off through an immediate isolated announce job and keep a persistent recovery cron draining the queue after restarts.
+- Use mission-control/data/main-task-closeouts.json as the durable queue and scripts/main_task_closeout.py as the single closeout helper for queueing, dispatching, and recovery.
+
+### Canonical Homes
+- AGENTS.md
+- mission-control/data/notifications.json
+- mission-control/data/protocol.json
+- mission-control/data/main-task-closeouts.json
+- TOOLS.md
+- MEMORY.md
+- memory/active-state.md
+- scripts/main_task_closeout.py
+
+### Why
+The existing protocol guarded intent, not the delivery handoff. It lacked durable pending-state plus restart-safe recovery, so a restart or simple omission could still drop the notification even though the rule existed.
+
+---

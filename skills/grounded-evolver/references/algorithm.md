@@ -131,6 +131,8 @@ When outside review is required:
 - prefer a sterile temp `cwd` outside the workspace
 - treat the packet as the only allowed problem context
 
+If the planner JSON is already saved, use `scripts/prepare_outside_review.py` to emit the reusable preferred/fallback spawn payloads instead of hand-copying them.
+
 Important: this creates a best-effort clean room. If OpenClaw injects startup anchoring or other platform-level context into brand-new subagents, that behavior cannot be fully disabled from grounded-evolver alone; the prompt should explicitly instruct the reviewer to ignore any ambient context and rely only on the packet.
 
 ### Reversible protocol-mutation rule
@@ -141,6 +143,8 @@ When the planned mutation changes a protocol, rule, workflow, or skill behavior:
 - record the exact inserted block for new additions
 - keep a revert plan before the mutation is accepted
 - if vetting or post-change validation fails, restore the prior state immediately instead of leaving the mutation half-active
+
+Use `scripts/snapshot_revert.py` when you want a cheap whole-file snapshot/revert path for those mutations instead of manual backup juggling.
 
 A good planner run should emit:
 - whether revert handling is required

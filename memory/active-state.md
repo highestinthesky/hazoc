@@ -25,8 +25,9 @@
 - The revised framework/chart handoff already happened after the restart; do not treat it as a pending next step.
 - A completed learning run now needs a standard artifact pack: full detail in the day’s `.learnings/.../error.md`, a succinct summary in `memory/YYYY-MM-DD.md`, and lesson/protocol outcomes in `.learnings/`.
 - `skills/learning-loop/scripts/log_learning_run.py` now exists as the one-shot helper to write that artifact pack consistently.
-- Qualifying direct main-task completions now also use an explicit closeout gate: resolve `ping sent` vs `not applicable` vs `blocked/deferred with reason` before treating the task as finished; `scripts/main_task_closeout.py` is the helper for that path.
-- Current likely follow-ups if learning-system work resumes: clean-room outside-review helper, snapshot/revert helper, and gradual protocol-registry backfill.
+- Qualifying direct main-task completions now use a durable closeout path: queue the Discord ping in `mission-control/data/main-task-closeouts.json`, hand it off through the immediate isolated cron announce path, and let the persistent `recover-main-task-closeouts` cron catch any unsent entries after restarts; `scripts/main_task_closeout.py` is the helper for that path.
+- Step-1 helper extraction is now done inside grounded-evolver: `scripts/prepare_outside_review.py` turns planner JSON into reusable preferred/fallback clean-room spawn payloads, and `scripts/snapshot_revert.py` provides cheap reversible file snapshots for protocol/workflow edits.
+- Current likely follow-ups if learning-system work resumes: gradual protocol-registry backfill, stronger per-repair regression checks, and a lightweight review surface for recent runs / repeat failure classes.
 
 ## Operating rhythm to preserve
 - For each meaningful message: triage the implied task/follow-up and update durable state.

@@ -238,8 +238,31 @@ For outside review, use the planner output literally:
 
 Treat this as a **best-effort clean room**. If OpenClaw itself injects startup anchoring for new subagents, that is a platform/runtime behavior rather than something the skill can fully disable from inside the prompt alone.
 
+Use the helper when you already saved the planner JSON and want the exact reusable spawn payloads instead of copy-editing them manually:
+
+```bash
+python3 skills/grounded-evolver/scripts/prepare_outside_review.py \
+  --plan-file /tmp/grounded-plan.json \
+  --json
+```
+
+For reversible protocol/rule/workflow edits, use the snapshot helper instead of ad hoc copy/paste backups:
+
+```bash
+python3 skills/grounded-evolver/scripts/snapshot_revert.py snapshot \
+  --name change-id \
+  --file AGENTS.md \
+  --file path/to/other/file
+
+# ...edit and validate...
+
+python3 skills/grounded-evolver/scripts/snapshot_revert.py restore \
+  --name change-id
+```
+
 ## References
 
 - Read `references/algorithm.md` for the full step-by-step model.
 - Read `references/mutation-matrix.md` for destination and mutation selection.
+- Read `references/helpers.md` for the reusable outside-review and snapshot/revert workflows.
 - Use `scripts/grounded_evolve.py` to generate a compact evolution plan.

@@ -91,3 +91,24 @@ Required Discord main-completion ping was missed because task closeout had no no
 Canonical protocol paths: AGENTS.md, mission-control/data/notifications.json, mission-control/data/protocol.json, TOOLS.md, scripts/main_task_closeout.py, MEMORY.md, memory/active-state.md
 
 ---
+
+## [LRN-20260329-003] discord-completion-closeout-needed-a-durable-queue-and-restart-s
+
+**Logged**: 2026-03-29T17:47:00-04:00
+**Priority**: high
+**Status**: accepted
+**Area**: workflow
+**Source Run**: RUN-20260329-003
+
+### Summary
+Discord completion closeout needed a durable queue and restart-safe recovery, not just a rule/helper
+
+### Lessons
+- Do not call an external-notification closeout reliable unless the handoff is durably recorded and recoverable after restart.
+- When a helper remains advisory and session-bound, the real failed layer is workflow plus delivery handoff, not memory wording.
+- A persistent queue plus idempotent dispatcher is a better repair than stacking more checklist language on top of a false gate.
+
+### Promotion Notes
+Canonical protocol paths: AGENTS.md, mission-control/data/notifications.json, mission-control/data/protocol.json, mission-control/data/main-task-closeouts.json, TOOLS.md, MEMORY.md, memory/active-state.md, scripts/main_task_closeout.py
+
+---

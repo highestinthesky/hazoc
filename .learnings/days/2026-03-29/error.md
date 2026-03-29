@@ -83,3 +83,43 @@ Ran an outside-review diagnosis, validated the updated JSON files, compiled scri
 - mission-control/data/tasks.json
 - memory/2026-03-29.md
 - .learnings/PROTOCOLS.md
+
+## [RUN-20260329-003] discord-completion-closeout-needed-a-durable-queue-and-restart-s
+
+**Logged**: 2026-03-29T17:47:00-04:00
+**Summary**: Discord completion closeout needed a durable queue and restart-safe recovery, not just a rule/helper
+**Branch**: repair-pattern
+**Signal Kind**: request-friction
+**Area**: workflow
+**Priority**: high
+**Status**: accepted
+**Source**: user_feedback
+
+### Full Problem
+After the first repair, qualifying main-task completions still produced no Discord ping. The earlier fix added a closeout rule and helper script, but the handoff remained advisory and session-bound: I still had to remember to call the helper before replying, and there was no durable pending state or recovery path if a restart interrupted closeout. The user explicitly asked for pings once each task is done and for that behavior not to break on restart.
+
+### Context
+This runtime did not expose a first-class cron tool in-chat, but the local OpenClaw CLI and docs confirmed that gateway cron jobs persist across restarts. That made the smallest honest repair a durable closeout queue plus isolated cron dispatch/recovery, instead of pretending a checklist alone was a reliable gate.
+
+### Root Cause
+The existing protocol guarded intent, not the delivery handoff. It lacked durable pending-state plus restart-safe recovery, so a restart or simple omission could still drop the notification even though the rule existed.
+
+### Lessons Captured
+- Do not call an external-notification closeout reliable unless the handoff is durably recorded and recoverable after restart.
+- When a helper remains advisory and session-bound, the real failed layer is workflow plus delivery handoff, not memory wording.
+- A persistent queue plus idempotent dispatcher is a better repair than stacking more checklist language on top of a false gate.
+
+### Protocol Outcomes
+- For qualifying main-task completions, queue the Discord ping durably before task closure, then hand it off through an immediate isolated announce job and keep a persistent recovery cron draining the queue after restarts.
+- Use mission-control/data/main-task-closeouts.json as the durable queue and scripts/main_task_closeout.py as the single closeout helper for queueing, dispatching, and recovery.
+
+### Changes Made
+Rewrote scripts/main_task_closeout.py into a durable queue/dispatch helper; created mission-control/data/main-task-closeouts.json; updated AGENTS.md, MEMORY.md, TOOLS.md, memory/active-state.md, notifications.json, protocol.json, and task memory; and created the persistent cron job main-task-closeout-recovery to drain queued notifications after restarts.
+
+### Validation
+Compiled the helper, manually tested queue-send and dispatch behavior, verified JSON configs, and created the persistent recovery cron job through the OpenClaw CLI. The remaining live validation step is dogfooding the new path on this task's own completion ping.
+
+### Related Files
+- mission-control/data/tasks.json
+- memory/2026-03-29.md
+- .learnings/PROTOCOLS.md

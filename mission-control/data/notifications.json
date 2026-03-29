@@ -7,8 +7,10 @@
       "required": true,
       "resolveBeforeTaskIsClosed": true,
       "helper": "scripts/main_task_closeout.py",
+      "queueFile": "mission-control/data/main-task-closeouts.json",
+      "recoveryJobName": "recover-main-task-closeouts",
       "resolutionBranches": [
-        "ping-sent",
+        "queued-or-dispatched-ping",
         "not-applicable",
         "blocked-or-deferred-with-reason"
       ]
@@ -43,9 +45,9 @@
     },
     "implementation": {
       "tool": "cron",
-      "pattern": "Resolve the closeout gate first with `scripts/main_task_closeout.py` (or the same explicit branch mentally). If the result is ping-sent, create a one-shot immediate agentTurn job with announce delivery to the Discord target and a prompt that outputs exactly the final notification line.",
+      "pattern": "Resolve the closeout gate through `scripts/main_task_closeout.py`: queue the notification durably, create a one-shot immediate isolated agentTurn job with announce delivery to the Discord target, and keep the persistent `recover-main-task-closeouts` cron draining any queued entries that survive a restart.",
       "tested": true,
-      "lastVerifiedAt": "2026-03-29T02:53:32.102Z"
+      "lastVerifiedAt": "2026-03-29T21:45:00.000Z"
     }
   }
 }

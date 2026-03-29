@@ -76,12 +76,12 @@
   },
   {
     "id": "protocol-main-completion-discord-update",
-    "title": "Resolve Discord completion update before closing a direct main task",
-    "summary": "When main fully finishes a task assigned directly by haolun, do not treat it as closed until the completion-update branch is resolved: ping sent, not applicable, or blocked/deferred with reason. If applicable, send one short Discord ping with a tiny analogy and tell them the full report is in the control UI. Use explicit announce delivery to `hzwp / #main_updates`, with `#control-center` kept only as fallback.",
+    "title": "Durably queue and dispatch the Discord completion update before closing a direct main task",
+    "summary": "When main fully finishes a task assigned directly by haolun, do not treat it as closed until the completion-update branch is durably resolved: queue/dispatched ping, not applicable, or blocked/deferred with reason. If applicable, queue the ping in `mission-control/data/main-task-closeouts.json`, hand it off through an immediate isolated announce job, and rely on the persistent recovery cron to catch any queued entries that survive a restart. Use explicit announce delivery to `hzwp / #main_updates`, with `#control-center` kept only as fallback.",
     "category": "cross-channel",
     "cadence": "on main-task completion",
     "createdAt": "2026-03-29T02:25:00.000Z",
-    "updatedAt": "2026-03-29T19:58:00.000Z",
+    "updatedAt": "2026-03-29T21:45:00.000Z",
     "status": "active",
     "scope": "main-only",
     "owner": "main",
@@ -89,7 +89,8 @@
       "AGENTS.md",
       "mission-control/data/notifications.json",
       "TOOLS.md",
-      "scripts/main_task_closeout.py"
+      "scripts/main_task_closeout.py",
+      "mission-control/data/main-task-closeouts.json"
     ]
   },
   {

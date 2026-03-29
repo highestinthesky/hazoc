@@ -16,6 +16,8 @@ UNDESIRABLE_KINDS = {
 }
 
 STERILE_SUBAGENT_CWD = '/tmp/grounded-evolver-clean-room'
+OUTSIDE_REVIEW_HELPER = 'skills/grounded-evolver/scripts/prepare_outside_review.py'
+SNAPSHOT_REVERT_HELPER = 'skills/grounded-evolver/scripts/snapshot_revert.py'
 
 
 def clamp(v: int, lo: int = 1, hi: int = 5) -> int:
@@ -767,8 +769,24 @@ def spawn_isolation_notes() -> list[str]:
         'Spawn as a one-shot isolated run with delete cleanup.',
         f'Use a sterile temp cwd outside the workspace when possible: {STERILE_SUBAGENT_CWD}.',
         'Do not attach extra files, prior conversation, or parent-session summaries.',
+        f'If you already saved the planner JSON, {OUTSIDE_REVIEW_HELPER} can emit the exact preferred/fallback spawn payloads for you.',
         'This creates a best-effort clean room, but literal zero inherited platform context is not guaranteed unless OpenClaw exposes a dedicated skip-startup-anchor capability.',
     ]
+
+
+def helper_scripts() -> dict:
+    return {
+        'outside_review_prepare': OUTSIDE_REVIEW_HELPER,
+        'snapshot_revert': SNAPSHOT_REVERT_HELPER,
+    }
+
+
+def helper_command_templates() -> dict:
+    return {
+        'outside_review_prepare': f'python3 {OUTSIDE_REVIEW_HELPER} --plan-file /tmp/grounded-plan.json --json',
+        'snapshot': f'python3 {SNAPSHOT_REVERT_HELPER} snapshot --name <change-id> --file <path> [--file <path> ...]',
+        'restore': f'python3 {SNAPSHOT_REVERT_HELPER} restore --name <change-id>',
+    }
 
 
 def main() -> None:
@@ -838,6 +856,8 @@ def main() -> None:
         'mutation_target': choose_mutation_target(args),
         'recommended_actions': build_actions(args),
         'validation_checks': validation_checks(args),
+        'helper_scripts': helper_scripts(),
+        'helper_command_templates': helper_command_templates(),
         'next_step': next_step(args),
     }
 
@@ -880,6 +900,12 @@ def main() -> None:
     print('\nValidation Checks')
     for item in plan['validation_checks']:
         print(f'- {item}')
+    print('\nHelper Scripts')
+    for key, value in plan['helper_scripts'].items():
+        print(f'- {key}: {value}')
+    print('\nHelper Command Templates')
+    for key, value in plan['helper_command_templates'].items():
+        print(f'- {key}: {value}')
     print(f"\nSelf-Authored Prompt\n{plan['self_authored_prompt']}\n")
     if plan['outside_review_prompt']:
         print(f"Outside Review Prompt\n{plan['outside_review_prompt']}\n")
