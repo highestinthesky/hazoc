@@ -11,11 +11,13 @@
     "delivery": {
       "mode": "cron-announce",
       "channel": "discord",
-      "to": "channel:1487561215038460047",
-      "currentChannelLabel": "#protected-space",
+      "to": "channel:1487645227421536327",
+      "currentChannelLabel": "#main_updates",
       "desiredServer": "hzwp",
       "desiredChannel": "#main_updates",
-      "status": "fallback-current-channel-until-main_updates-exists-and-is-bound"
+      "status": "active-main_updates-channel-tested",
+      "fallbackTo": "channel:1487561215038460047",
+      "fallbackChannelLabel": "#protected-space"
     },
     "mention": "<@1049450008505757706>",
     "format": {
@@ -33,7 +35,7 @@
       "tool": "cron",
       "pattern": "Create a one-shot immediate agentTurn job with announce delivery to the Discord target and a prompt that outputs exactly the final notification line.",
       "tested": true,
-      "lastVerifiedAt": "2026-03-29T02:47:10.658Z"
+      "lastVerifiedAt": "2026-03-29T02:53:32.102Z"
     }
   }
 }
