@@ -47,7 +47,7 @@
   {
     "id": "protocol-main-completion-discord-update",
     "title": "Ping haolun in Discord when main finishes a direct task",
-    "summary": "When main fully finishes a task assigned directly by haolun, send one short Discord ping with a tiny analogy and tell them the full report is in the control UI. Use explicit announce delivery to `hzwp / #main_updates`, with the old protected-space route kept only as fallback.",
+    "summary": "When main fully finishes a task assigned directly by haolun, send one short Discord ping with a tiny analogy and tell them the full report is in the control UI. Use explicit announce delivery to `hzwp / #main_updates`, with `#control-center` kept only as fallback.",
     "category": "cross-channel",
     "cadence": "on main-task completion",
     "createdAt": "2026-03-29T02:25:00.000Z",
