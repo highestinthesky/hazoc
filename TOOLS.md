@@ -42,7 +42,7 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
 
 ## Discord routing
 
-- Main task-completion pings currently route through the existing Discord-bound session: `agent:guest-safe-web:discord:channel:1487561215038460047`
+- Main task-completion pings currently use explicit Discord announce delivery to the existing fallback channel
 - Current fallback channel: `hzwp / #protected-space`
 - Preferred future channel: `hzwp / #main_updates` once that channel exists and is bound in OpenClaw
 - Haolun mention format for completion pings: `<@1049450008505757706>`

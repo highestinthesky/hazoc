@@ -9,8 +9,9 @@
       "background upkeep not directly assigned by haolun"
     ],
     "delivery": {
-      "mode": "sessions_send",
-      "sessionKey": "agent:guest-safe-web:discord:channel:1487561215038460047",
+      "mode": "cron-announce",
+      "channel": "discord",
+      "to": "channel:1487561215038460047",
       "currentChannelLabel": "#protected-space",
       "desiredServer": "hzwp",
       "desiredChannel": "#main_updates",
@@ -27,6 +28,12 @@
       ],
       "template": "<@1049450008505757706> hazoc finished: {very_short_result}. Like {tiny_analogy}. Full report is in the control UI.",
       "tone": "brief, useful, no extra chatter"
+    },
+    "implementation": {
+      "tool": "cron",
+      "pattern": "Create a one-shot immediate agentTurn job with announce delivery to the Discord target and a prompt that outputs exactly the final notification line.",
+      "tested": true,
+      "lastVerifiedAt": "2026-03-29T02:47:10.658Z"
     }
   }
 }
