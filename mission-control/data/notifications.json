@@ -16,8 +16,8 @@
       "desiredServer": "hzwp",
       "desiredChannel": "#main_updates",
       "status": "active-main_updates-channel-tested",
-      "fallbackTo": "channel:1487561215038460047",
-      "fallbackChannelLabel": "#protected-space"
+      "fallbackTo": "channel:1485016833819021495",
+      "fallbackChannelLabel": "#control-center"
     },
     "mention": "<@1049450008505757706>",
     "format": {
