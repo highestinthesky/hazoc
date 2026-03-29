@@ -90,3 +90,10 @@
 - Main-only Discord completion updates are now configured locally through `mission-control/data/notifications.json`, using a tested one-shot cron announce delivery path directly to `hzwp / #main_updates` (`1487645227421536327`), with `#control-center` (`1485016833819021495`) kept as fallback.
 - Live config/task/protocol references were cleaned up so the fallback text now consistently points to `#control-center` instead of the older `#protected-space` route.
 - New immediate context from Discord: haolun is editing another grounded-evolver framework revision right now and expects to reset hazoc once it is finished; first post-reset use will be as the first test subject for that revised framework.
+
+## Night wrap-up handoff (2026-03-28 23:43 EDT)
+- Reviewed today's memory for identity curation and made no further SOUL/IDENTITY edits tonight. The current first-pass identity shape still feels selective enough: companion/workshop-partner, machine familiar, grounded/resourceful/slightly sharp/quietly warm.
+- Learning-system work is no longer at the sketch stage; the core grounded-evolver architecture, storage split, rollback rules, protocol-causation checks, and subtask protocol-check rule are all in place.
+- Best next improvements if haolun returns to the learning system tomorrow: (1) helper automation for clean-room outside-review launch, (2) helper automation for snapshot/revert during protocol edits, (3) gradual protocol-registry backfill via `task-protocol-registry-backfill`.
+- Main-completion Discord notifications are live to `hzwp / #main_updates` (`1487645227421536327`) with `#control-center` fallback.
+- Re-anchor tomorrow from this section + today's daily note instead of the older UI-polish handoff sections.
