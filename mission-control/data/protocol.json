@@ -76,19 +76,20 @@
   },
   {
     "id": "protocol-main-completion-discord-update",
-    "title": "Ping haolun in Discord when main finishes a direct task",
-    "summary": "When main fully finishes a task assigned directly by haolun, send one short Discord ping with a tiny analogy and tell them the full report is in the control UI. Use explicit announce delivery to `hzwp / #main_updates`, with `#control-center` kept only as fallback.",
+    "title": "Resolve Discord completion update before closing a direct main task",
+    "summary": "When main fully finishes a task assigned directly by haolun, do not treat it as closed until the completion-update branch is resolved: ping sent, not applicable, or blocked/deferred with reason. If applicable, send one short Discord ping with a tiny analogy and tell them the full report is in the control UI. Use explicit announce delivery to `hzwp / #main_updates`, with `#control-center` kept only as fallback.",
     "category": "cross-channel",
     "cadence": "on main-task completion",
     "createdAt": "2026-03-29T02:25:00.000Z",
-    "updatedAt": "2026-03-29T02:25:00.000Z",
+    "updatedAt": "2026-03-29T19:58:00.000Z",
     "status": "active",
     "scope": "main-only",
     "owner": "main",
     "canonicalPaths": [
       "AGENTS.md",
       "mission-control/data/notifications.json",
-      "TOOLS.md"
+      "TOOLS.md",
+      "scripts/main_task_closeout.py"
     ]
   },
   {
@@ -155,5 +156,24 @@
     ],
     "createdAt": "2026-03-29T19:05:00.000Z",
     "updatedAt": "2026-03-29T19:05:00.000Z"
+  },
+  {
+    "id": "protocol-learning-run-artifacts",
+    "title": "Finish each learning run with durable artifacts",
+    "summary": "A completed learning run must leave behind full problem detail in the day’s `.learnings/.../error.md`, a succinct summary in `memory/YYYY-MM-DD.md`, and lesson/protocol outcomes in `.learnings/`, with accepted protocols also promoted into their canonical home.",
+    "category": "learning",
+    "cadence": "at the end of every completed learning run",
+    "status": "active",
+    "scope": "global",
+    "owner": "main",
+    "canonicalPaths": [
+      "AGENTS.md",
+      "MEMORY.md",
+      "skills/learning-loop/SKILL.md",
+      "skills/learning-loop/references/request-friction-protocol.md",
+      ".learnings/README.md"
+    ],
+    "createdAt": "2026-03-29T19:42:00.000Z",
+    "updatedAt": "2026-03-29T19:42:00.000Z"
   }
 ]

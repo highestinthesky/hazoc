@@ -49,3 +49,45 @@ When packaging local skills, write exports to dist/ and avoid tracking root-leve
 - See Also: none
 
 ---
+
+## [LRN-20260329-001] stale-reset-anchor-expectation-was-surfaced-as-live-state-after-
+
+**Logged**: 2026-03-29T15:45:00-04:00
+**Priority**: high
+**Status**: accepted
+**Area**: workflow
+**Source Run**: RUN-20260329-001
+
+### Summary
+Stale reset-anchor expectation was surfaced as live state after the step had already happened
+
+### Lessons
+- Distinguish confirmed current state from historical predicted next steps during reset anchors.
+- If a file is treated as a live anchor, keep archival handoff prose out of it.
+- Maintenance protocols must audit stale predictions, not just stale objects.
+
+### Promotion Notes
+Canonical protocol paths: AGENTS.md, memory/active-state.md, MEMORY.md
+
+---
+
+## [LRN-20260329-002] required-discord-main-completion-ping-was-missed-because-task-cl
+
+**Logged**: 2026-03-29T16:00:00-04:00
+**Priority**: high
+**Status**: accepted
+**Area**: workflow
+**Source Run**: RUN-20260329-002
+
+### Summary
+Required Discord main-completion ping was missed because task closeout had no notification gate
+
+### Lessons
+- A side-effect required at task completion should not live as a floating reminder; it needs an explicit closeout gate.
+- If a route/config is working but the action is omitted, repair the closeout workflow before touching transport.
+- When an existing protocol fails, revise it into the real decision point instead of stacking another reminder beside it.
+
+### Promotion Notes
+Canonical protocol paths: AGENTS.md, mission-control/data/notifications.json, mission-control/data/protocol.json, TOOLS.md, scripts/main_task_closeout.py, MEMORY.md, memory/active-state.md
+
+---

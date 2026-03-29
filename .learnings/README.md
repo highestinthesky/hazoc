@@ -10,12 +10,14 @@ Accepted protocols should be promoted into their canonical operating file and th
 ### Draft lessons
 
 - `LEARNINGS.md` -> draft lessons, corrections, better practices, recurring patterns that are still being tested or are not yet promoted
+- `PROTOCOLS.md` -> protocol candidates, repairs, and accepted guardrail outcomes discovered through learning runs
 - `FEATURE_REQUESTS.md` -> missing capabilities, future tools/views, explicit later ideas
 
 ### Error evidence
 
+- `days/YYYY-MM-DD/error.md` -> full-detail error log for that day’s completed learning runs
 - `errors.md` -> short landing page / format guide
-- `errors/YYYY-MM.md` -> actual error entries, grouped by day
+- `errors/YYYY-MM.md` -> older compact error entries, grouped by day
 
 ## Accepted protocols
 

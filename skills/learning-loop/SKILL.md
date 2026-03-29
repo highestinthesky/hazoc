@@ -27,7 +27,8 @@ Use this routing table before writing anything.
 | Tool/env/integration gotcha | `TOOLS.md` |
 | Important session event or deferred follow-up | `memory/YYYY-MM-DD.md` |
 | Correction, knowledge gap, best practice not ready for promotion | `.learnings/LEARNINGS.md` |
-| Repeatable failure, broken command, bad assumption | `.learnings/errors.md` + `.learnings/errors/YYYY-MM.md` |
+| Completed learning run / full incident detail | `.learnings/days/YYYY-MM-DD/error.md` |
+| Protocol or guardrail learned from a run | `.learnings/PROTOCOLS.md` + canonical file if accepted |
 | Missing capability or future build request | `.learnings/FEATURE_REQUESTS.md` |
 | Time-based follow-up the user explicitly wants later | `cron` reminder, plus memory if useful |
 
@@ -57,10 +58,25 @@ Skip logging for:
 2. **Choose the smallest correct destination** using the routing table above.
 3. **Write the note**.
    - For `.learnings/`, use `python3 skills/learning-loop/scripts/log_entry.py ...`.
+   - For completed learning runs, prefer `python3 skills/learning-loop/scripts/log_learning_run.py ...` so the full-detail error log, daily-note summary, and `.learnings/` artifacts are created together.
    - For promoted lessons, update the target file directly.
 4. **Promote when stable**.
    - If the lesson will help future sessions immediately, add the concise rule to the destination file now.
    - If not, leave it in `.learnings/` and review later.
+
+## End-of-learning-run artifact pack
+
+A completed learning run should not disappear into chat.
+
+By default, finish every real learning run with this artifact pack:
+
+1. **Full problem detail** in `.learnings/days/YYYY-MM-DD/error.md`
+2. **Succinct day summary** in `memory/YYYY-MM-DD.md`
+3. **Distilled lesson(s)** in `.learnings/LEARNINGS.md`
+4. **Protocol/guardrail outcome(s)** in `.learnings/PROTOCOLS.md` when applicable
+5. **Canonical promotion** into `AGENTS.md`, `TOOLS.md`, or skill docs if the protocol is accepted
+
+If one of those artifacts is missing, the learning run is not really complete yet.
 
 ## Logging with the helper script
 
@@ -85,8 +101,27 @@ python3 skills/learning-loop/scripts/log_entry.py --type error --summary "..." -
 python3 skills/learning-loop/scripts/log_entry.py --type feature --summary "..." --context "..."
 ```
 
+For completed learning runs, use the dedicated helper:
+
+```bash
+python3 skills/learning-loop/scripts/log_learning_run.py \
+  --summary "Stale reset-anchor note was surfaced as current truth" \
+  --problem "An older expected-next-step handoff line was treated as live state after restart, and the user had to correct it." \
+  --branch repair-pattern \
+  --signal-kind request-friction \
+  --root-cause "Live anchor and historical handoff text were mixed together without a freshness check." \
+  --lesson "Distinguish confirmed current state from historical predicted next steps." \
+  --protocol "Treat expected-next-step bullets as unconfirmed until newer state corroborates them." \
+  --canonical-path AGENTS.md \
+  --canonical-path memory/active-state.md \
+  --area workflow \
+  --priority high \
+  --source user_feedback
+```
+
 The script auto-creates `.learnings/` and the log files if missing.
-For errors, it now keeps `.learnings/errors.md` as a short landing page and writes actual error entries into one monthly file per month under `.learnings/errors/YYYY-MM.md`, grouped by day.
+Use `log_entry.py` for generic ad hoc learning/error/feature notes.
+Use `log_learning_run.py` when you are closing out an actual learning run and want the whole artifact pack written consistently.
 
 ## Promotion rules for this workspace
 
@@ -121,6 +156,7 @@ When a request or other signal reveals friction, failure, or a workflow miss:
 
 Learning-loop's role is to persist the result cleanly:
 - log `.learnings/` entries when useful
+- ensure each completed learning run leaves the standard artifact pack behind
 - promote stable lessons into AGENTS / TOOLS / USER / MEMORY / daily notes
 - avoid leaving the learning trapped only in chat
 

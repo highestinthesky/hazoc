@@ -90,13 +90,13 @@ def ensure_errors_index(path: Path) -> None:
         return
     path.write_text(
         "# errors\n\n"
-        "Compact landing page for repeatable failures, broken workflows, and debugging notes.\n\n"
+        "Landing page for repeatable failures, broken workflows, and debugging notes.\n\n"
         "## Structure\n\n"
         "- keep the index file short: `.learnings/errors.md`\n"
-        "- store actual error entries in one monthly file per month: `.learnings/errors/YYYY-MM.md`\n"
-        "- inside each monthly file, group entries by day with `## YYYY-MM-DD`\n"
-        "- record one compact entry per error instead of long incident writeups\n\n"
-        "Actual month logs live in `.learnings/errors/`.\n",
+        "- for completed learning runs, store full problem detail in `.learnings/days/YYYY-MM-DD/error.md`\n"
+        "- older compact month logs remain in `.learnings/errors/YYYY-MM.md`\n"
+        "- use the daily `error.md` path when you want the full incident record, not just a terse bug note\n\n"
+        "Legacy month logs still live in `.learnings/errors/`.\n",
         encoding="utf-8",
     )
 

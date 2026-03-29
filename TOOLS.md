@@ -45,6 +45,7 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
 - Main task-completion pings currently use explicit Discord announce delivery to: `hzwp / #main_updates` (`1487645227421536327`)
 - That route was live-tested successfully on 2026-03-28.
 - Current fallback channel remains available: `hzwp / #control-center` (`1485016833819021495`)
+- Closeout helper for qualifying direct-task completions: `scripts/main_task_closeout.py`
 - Haolun mention format for completion pings: `<@1049450008505757706>`
 - Canonical behavior/settings file: `mission-control/data/notifications.json`
 

@@ -1,31 +1,29 @@
 # errors
 
-Compact landing page for repeatable failures, broken workflows, and debugging notes.
+Landing page for repeatable failures, broken workflows, and debugging notes.
 
 ## Structure
 
 - keep the index file short: `.learnings/errors.md`
-- store actual error entries in one monthly file per month: `.learnings/errors/YYYY-MM.md`
-- inside each monthly file, group entries by day with `## YYYY-MM-DD`
-- record one compact entry per error instead of long incident writeups
+- for completed learning runs, store full problem detail in `.learnings/days/YYYY-MM-DD/error.md`
+- older compact month logs remain in `.learnings/errors/YYYY-MM.md`
+- use the daily `error.md` path when you want the full incident record, not just a terse bug note
 
 ## Entry format
 
-Use compact, retrieval-friendly entries:
-- id
-- time
-- area
-- priority/status
-- short summary
-- short problem/context note
-- short next/fix note
-- tags/refs only when they help later retrieval
+Daily `error.md` files should keep one section per learning run and include:
+- run id / time
+- succinct summary
+- full problem details
+- context / root cause
+- lessons captured
+- protocol outcomes
+- changes / validation
 
 ## Why this shape
 
-- daily grouping without creating one file per day
-- at most ~12 month files per year
-- GitHub stays tidy because there is only one extra folder
-- logs stay readable because each month stays bounded
+- the detailed record for a learning run lives with that day
+- the terse daily note stays compact
+- lessons and protocol outcomes can be distilled separately into `.learnings/LEARNINGS.md` and `.learnings/PROTOCOLS.md`
 
-Actual month logs live in `.learnings/errors/`.
+Legacy month logs still live in `.learnings/errors/`.

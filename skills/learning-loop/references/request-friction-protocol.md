@@ -63,6 +63,12 @@ Common indicators:
 4. Use learning-loop to store the result in the smallest correct home.
 5. Report what changed.
 
+For completed learning runs, prefer the dedicated helper so the standard artifact pack lands together:
+
+```bash
+python3 skills/learning-loop/scripts/log_learning_run.py ...
+```
+
 ## What to persist from grounded-evolver
 
 Capture, at minimum:
@@ -123,9 +129,12 @@ A good request-friction run should usually leave behind:
 
 1. grounded-evolver plan output
 2. chosen branch
-3. durable write(s) in the right destination
-4. explicit note of what changed and why
-5. next step, if any remains
+3. full detail in `.learnings/days/YYYY-MM-DD/error.md`
+4. succinct summary in `memory/YYYY-MM-DD.md`
+5. lesson entry in `.learnings/LEARNINGS.md`
+6. protocol outcome in `.learnings/PROTOCOLS.md` when applicable
+7. explicit note of what changed and why
+8. next step, if any remains
 
 ## Boundary conditions
 

@@ -26,6 +26,7 @@
 - User-entered scheduled events should stay separate from hazoc work tasks.
 - The build should start local-only, but the architecture should be ready to become LAN-accessible later without a rewrite.
 - The Schedule page now includes a text box that sends directly to hazoc for schedule requests, with inline hazoc replies for confirmations and clarifying questions.
+- The Skills page should use concise summaries of how skills work rather than authored flowcharts; the chart-heavy direction was dropped after costing too much time for too little value.
 - Planned schedule-user model: 4 schedule profiles total — hazoc, haolun, and two additional users.
 - Planned request structure: a schedule request may specify an event name, time, and optionally ask for the event to also be added to another user's schedule.
 - Planned integrations: link the user profiles to Google Calendar and let hazoc send reminders to each user through Discord and/or Telegram.
@@ -58,6 +59,8 @@
 
 - For each meaningful message from haolun: identify the implied task/follow-up, create or update it in the mission-control task board, and keep the lane marking current.
 - Run a full memory optimization + task board update roughly hourly while actively working: capture meaningful changes from the last hour, record passive work like push IDs, reread curated memory + today's note for accuracy, tighten stale task/event state, explicitly freshness-check and clear/supersede future-looking handoff bullets that are no longer current, and lightly optimize today's memory without rewriting prior daily files.
+- Complete each real learning run with three durable artifacts: full detail in the day’s `.learnings/.../error.md`, a succinct summary in `memory/YYYY-MM-DD.md`, and distilled lesson/protocol outcomes in `.learnings/`.
+- For qualifying direct main-task completions, treat the Discord ping as part of task closeout rather than a floating reminder: resolve exactly one branch before considering the task finished — ping sent, not applicable, or blocked/deferred with reason.
 - Keep the local mission-control site up while hazoc is actively running.
 - Push meaningful workspace changes to GitHub once per hour while active, aligned to `:30`.
 - A visible recurring duty does not count as done by itself; it only counts after a real commit/push or a verified clean/no-change check.

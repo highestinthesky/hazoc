@@ -90,7 +90,29 @@ Use for:
 Treat this as a **draft lesson store**, not the final home for accepted protocols.
 When a lesson becomes an accepted operating rule, promote it into its canonical operating file and index it in `mission-control/data/protocol.json`.
 
-### `errors.md` + `errors/YYYY-MM.md`
+### `days/YYYY-MM-DD/error.md`
+
+Use for:
+
+- full problem details from completed learning runs
+- one section per run for that day
+- richer incident context than the terse daily note should hold
+
+This is the default detailed evidence trail for completed learning runs.
+
+### `PROTOCOLS.md`
+
+Use for:
+
+- protocol candidates
+- protocol repairs
+- accepted guardrail outcomes discovered through learning runs
+- concise notes about where the accepted operating text was promoted
+
+Keep this as the protocol-outcome trail inside `.learnings/`.
+Do not let accepted protocols live only here.
+
+### `errors.md` + `errors/YYYY-MM.md` (legacy / compact error log)
 
 Use for:
 
@@ -100,7 +122,7 @@ Use for:
 - reproducible bugs
 
 Keep `errors.md` short as the landing page/index.
-Store the actual entries in one monthly file per month under `errors/YYYY-MM.md`, grouped by day.
+Older compact month logs remain under `errors/YYYY-MM.md`.
 
 ### `FEATURE_REQUESTS.md`
 

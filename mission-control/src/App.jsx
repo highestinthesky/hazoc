@@ -1147,13 +1147,61 @@ function MemoryView({ error, loading, memoryEntries, memoryLoaded, selectedMemor
   )
 }
 
+const SKILL_SUMMARIES = {
+  'grounded-evolver': [
+    'Start from a real signal like progress, friction, a blocker, or a decision worth preserving.',
+    'Choose exactly one branch: `build-pattern` when no failed protection is known yet, or `repair-pattern` when an existing protection failed or repeated friction proves the pattern is insufficient.',
+    'Generalize the root cause, pick the smallest safe mutation, and prefer memory/task/rule fixes before heavier code changes.',
+    'If a protocol or workflow is being changed, require rollback, validation, and a durable write before the run counts as complete.',
+  ],
+  'learning-loop': [
+    'Act as the logging and promotion backend after grounded-evolver identifies a learning-worthy signal.',
+    'Route the outcome to the smallest durable destination instead of leaving it trapped in chat.',
+    'For completed learning runs, write the full artifact pack: daily error detail, day-note summary, lessons, and protocol outcomes.',
+    'Promote stable rules into canonical homes like AGENTS, TOOLS, MEMORY, or skill docs when they stop being provisional.',
+  ],
+  'workspace-memory-stack': [
+    'Capture fragile current context in `memory/active-state.md` before it gets lost.',
+    'Keep real project work in the mission-control task board and meaningful timeline events in today’s daily note.',
+    'Promote only durable facts, preferences, and rules into curated memory files.',
+    'On interruption or session end, refresh active state, update the task, and leave the next step explicit.',
+  ],
+  'workspace-continuity': [
+    'Treat the workspace itself as the memory system instead of creating a second parallel brain.',
+    'Notice when new information is durable, then write it to the smallest correct home in the same work session.',
+    'Keep mission-control tasks current enough that future-you can relearn the project quickly.',
+    'Mirror important Discord or Telegram work back into main project memory so cross-channel context does not drift.',
+  ],
+  'workspace-graph': [
+    'Use a lightweight typed graph only when relationships between projects, tasks, decisions, sessions, or documents matter.',
+    'Prefer the normal memory stack for day-to-day work, and add graph structure only when it improves retrieval or dependency tracking.',
+    'Keep the graph practical and workspace-local instead of turning it into a giant abstract ontology.',
+  ],
+  'safe-evolution-loop': [
+    'Observe a real failure, friction point, or request instead of chasing abstract self-improvement.',
+    'Choose the smallest safe improvement, validate it, and record the result so behavior changes compound over time.',
+    'Keep the whole loop human-supervised and avoid autonomous repair, external hubs, or risky self-modification.',
+  ],
+}
+
+function buildSkillSummary(skill) {
+  const curated = SKILL_SUMMARIES[skill.name]
+  if (curated?.length) return curated
+
+  const steps = Array.isArray(skill.flow) ? skill.flow.filter(Boolean).slice(0, 4) : []
+  if (steps.length) return steps.map((step) => step.endsWith('.') ? step : `${step}.`)
+
+  return [
+    'Read the skill instructions and use the smallest relevant extra references or scripts.',
+    'Follow the workflow the skill defines instead of improvising a separate system around it.',
+    'Record durable results in the right workspace destination when the work matters later.',
+  ]
+}
+
 function SkillsView({ error, loading, selectedSkill, selectedSkillId, setSelectedSkillId, skills, skillsLoaded }) {
   const workspaceSkills = skills.filter((skill) => skill.source === 'workspace')
-  const graphableWorkspaceSkills = workspaceSkills.filter((skill) => GRAPHABLE_SKILLS.has(skill.name))
-  const referenceWorkspaceSkills = workspaceSkills.filter((skill) => !GRAPHABLE_SKILLS.has(skill.name))
   const systemSkills = skills.filter((skill) => skill.source === 'system')
-  const algorithmicChartCount = graphableWorkspaceSkills.length
-  const selectedChart = selectedSkill ? SKILL_FLOWCHARTS[selectedSkill.name] : null
+  const selectedSummary = selectedSkill ? buildSkillSummary(selectedSkill) : []
 
   const renderSkillSection = (title, kicker, items) => (
     <section className="skills-group">
@@ -1167,8 +1215,6 @@ function SkillsView({ error, loading, selectedSkill, selectedSkillId, setSelecte
 
       <div className="skills-card-stack">
         {items.map((skill) => {
-          const hasChart = GRAPHABLE_SKILLS.has(skill.name)
-          const hasAuthoredChart = Boolean(SKILL_FLOWCHARTS[skill.name])
           return (
             <article key={skill.id} className={`task-card skill-list-card ${selectedSkillId === skill.id ? 'active' : ''}`} onClick={() => setSelectedSkillId(skill.id)}>
               <div className="task-card-header skill-list-card-header">
@@ -1179,8 +1225,6 @@ function SkillsView({ error, loading, selectedSkill, selectedSkillId, setSelecte
               </div>
               <p className="skill-list-description">{skill.description}</p>
               <div className="task-card-meta-row skill-list-meta-row">
-                {hasChart ? <span className="meta-chip skill-meta-chip-accent">graph-worthy</span> : <span className="meta-chip">reference-style</span>}
-                {hasAuthoredChart ? <span className="meta-chip">chart ready</span> : null}
                 <span className="meta-chip">{skill.flow.length} steps</span>
                 <span className="meta-chip">{skill.referencesCount} refs</span>
                 <span className="meta-chip">{skill.scriptsCount} scripts</span>
@@ -1196,7 +1240,7 @@ function SkillsView({ error, loading, selectedSkill, selectedSkillId, setSelecte
     <section className="tasks-layout">
       <div className="hero-row">
         <HeroCard label="Skills" title={String(skills.length)} primary />
-        <HeroCard label="Algorithm charts" title={String(algorithmicChartCount)} />
+        <HeroCard label="Workspace" title={String(workspaceSkills.length)} />
         <HeroCard label="System" title={String(systemSkills.length)} />
       </div>
 
@@ -1204,8 +1248,7 @@ function SkillsView({ error, loading, selectedSkill, selectedSkillId, setSelecte
 
       <section className="workspace-grid skills-grid">
         <section className="skills-board panel">
-          {renderSkillSection('User-edited / created · graph-worthy', 'workspace skills', graphableWorkspaceSkills)}
-          {renderSkillSection('User-edited / created · reference-style', 'workspace skills', referenceWorkspaceSkills)}
+          {renderSkillSection('User-edited / created', 'workspace skills', workspaceSkills)}
           {renderSkillSection('System', 'system skills', systemSkills)}
         </section>
 
@@ -1216,7 +1259,7 @@ function SkillsView({ error, loading, selectedSkill, selectedSkillId, setSelecte
             <>
               <div className="panel-header sticky-panel-header">
                 <div>
-                  <p className="panel-kicker">skill flow</p>
+                  <p className="panel-kicker">skill summary</p>
                   <h2>{selectedSkill.name}</h2>
                 </div>
               </div>
@@ -1233,35 +1276,27 @@ function SkillsView({ error, loading, selectedSkill, selectedSkillId, setSelecte
               </section>
               <section className="form-section form-section-accent skill-flow-panel">
                 <div className="section-heading">
-                  <p className="panel-kicker">thinking flow</p>
-                  <h3>{selectedChart ? 'Algorithm chart' : 'Process notes'}</h3>
+                  <p className="panel-kicker">how it works</p>
+                  <h3>Concise summary</h3>
                 </div>
-                {selectedChart ? (
-                  <SkillFlowchart chart={selectedChart} />
-                ) : (
-                  <div className="skill-fallback-block">
-                    <p className="skill-fallback-copy">
-                      {GRAPHABLE_SKILLS.has(selectedSkill.name)
-                        ? 'This skill is graph-worthy because it has a reusable algorithmic workflow, but its full chart has not been authored yet.'
-                        : 'This skill is more reference-driven than algorithmic right now, so it stays in a lighter reference-style view instead of forcing a formal chart.'}
-                    </p>
-                    <div className="skill-flow-list compact-skill-flow-list">
-                      {selectedSkill.flow.slice(0, 6).map((step, index) => (
-                        <div key={`${selectedSkill.id}-${index}`} className="skill-flow-step-wrap">
-                          <article className="skill-flow-step compact-skill-flow-step">
-                            <span className="skill-flow-index">{index + 1}</span>
-                            <div className="skill-flow-copy">{step}</div>
-                          </article>
-                          {index < Math.min(selectedSkill.flow.length, 6) - 1 ? <div className="skill-flow-connector" aria-hidden="true" /> : null}
-                        </div>
-                      ))}
-                    </div>
+                <div className="skill-fallback-block">
+                  <p className="skill-fallback-copy">Short version of the current workflow, without forcing a formal chart.</p>
+                  <div className="skill-flow-list compact-skill-flow-list">
+                    {selectedSummary.map((step, index) => (
+                      <div key={`${selectedSkill.id}-${index}`} className="skill-flow-step-wrap">
+                        <article className="skill-flow-step compact-skill-flow-step">
+                          <span className="skill-flow-index">{index + 1}</span>
+                          <div className="skill-flow-copy">{step}</div>
+                        </article>
+                        {index < selectedSummary.length - 1 ? <div className="skill-flow-connector" aria-hidden="true" /> : null}
+                      </div>
+                    ))}
                   </div>
-                )}
+                </div>
               </section>
             </>
           ) : (
-            <div className="lane-empty">Select a skill to inspect its current process flow.</div>
+            <div className="lane-empty">Select a skill to inspect its concise summary.</div>
           )}
         </aside>
       </section>
@@ -1454,7 +1489,7 @@ export default function App() {
 
   useEffect(() => {
     if (!skills.length || (selectedSkillId && selectedSkill)) return
-    const preferredSkill = skills.find((skill) => Boolean(SKILL_FLOWCHARTS[skill.name])) || skills[0]
+    const preferredSkill = skills[0]
     setSelectedSkillId(preferredSkill.id)
   }, [selectedSkill, selectedSkillId, skills])
 
@@ -1739,7 +1774,7 @@ User request:\n\n${message}`,
         <header className="topbar">
           <div className="breadcrumbs">Mission Control &nbsp;›&nbsp; <strong>{page === 'protocol' ? 'Protocol' : page === 'schedule' ? 'Schedule' : page === 'events' ? 'Events' : page === 'memory' ? 'Memory' : page === 'skills' ? 'Skills' : 'Tasks'}</strong></div>
           <div className="topbar-actions">
-            <div className="search-pill">{page === 'protocol' ? 'Standing rules and recurring operational rhythm' : page === 'schedule' ? 'Calendar for scheduled events' : page === 'events' ? 'Stored and archived events' : page === 'memory' ? 'Journal and memory context' : page === 'skills' ? 'Skill flowcharts and reasoning paths' : 'Shared memory for active project work'}</div>
+            <div className="search-pill">{page === 'protocol' ? 'Standing rules and recurring operational rhythm' : page === 'schedule' ? 'Calendar for scheduled events' : page === 'events' ? 'Stored and archived events' : page === 'memory' ? 'Journal and memory context' : page === 'skills' ? 'Concise skill summaries and workflow notes' : 'Shared memory for active project work'}</div>
             <button type="button" className="icon-button accent" onClick={refreshCurrentPage} disabled={loading}>{loading ? '…' : '⟳'}</button>
           </div>
         </header>
