@@ -111,9 +111,10 @@ Route outputs to the smallest correct home:
 - `memory/YYYY-MM-DD.md` -> raw incident note, context, what happened today
 - `.learnings/errors.md` / `.learnings/errors/YYYY-MM.md` -> reproducible failures, broken workflows, failed protections
 - `.learnings/LEARNINGS.md` -> not-yet-promoted lessons and recurring patterns
-- `AGENTS.md` -> durable operating rules
+- `AGENTS.md` -> durable global operating rules
 - `TOOLS.md` -> tool or environment-specific fixes
 - grounded-evolver / skill docs -> stable workflow logic
+- `mission-control/data/protocol.json` -> registry/index of accepted active protocols, each pointing to its canonical home
 - mission-control task board -> project work, implementation tasks, follow-ups
 
 ## Standard artifacts

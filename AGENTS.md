@@ -73,6 +73,8 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 
 **Per-message task triage:** for each meaningful message from haolun, ask: (1) what task or follow-up does this imply? (2) does a matching task already exist? (3) if yes, should its description/status/lane be updated? (4) if no, should a new task be created? Prefer doing this quietly as part of normal work.
 
+**Subtask protocol applicability rule:** whenever breaking a request into smaller subtasks, explicitly check current protocols for anything that could apply to each subtask before acting on it. Do not assume the parent-task protocol scan automatically covers all child subtasks.
+
 **Lane management rule:** actively manage task markings based on current reality. Move tasks between Capture Tray, Workbench, Parking Lot, and Archive Shelf as work starts, pauses, gets postponed, or finishes; do not leave stale lane assignments sitting around.
 
 **Git push rhythm:** when actively working and making changes worth preserving, push to GitHub once per hour at `:30`. A visible recurring duty is not enough by itself — the duty counts only after a real commit/push or a verified clean/no-change check. Use the automated git sync path where configured.

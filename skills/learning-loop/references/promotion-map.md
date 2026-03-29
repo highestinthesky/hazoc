@@ -87,6 +87,9 @@ Use for:
 - better practices
 - recurring patterns
 
+Treat this as a **draft lesson store**, not the final home for accepted protocols.
+When a lesson becomes an accepted operating rule, promote it into its canonical operating file and index it in `mission-control/data/protocol.json`.
+
 ### `errors.md` + `errors/YYYY-MM.md`
 
 Use for:
@@ -106,6 +109,14 @@ Use for:
 - missing capabilities
 - future dashboards/tools/views
 - ideas the user explicitly wants later
+
+## Accepted protocol rule
+
+When a lesson becomes an accepted protocol:
+
+1. promote the full operating text into the canonical home (`AGENTS.md`, `TOOLS.md`, or a skill doc)
+2. add or update its registry entry in `mission-control/data/protocol.json`
+3. do not leave the accepted protocol only in `.learnings/`
 
 ## Dedupe rule
 

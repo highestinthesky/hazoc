@@ -6,7 +6,13 @@
     "category": "board hygiene",
     "cadence": "continuous",
     "createdAt": "2026-03-25T00:00:00.000Z",
-    "updatedAt": "2026-03-25T00:00:00.000Z"
+    "updatedAt": "2026-03-25T00:00:00.000Z",
+    "status": "active",
+    "scope": "board-hygiene",
+    "owner": "main",
+    "canonicalPaths": [
+      "AGENTS.md"
+    ]
   },
   {
     "id": "protocol-harm-check",
@@ -15,7 +21,13 @@
     "category": "safety",
     "cadence": "before meaningful actions",
     "createdAt": "2026-03-25T00:00:00.000Z",
-    "updatedAt": "2026-03-25T00:00:00.000Z"
+    "updatedAt": "2026-03-25T00:00:00.000Z",
+    "status": "active",
+    "scope": "global",
+    "owner": "main",
+    "canonicalPaths": [
+      "AGENTS.md"
+    ]
   },
   {
     "id": "protocol-message-triage",
@@ -24,7 +36,13 @@
     "category": "workflow",
     "cadence": "on each meaningful message",
     "createdAt": "2026-03-25T00:00:00.000Z",
-    "updatedAt": "2026-03-25T00:00:00.000Z"
+    "updatedAt": "2026-03-25T00:00:00.000Z",
+    "status": "active",
+    "scope": "global",
+    "owner": "main",
+    "canonicalPaths": [
+      "AGENTS.md"
+    ]
   },
   {
     "id": "protocol-schedule-routing",
@@ -33,7 +51,13 @@
     "category": "planning",
     "cadence": "when work becomes time-bound",
     "createdAt": "2026-03-25T00:00:00.000Z",
-    "updatedAt": "2026-03-25T00:00:00.000Z"
+    "updatedAt": "2026-03-25T00:00:00.000Z",
+    "status": "active",
+    "scope": "planning",
+    "owner": "main",
+    "canonicalPaths": [
+      "AGENTS.md"
+    ]
   },
   {
     "id": "protocol-cross-channel-memory",
@@ -42,7 +66,13 @@
     "category": "continuity",
     "cadence": "when cross-channel work matters",
     "createdAt": "2026-03-25T00:00:00.000Z",
-    "updatedAt": "2026-03-25T00:00:00.000Z"
+    "updatedAt": "2026-03-25T00:00:00.000Z",
+    "status": "active",
+    "scope": "cross-channel",
+    "owner": "main",
+    "canonicalPaths": [
+      "AGENTS.md"
+    ]
   },
   {
     "id": "protocol-main-completion-discord-update",
@@ -51,6 +81,46 @@
     "category": "cross-channel",
     "cadence": "on main-task completion",
     "createdAt": "2026-03-29T02:25:00.000Z",
-    "updatedAt": "2026-03-29T02:25:00.000Z"
+    "updatedAt": "2026-03-29T02:25:00.000Z",
+    "status": "active",
+    "scope": "main-only",
+    "owner": "main",
+    "canonicalPaths": [
+      "AGENTS.md",
+      "mission-control/data/notifications.json",
+      "TOOLS.md"
+    ]
+  },
+  {
+    "id": "protocol-post-request-learning",
+    "title": "Run the grounded-evolver learning check after meaningful requests",
+    "summary": "After each meaningful request, do a quick friction check. If something went wrong, route the signal through grounded-evolver's build-pattern vs repair-pattern model, including protocol-causation and rollback checks when relevant.",
+    "category": "learning",
+    "cadence": "after meaningful requests with friction or failure",
+    "status": "active",
+    "scope": "global",
+    "owner": "main",
+    "canonicalPaths": [
+      "AGENTS.md",
+      "skills/grounded-evolver/SKILL.md",
+      "skills/grounded-evolver/scripts/grounded_evolve.py"
+    ],
+    "createdAt": "2026-03-29T03:15:00.000Z",
+    "updatedAt": "2026-03-29T03:15:00.000Z"
+  },
+  {
+    "id": "protocol-subtask-protocol-check",
+    "title": "Check applicable protocols for every subtask created from a request",
+    "summary": "Whenever a request is broken into smaller subtasks, explicitly check current protocols for anything that could apply to each subtask before acting. Do not assume the parent-task protocol scan automatically covers the children.",
+    "category": "workflow",
+    "cadence": "whenever decomposing a request into subtasks",
+    "status": "active",
+    "scope": "global",
+    "owner": "main",
+    "canonicalPaths": [
+      "AGENTS.md"
+    ],
+    "createdAt": "2026-03-29T03:15:00.000Z",
+    "updatedAt": "2026-03-29T03:15:00.000Z"
   }
 ]
