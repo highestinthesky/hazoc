@@ -122,6 +122,9 @@ def queue_send(root: Path, result: str, analogy: str, task_ref: str, note: str, 
         "dispatchedAt": None,
         "dispatchJobId": None,
         "recoveryJob": block.get("closeoutGate", {}).get("recoveryJobName", "recover-main-task-closeouts"),
+        "recoveryWorkerId": block.get("closeoutGate", {}).get("workerId", "recover-main-task-closeouts"),
+        "recoveryWorkerSpec": block.get("closeoutGate", {}).get("workerSpec", "workers/recover-main-task-closeouts/spec.json"),
+        "recoveryWorkerState": block.get("closeoutGate", {}).get("workerState", "workers/recover-main-task-closeouts/state.json"),
     }
     rows.append(entry)
     save_queue(root, rows)

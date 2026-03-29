@@ -1,0 +1,33 @@
+{
+  "workerId": "maintain-workspace-hourly",
+  "displayName": "Maintain workspace hourly",
+  "kind": "managed-recurring-worker",
+  "purpose": "Run the top-of-hour workspace maintenance pass: optimize memory/task state first, then immediately run git auto sync if there are meaningful changes worth preserving.",
+  "bootstrap": {
+    "command": "python3 scripts/bootstrap_worker.py --worker-id maintain-workspace-hourly --source cron-hourly-maintenance --json",
+    "mustRead": [
+      "workers/maintain-workspace-hourly/spec.json",
+      "workers/maintain-workspace-hourly/state.json"
+    ]
+  },
+  "inputs": {
+    "maintenanceState": "memory/maintenance-state.json",
+    "activeState": "memory/active-state.md",
+    "curatedMemory": "MEMORY.md",
+    "userProfile": "USER.md",
+    "dailyNotesDir": "memory/",
+    "tasks": "mission-control/data/tasks.json",
+    "events": "mission-control/data/events.json",
+    "recurring": "mission-control/data/recurring.json",
+    "gitScript": "scripts/git-auto-sync.sh"
+  },
+  "commands": {
+    "gitSync": "/home/haolun/.openclaw/workspace/scripts/git-auto-sync.sh"
+  },
+  "wakeContract": {
+    "firstStep": "Run the bootstrap command before acting.",
+    "identityGuarantee": "Treat this spec plus state file as authoritative for purpose and current checkpoint; do not infer the role from session memory alone.",
+    "orderMatters": "Perform memory/task maintenance first. Run git auto sync only after the maintenance pass finishes.",
+    "successRule": "Keep the turn minimal and internal-only. Do not message the user directly. Silent completion is fine when there is nothing important to record or push."
+  }
+}

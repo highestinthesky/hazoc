@@ -1,21 +1,13 @@
 [
   {
     "id": "recurring-task-board-review",
-    "title": "Run hourly memory optimization + task board update",
-    "summary": "Each hour while active: capture anything meaningful from the last hour, record passive work like push IDs, reread curated memory + today's note for accuracy, tighten stale task/event state, freshness-check future-looking handoff bullets so superseded expectations are cleared or demoted, and lightly optimize today's memory without rewriting older daily files.",
-    "cadence": "hourly",
-    "everyHours": 1,
-    "category": "workflow"
-  },
-  {
-    "id": "recurring-github-push",
-    "title": "Push meaningful changes to GitHub",
-    "summary": "When actively working and there are real changes worth preserving, push once per hour at :30.",
-    "cadence": "hourly at :30",
+    "title": "Run hourly workspace maintenance + GitHub sync",
+    "summary": "At the top of each hour while active: capture anything meaningful from the last hour, record passive work like push IDs, reread curated memory + today's note for accuracy, tighten stale task/event state, freshness-check future-looking handoff bullets so superseded expectations are cleared or demoted, lightly optimize today's memory without rewriting older daily files, then run the automated GitHub sync immediately afterward if there are meaningful changes worth preserving.",
+    "cadence": "hourly at :00",
     "everyHours": 1,
     "everyMinutes": 60,
-    "anchorMinute": 30,
-    "category": "version-control"
+    "anchorMinute": 0,
+    "category": "workflow"
   },
   {
     "id": "recurring-site-uptime",

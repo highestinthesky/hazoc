@@ -26,14 +26,15 @@
 - A completed learning run now needs a standard artifact pack: full detail in the day’s `.learnings/.../error.md`, a succinct summary in `memory/YYYY-MM-DD.md`, and lesson/protocol outcomes in `.learnings/`.
 - `skills/learning-loop/scripts/log_learning_run.py` now exists as the one-shot helper to write that artifact pack consistently.
 - Qualifying direct main-task completions now use a durable closeout path: queue the Discord ping in `mission-control/data/main-task-closeouts.json`, hand it off through the immediate isolated cron announce path, and let the persistent `recover-main-task-closeouts` cron catch any unsent entries after restarts; `scripts/main_task_closeout.py` is the helper for that path.
+- Managed recurring workers now have a small workspace-local identity pattern: `workers/<worker-id>/spec.json` (read-only purpose/contract), `workers/<worker-id>/state.json` (writable checkpoint), and `scripts/bootstrap_worker.py` as the wake-time bootstrap helper. Live workers on this pattern now include `recover-main-task-closeouts` and `maintain-workspace-hourly`.
 - Step-1 helper extraction is now done inside grounded-evolver: `scripts/prepare_outside_review.py` turns planner JSON into reusable preferred/fallback clean-room spawn payloads, and `scripts/snapshot_revert.py` provides cheap reversible file snapshots for protocol/workflow edits.
 - Current likely follow-ups if learning-system work resumes: gradual protocol-registry backfill, stronger per-repair regression checks, and a lightweight review surface for recent runs / repeat failure classes.
 
 ## Operating rhythm to preserve
 - For each meaningful message: triage the implied task/follow-up and update durable state.
-- Run a full hourly memory optimization + task board update while active.
+- Run a full hourly memory optimization + task board update at the top of the hour while active, then run git auto sync immediately afterward if there are meaningful changes worth preserving.
 - Mirror important Discord/Telegram items back into main project memory.
-- Push meaningful GitHub changes once per hour while active, aligned to `:30`; a reminder only counts after a real commit/push or a verified clean/no-change check.
+- The hourly maintenance pass only counts after the real memory upkeep happened and the git-sync result is either pushed, blocked, or verified clean/no-change.
 - Keep mission control up while active.
 - Before meaningful actions, do a quick harm check.
 - Use memory retrieval before answering new meaningful questions.

@@ -1,0 +1,25 @@
+{
+  "workerId": "recover-main-task-closeouts",
+  "displayName": "Recover main task closeouts",
+  "kind": "managed-recurring-worker",
+  "purpose": "Drain queued main-task Discord completion pings that were durably queued but not yet dispatched, especially after restarts or interrupted closeout.",
+  "bootstrap": {
+    "command": "python3 scripts/bootstrap_worker.py --worker-id recover-main-task-closeouts --source cron-recovery --json",
+    "mustRead": [
+      "workers/recover-main-task-closeouts/spec.json",
+      "workers/recover-main-task-closeouts/state.json"
+    ]
+  },
+  "inputs": {
+    "queueFile": "mission-control/data/main-task-closeouts.json",
+    "notificationsConfig": "mission-control/data/notifications.json"
+  },
+  "commands": {
+    "dispatchNext": "python3 scripts/main_task_closeout.py --root /home/haolun/.openclaw/workspace dispatch-next"
+  },
+  "wakeContract": {
+    "firstStep": "Run the bootstrap command before acting.",
+    "identityGuarantee": "Treat this spec plus state file as authoritative for purpose and current checkpoint; do not infer the role from session memory alone.",
+    "successRule": "If dispatchNext prints NO_REPLY, respond exactly NO_REPLY. Otherwise respond with the dispatch stdout exactly, unchanged, and nothing else."
+  }
+}

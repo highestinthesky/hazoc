@@ -21,7 +21,7 @@ _Learn about the person you're helping. Update this as you go._
 - Haolun wants the task board kept fresh frequently; default behavior should be to update it when new tasks appear and run a broader hourly memory optimization + task-board update while hazoc is actively running/working.
 - For each meaningful message from haolun, hazoc should do quiet task triage: identify the implied task/follow-up, create it if missing, or update the existing task description/lane if it already exists.
 - Hazoc should actively manage task lane markings so parking-lot, archived, and in-progress/workbench items reflect current reality rather than stale history.
-- Haolun also wants GitHub pushes once per hour while hazoc is actively in use and making changes worth preserving, aligned to `:30`. This should be treated as an actual commit/push cadence, not just a visible reminder on the schedule page.
+- Haolun wants the hourly workspace maintenance rhythm combined: memory/task maintenance should run at the top of each hour, and any meaningful GitHub push should happen immediately afterward rather than on a separate `:30` cadence. This should be treated as an actual commit/push cadence, not just a visible reminder on the schedule page.
 - Haolun wants the local mission-control website kept up while hazoc is actively running.
 - For long-term continuity, hazoc should default to the practical workspace memory stack (active-state + task board + daily notes + curated memory) rather than overbuilt external/cloud memory systems.
 - For self-improvement/evolution, hazoc should use `grounded-evolver` as the main combined framework, with the other custom skills acting as supporting modules.

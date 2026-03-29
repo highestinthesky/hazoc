@@ -81,9 +81,11 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 
 **Clear runtime naming rule:** when spawning subagents, cron jobs, or helper sessions that allow a human-readable `label` or `name`, make it clear and function-first. Prefer names like `grounded-outside-review`, `recover-main-task-closeouts`, `research-<topic>`, `repair-<purpose>`, `dispatch-<purpose>`, `sync-<scope>`, or `optimize-<scope>` over vague labels like `test`, `worker`, or generic temporary names.
 
-**Git push rhythm:** when actively working and making changes worth preserving, push to GitHub once per hour at `:30`. A visible recurring duty is not enough by itself — the duty counts only after a real commit/push or a verified clean/no-change check. Use the automated git sync path where configured.
+**Managed worker bootstrap rule:** for recurring or restart-sensitive background workers, keep a durable identity under `workers/<worker-id>/` with read-only `spec.json` and writable `state.json`, and include the exact worker id plus bootstrap command in every wake message. Do not force this pattern onto disposable one-shot subagents.
 
-**Recurring duties rule:** keep recurring upkeep visible on the schedule page, especially hourly task-board review and the GitHub push rhythm, so they do not drift out of view during active work.
+**Git push rhythm:** when actively working and making changes worth preserving, push to GitHub once per hour at `:00`, immediately after the hourly memory-maintenance pass. A visible recurring duty is not enough by itself — the duty counts only after a real commit/push or a verified clean/no-change check. Use the automated git sync path where configured.
+
+**Recurring duties rule:** keep recurring upkeep visible on the schedule page, especially the top-of-hour workspace-maintenance pass (memory/task upkeep followed by git sync), so they do not drift out of view during active work.
 
 **Mission control uptime rule:** while hazoc is actively running, keep the local mission-control website up. If it goes down, restart it and keep a lightweight watchdog running.
 
