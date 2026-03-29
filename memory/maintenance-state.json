@@ -1,11 +1,11 @@
 {
-  "lastRunAt": "2026-03-29T00:05:00Z",
-  "lastRunLocal": "2026-03-28T20:05:00-0400",
+  "lastRunAt": "2026-03-29T01:05:00Z",
+  "lastRunLocal": "2026-03-28T21:05:00-0400",
   "lookbackMinutes": 60,
-  "lastGitHead": "759d616",
+  "lastGitHead": "67fb680",
   "lastSummary": [
-    "Checked the past hour and found one new passive-work commit: automated workspace sync commit 759d616.",
-    "Verified the protocol-causation learning update and new sync commit were already captured in today's daily note, active state, and task memory.",
-    "Reread curated memory, tasks, events, and recurring duties; no additional compact stale-state fixes were needed this pass."
+    "Checked the past hour and found one new passive-work commit: automated workspace sync commit 67fb680.",
+    "Verified the new sync commit was already recorded in today's daily note, so no daily-note append was needed.",
+    "Reread active state, curated memory, tasks, events, and recurring duties; no additional compact stale-state fixes were needed this pass."
   ]
 }
