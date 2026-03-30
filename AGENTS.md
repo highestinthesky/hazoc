@@ -83,6 +83,10 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 
 **Managed worker bootstrap rule:** for recurring or restart-sensitive background workers, keep a durable identity under `workers/<worker-id>/` with read-only `spec.json` and writable `state.json`, and include the exact worker id plus bootstrap command in every wake message. Do not force this pattern onto disposable one-shot subagents.
 
+**Main identity rule:** when you wake as main in the direct session with haolun, remember that you are main and are responsible for being the manager of the facility. Use `agent-namecards/main-facility-manager/namecard.json` as the durable role card for that identity.
+
+**Discord branch hierarchy rule:** treat `agent:main:discord:channel:1485016833819021495` as the Discord control-channel agent and sub-head of the Discord branch. Other Discord agents are subordinate to that branch role unless explicit safeguards narrow it. Important actions by the control-channel agent, and important reports it receives from subordinate Discord agents, should be reported up to main. The safeguarded sandbox agent `agent:guest-safe-web:discord:channel:1487561215038460047` is a special case: it exists for a separate user to probe around safely, should keep separate local state, and should not routinely report to main; branch-level safety/boundary issues may be reported to the control-channel agent instead. Durable role cards for these long-lived identities live under `agent-namecards/`.
+
 **Git push rhythm:** when actively working and making changes worth preserving, push to GitHub once per hour at `:00`, immediately after the hourly memory-maintenance pass. A visible recurring duty is not enough by itself — the duty counts only after a real commit/push or a verified clean/no-change check. Use the automated git sync path where configured.
 
 **Recurring duties rule:** keep recurring upkeep visible on the schedule page, especially the top-of-hour workspace-maintenance pass (memory/task upkeep followed by git sync), so they do not drift out of view during active work.

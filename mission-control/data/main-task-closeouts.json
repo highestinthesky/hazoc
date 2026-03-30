@@ -284,5 +284,37 @@
     "wakeRequestedJobId": "fa5ffaf8-8bf5-418b-8309-71412602f9fe",
     "wakeRequestedJobName": "recover-main-task-closeouts",
     "lastAttemptAt": "2026-03-29T19:47:58-04:00"
+  },
+  {
+    "id": "closeout-20260329-011",
+    "createdAt": "2026-03-29T20:15:23-04:00",
+    "status": "dispatched",
+    "result": "set agent namecards",
+    "analogy": "pinning badges on uniforms",
+    "notificationLine": "<@1049450008505757706> hazoc finished: set agent namecards. Like pinning badges on uniforms. Full report is in the control UI.",
+    "taskRef": "add durable namecards and hierarchy for main/control/safe-web agents",
+    "note": "Added agent namecards, hierarchy rules, and clearer session labels. Direct cross-agent private update into the live Discord sessions was blocked by current session visibility limits, so the durable layer is in place without transcript injection.",
+    "sourceSession": "agent:main:main",
+    "delivery": {
+      "channel": "discord",
+      "to": "channel:1487645227421536327",
+      "desiredServer": "hzwp",
+      "desiredChannel": "#main_updates",
+      "fallbackTo": "channel:1485016833819021495",
+      "fallbackChannelLabel": "#control-center"
+    },
+    "resolution": "ping-sent",
+    "attempts": 1,
+    "dispatchStartedAt": "2026-03-29T20:15:43-04:00",
+    "dispatchedAt": "2026-03-29T20:15:43-04:00",
+    "dispatchJobId": null,
+    "recoveryJob": "recover-main-task-closeouts",
+    "recoveryWorkerId": "recover-main-task-closeouts",
+    "recoveryWorkerSpec": "workers/recover-main-task-closeouts/spec.json",
+    "recoveryWorkerState": "workers/recover-main-task-closeouts/state.json",
+    "wakeRequestedAt": "2026-03-29T20:15:27-04:00",
+    "wakeRequestedJobId": "fa5ffaf8-8bf5-418b-8309-71412602f9fe",
+    "wakeRequestedJobName": "recover-main-task-closeouts",
+    "lastAttemptAt": "2026-03-29T20:15:43-04:00"
   }
 ]
