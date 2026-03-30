@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import subprocess
 import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -91,7 +92,7 @@ def next_entry_id(rows: list[dict[str, Any]], dt: datetime) -> str:
     return f"closeout-{slug}-{max(seen, default=0) + 1:03d}"
 
 
-def queue_send(root: Path, result: str, analogy: str, task_ref: str, note: str, source_session: str, created_at_raw: str | None, as_json: bool) -> int:
+def queue_send_impl(root: Path, result: str, analogy: str, task_ref: str, note: str, source_session: str, created_at_raw: str | None) -> tuple[dict[str, Any], dict[str, Any]]:
     config = load_config(root)
     block = config["mainTaskCompletionDiscord"]
     rows = load_queue(root)
@@ -137,16 +138,92 @@ def queue_send(root: Path, result: str, analogy: str, task_ref: str, note: str, 
         "server": block["delivery"]["desiredServer"],
         "channel": block["delivery"]["desiredChannel"],
         "queueFile": str(queue_path(root)),
-        "nextAction": "Create an immediate isolated cron announce job that dispatches this queued closeout, then treat the task as closed only after the job is queued.",
+        "recoveryJobName": entry["recoveryJob"],
+        "nextAction": "Wake the standing recovery worker now so it can dispatch this queued closeout without spawning a throwaway per-task cron.",
+    }
+    return entry, payload
+
+
+def queue_send(root: Path, result: str, analogy: str, task_ref: str, note: str, source_session: str, created_at_raw: str | None, as_json: bool) -> int:
+    entry, payload = queue_send_impl(root, result, analogy, task_ref, note, source_session, created_at_raw)
+    if as_json:
+        print(json.dumps(payload, indent=2))
+    else:
+        print(f"Queued closeout: {entry['id']}")
+        print(f"Target: {payload['server']} / {payload['channel']} ({payload['target']})")
+        print(f"Notification line: {payload['notificationLine']}")
+        print(payload["nextAction"])
+    return 0
+
+
+def find_recovery_job(root: Path, job_name: str) -> dict[str, Any]:
+    raw = subprocess.check_output(["openclaw", "cron", "list", "--json"], text=True, cwd=str(root))
+    obj = json.loads(raw)
+    jobs = obj.get("jobs", obj if isinstance(obj, list) else [])
+    matches = [job for job in jobs if job.get("name") == job_name]
+    if not matches:
+        raise SystemExit(f"Recovery cron job not found: {job_name}")
+    enabled = [job for job in matches if job.get("enabled", True)]
+    chosen = enabled[0] if enabled else matches[0]
+    return chosen
+
+
+def stamp_wake_request(root: Path, entry_id: str, job: dict[str, Any]) -> None:
+    rows = load_queue(root)
+    for row in rows:
+        if row.get("id") == entry_id:
+            row["wakeRequestedAt"] = now_local().isoformat()
+            row["wakeRequestedJobId"] = job.get("id")
+            row["wakeRequestedJobName"] = job.get("name")
+            save_queue(root, rows)
+            return
+    raise SystemExit(f"Unknown closeout id: {entry_id}")
+
+
+def wake_recovery_job(root: Path, entry_id: str, timeout_ms: int, expect_final: bool, as_json: bool) -> int:
+    config = load_config(root)
+    job_name = config["mainTaskCompletionDiscord"]["closeoutGate"].get("recoveryJobName", "recover-main-task-closeouts")
+    job = find_recovery_job(root, job_name)
+    stamp_wake_request(root, entry_id, job)
+    cmd = ["openclaw", "cron", "run", job["id"], "--timeout", str(timeout_ms)]
+    if expect_final:
+        cmd.append("--expect-final")
+    output = subprocess.check_output(cmd, text=True, cwd=str(root)).strip()
+    payload = {
+        "closeoutResolved": True,
+        "decision": "queued-and-woke-recovery-worker",
+        "id": entry_id,
+        "recoveryJobId": job["id"],
+        "recoveryJobName": job_name,
+        "runOutput": output,
     }
     if as_json:
         print(json.dumps(payload, indent=2))
     else:
         print(f"Queued closeout: {entry_id}")
-        print(f"Target: {payload['server']} / {payload['channel']} ({payload['target']})")
-        print(f"Notification line: {payload['notificationLine']}")
-        print(payload["nextAction"])
+        print(f"Woke recovery worker: {job_name} ({job['id']})")
+        if output:
+            print(output)
     return 0
+
+
+def queue_and_wake(root: Path, result: str, analogy: str, task_ref: str, note: str, source_session: str, created_at_raw: str | None, timeout_ms: int, expect_final: bool, as_json: bool) -> int:
+    entry, payload = queue_send_impl(root, result, analogy, task_ref, note, source_session, created_at_raw)
+    try:
+        return wake_recovery_job(root, entry["id"], timeout_ms, expect_final, as_json)
+    except Exception as exc:
+        fallback = {
+            **payload,
+            "error": str(exc),
+            "nextAction": "The closeout is still durably queued. The standing recovery worker's recurring schedule will retry later, but the immediate wake failed and should be investigated.",
+        }
+        if as_json:
+            print(json.dumps(fallback, indent=2))
+        else:
+            print(f"Queued closeout: {entry['id']}")
+            print(f"Immediate wake failed: {exc}")
+            print(fallback["nextAction"])
+        return 1
 
 
 def mark_job(root: Path, entry_id: str, job_id: str, as_json: bool) -> int:
@@ -269,6 +346,8 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     p.add_argument("--note", default="", help="Optional operator note.")
     p.add_argument("--source-session", default="", help="Optional source session key.")
     p.add_argument("--created-at", default="", help="Optional ISO timestamp override.")
+    p.add_argument("--timeout-ms", type=int, default=30000, help="Timeout for immediate recovery-worker wake calls.")
+    p.add_argument("--expect-final", action="store_true", help="Wait for final worker completion when waking the recovery cron immediately.")
 
     sub = p.add_subparsers(dest="action")
 
@@ -279,6 +358,16 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     queue_send_parser.add_argument("--note", default="")
     queue_send_parser.add_argument("--source-session", default="")
     queue_send_parser.add_argument("--created-at", default="")
+
+    queue_and_wake_parser = sub.add_parser("queue-and-wake")
+    queue_and_wake_parser.add_argument("--result", required=True)
+    queue_and_wake_parser.add_argument("--analogy", required=True)
+    queue_and_wake_parser.add_argument("--task-ref", default="")
+    queue_and_wake_parser.add_argument("--note", default="")
+    queue_and_wake_parser.add_argument("--source-session", default="")
+    queue_and_wake_parser.add_argument("--created-at", default="")
+    queue_and_wake_parser.add_argument("--timeout-ms", type=int, default=30000)
+    queue_and_wake_parser.add_argument("--expect-final", action="store_true")
 
     mark_job_parser = sub.add_parser("mark-job")
     mark_job_parser.add_argument("--id", required=True)
@@ -307,22 +396,7 @@ def compatibility_mode(args: argparse.Namespace, root: Path) -> int:
     if args.decision == "send":
         if not args.result.strip() or not args.analogy.strip():
             raise SystemExit("--decision send requires both --result and --analogy")
-        config = load_config(root)
-        block = config["mainTaskCompletionDiscord"]
-        payload = {
-            "closeoutResolved": False,
-            "decision": "queued-for-dispatch",
-            "notificationLine": build_send_line(config, args.result, args.analogy),
-            "target": block["delivery"]["to"],
-            "server": block["delivery"]["desiredServer"],
-            "channel": block["delivery"]["desiredChannel"],
-            "nextAction": "Use queue-send for durable dispatch before task closure.",
-        }
-        if args.json:
-            print(json.dumps(payload, indent=2))
-        else:
-            print(payload["notificationLine"])
-        return 0
+        return queue_and_wake(root, args.result, args.analogy, args.task_ref, args.note, args.source_session, args.created_at, args.timeout_ms, args.expect_final, args.json)
     if args.decision == "not-applicable":
         return resolve_without_send(root, "not-applicable", args.reason, args.task_ref, args.source_session, args.json)
     if args.decision == "deferred":
@@ -336,6 +410,8 @@ def main(argv: list[str]) -> int:
 
     if args.action == "queue-send":
         return queue_send(root, args.result, args.analogy, args.task_ref, args.note, args.source_session, args.created_at, args.json)
+    if args.action == "queue-and-wake":
+        return queue_and_wake(root, args.result, args.analogy, args.task_ref, args.note, args.source_session, args.created_at, args.timeout_ms, args.expect_final, args.json)
     if args.action == "mark-job":
         return mark_job(root, getattr(args, 'id'), getattr(args, 'job_id'), args.json)
     if args.action == "dispatch-one":
