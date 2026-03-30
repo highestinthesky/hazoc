@@ -316,5 +316,37 @@
     "wakeRequestedJobId": "fa5ffaf8-8bf5-418b-8309-71412602f9fe",
     "wakeRequestedJobName": "recover-main-task-closeouts",
     "lastAttemptAt": "2026-03-29T20:15:43-04:00"
+  },
+  {
+    "id": "closeout-20260329-012",
+    "createdAt": "2026-03-29T20:31:26-04:00",
+    "status": "dispatched",
+    "result": "repo cleanup batch",
+    "analogy": "tidying the back room",
+    "notificationLine": "<@1049450008505757706> hazoc finished: repo cleanup batch. Like tidying the back room. Full report is in the control UI.",
+    "taskRef": "audit repo cleanup opportunities and implement best ones",
+    "note": "Pushed cleanup changes after a manual three-pass review: snapshot git hygiene plus README maps for mission-control/data and memory.",
+    "sourceSession": "agent:main:main",
+    "delivery": {
+      "channel": "discord",
+      "to": "channel:1487645227421536327",
+      "desiredServer": "hzwp",
+      "desiredChannel": "#main_updates",
+      "fallbackTo": "channel:1485016833819021495",
+      "fallbackChannelLabel": "#control-center"
+    },
+    "resolution": "ping-sent",
+    "attempts": 1,
+    "dispatchStartedAt": "2026-03-29T20:31:43-04:00",
+    "dispatchedAt": "2026-03-29T20:31:43-04:00",
+    "dispatchJobId": null,
+    "recoveryJob": "recover-main-task-closeouts",
+    "recoveryWorkerId": "recover-main-task-closeouts",
+    "recoveryWorkerSpec": "workers/recover-main-task-closeouts/spec.json",
+    "recoveryWorkerState": "workers/recover-main-task-closeouts/state.json",
+    "wakeRequestedAt": "2026-03-29T20:31:30-04:00",
+    "wakeRequestedJobId": "fa5ffaf8-8bf5-418b-8309-71412602f9fe",
+    "wakeRequestedJobName": "recover-main-task-closeouts",
+    "lastAttemptAt": "2026-03-29T20:31:43-04:00"
   }
 ]

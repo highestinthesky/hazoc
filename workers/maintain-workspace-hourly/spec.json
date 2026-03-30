@@ -2,7 +2,7 @@
   "workerId": "maintain-workspace-hourly",
   "displayName": "Maintain workspace hourly",
   "kind": "managed-recurring-worker",
-  "purpose": "Run the top-of-hour workspace maintenance pass: optimize memory/task state first, then immediately run git auto sync if there are meaningful changes worth preserving.",
+  "purpose": "Run the top-of-hour workspace maintenance pass: optimize memory/task state first, audit pending branch-important items, then immediately run git auto sync if there are meaningful changes worth preserving.",
   "bootstrap": {
     "command": "python3 scripts/bootstrap_worker.py --worker-id maintain-workspace-hourly --source cron-hourly-maintenance --json",
     "mustRead": [
@@ -19,7 +19,10 @@
     "tasks": "mission-control/data/tasks.json",
     "events": "mission-control/data/events.json",
     "recurring": "mission-control/data/recurring.json",
-    "gitScript": "scripts/git-auto-sync.sh"
+    "gitScript": "scripts/git-auto-sync.sh",
+    "branchImportanceRubric": "agent-namecards/importance-rubric.md",
+    "controlBranchState": "agent-namecards/discord-control-branch/state.json",
+    "guestSafeWebState": "agent-namecards/guest-safe-web-discord-sandbox/state.json"
   },
   "commands": {
     "gitSync": "/home/haolun/.openclaw/workspace/scripts/git-auto-sync.sh"
@@ -27,7 +30,8 @@
   "wakeContract": {
     "firstStep": "Run the bootstrap command before acting.",
     "identityGuarantee": "Treat this spec plus state file as authoritative for purpose and current checkpoint; do not infer the role from session memory alone.",
-    "orderMatters": "Perform memory/task maintenance first. Run git auto sync only after the maintenance pass finishes.",
+    "orderMatters": "Perform memory/task maintenance first, audit pending branch-important items next, and run git auto sync only after the maintenance pass finishes.",
+    "branchImportanceDuty": "Review pending important items in the long-lived Discord agent state files, promote unresolved shared-important items into main memory/task state when appropriate, and stamp review metadata so they are not treated as unseen forever.",
     "successRule": "Keep the turn minimal and internal-only. Do not message the user directly. Silent completion is fine when there is nothing important to record or push."
   }
 }

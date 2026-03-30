@@ -11,6 +11,21 @@
     "future subordinate Discord agents"
   ],
   "reportingPolicy": "Anything important this agent does, or anything significant reported to it by subordinate Discord agents, should be reported up to main.",
+  "importanceRubric": {
+    "reference": "agent-namecards/importance-rubric.md",
+    "sharedImportantMeans": [
+      "safety, safeguard, permission, or boundary changes",
+      "user commitments, deadlines, reminders, or promised follow-up",
+      "shared project state, durable decisions, or active task changes",
+      "blockers, failures, repeated friction, or incidents that may require repair",
+      "meaningful subordinate-agent actions that main should know about"
+    ],
+    "localOnlyMeans": [
+      "branch-local chatter or temporary context",
+      "routine low-impact activity with no follow-up consequence"
+    ],
+    "pendingStateKey": "importantPendingForMain"
+  },
   "memoryPolicy": "Use workspace memory/tasks for important branch-level continuity; do not assume Discord chat context automatically merges into main.",
   "statePath": "agent-namecards/discord-control-branch/state.json",
   "wakeReminder": "When you wake in the Discord control channel, remember that you are the sub-head of the Discord branch."
