@@ -14,6 +14,7 @@ WORKSPACE = Path(__file__).resolve().parent.parent
 INDEX_DIR = WORKSPACE / "tmp" / "recall-index"
 CHUNKS_PATH = INDEX_DIR / "chunks.json"
 STATE_PATH = INDEX_DIR / "state.json"
+CONFIG_PATH = WORKSPACE / "mission-control" / "data" / "recall-sources.json"
 TOKEN_RE = re.compile(r"[A-Za-z0-9_]{2,}")
 DATE_FILE_RE = re.compile(r"^(\d{4})-(\d{2})-(\d{2})\.md$")
 HEADING_RE = re.compile(r"^\s{0,3}#{1,6}\s+(.*)$")
@@ -32,13 +33,58 @@ ROUTE_STAGES: Dict[str, List[List[str]]] = {
 
 ROUTE_HINTS = {
     "preference": ["prefer", "preference", "call them", "tone", "identity", "who am i", "persona"],
-    "active": ["current", "currently", "now", "next step", "blocker", "handoff", "active", "focus"],
+    "active": ["current", "currently", "now", "next step", "blocker", "handoff", "active", "focus", "what were we doing", "what were we working on", "where were we"],
     "task": ["task", "project", "workbench", "on hold", "archived", "lane", "task-"],
     "recent": ["today", "yesterday", "this morning", "this afternoon", "recent", "earlier today", "just now"],
     "history": ["when did", "last week", "last month", "history", "previous", "previously", "decide", "decision", "date"],
     "protocol": ["protocol", "rule", "workflow", "process", "playbook", "should i", "how do we handle"],
     "branch": ["discord", "telegram", "branch", "agent", "worker", "guest-safe-web", "discord-control", "channel"],
 }
+
+GENERIC_REANCHOR_PHRASES = {
+    "what were we doing",
+    "what were we working on",
+    "where were we",
+    "what is the current focus",
+    "what's the current focus",
+}
+
+
+def default_source_rules() -> List[Dict[str, str]]:
+    return [
+        {"pattern": "SOUL.md", "kind": "identity", "route": "preference"},
+        {"pattern": "IDENTITY.md", "kind": "identity", "route": "preference"},
+        {"pattern": "USER.md", "kind": "user", "route": "preference"},
+        {"pattern": "MEMORY.md", "kind": "curated", "route": "curated"},
+        {"pattern": "AGENTS.md", "kind": "protocol", "route": "protocol"},
+        {"pattern": "TOOLS.md", "kind": "reference", "route": "reference"},
+        {"pattern": "PROTOCOL_SPINE.md", "kind": "protocol_spine", "route": "protocol"},
+        {"pattern": "RECALL_MAP.md", "kind": "recall_map", "route": "protocol"},
+        {"pattern": "memory/active-state.md", "kind": "active", "route": "active"},
+        {"pattern": "mission-control/data/tasks.json", "kind": "task_json", "route": "task"},
+        {"pattern": "mission-control/data/protocol.json", "kind": "protocol_json", "route": "protocol"},
+        {"pattern": "memory/20??-??-??.md", "kind": "daily", "route": "daily"},
+        {"pattern": "references/**/*.md", "kind": "reference", "route": "reference"},
+        {"pattern": "agent-namecards/**/*.md", "kind": "branch_doc", "route": "branch"},
+        {"pattern": "agent-namecards/**/*.json", "kind": "branch_json", "route": "branch"},
+        {"pattern": "workers/**/*.json", "kind": "worker_json", "route": "branch"},
+        {"pattern": "skills/**/SKILL.md", "kind": "skill", "route": "protocol"},
+        {"pattern": "skills/**/references/**/*.md", "kind": "skill_reference", "route": "reference"},
+    ]
+
+
+def load_source_rules() -> List[Dict[str, str]]:
+    if CONFIG_PATH.exists():
+        data = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
+        rules = data.get("rules")
+        if isinstance(rules, list) and rules:
+            return rules
+    return default_source_rules()
+
+
+def source_config_digest() -> str:
+    payload = json.dumps(load_source_rules(), sort_keys=True)
+    return hashlib.sha1(payload.encode("utf-8")).hexdigest()
 
 
 def relpath(path: Path) -> str:
@@ -67,67 +113,15 @@ def iter_source_specs() -> Iterable[Dict[str, Any]]:
         seen.add(path)
         return {"path": path, "kind": kind, "route": route}
 
-    static_sources = [
-        (WORKSPACE / "SOUL.md", "identity", "preference"),
-        (WORKSPACE / "IDENTITY.md", "identity", "preference"),
-        (WORKSPACE / "USER.md", "user", "preference"),
-        (WORKSPACE / "MEMORY.md", "curated", "curated"),
-        (WORKSPACE / "AGENTS.md", "protocol", "protocol"),
-        (WORKSPACE / "TOOLS.md", "reference", "reference"),
-        (WORKSPACE / "PROTOCOL_SPINE.md", "protocol_spine", "protocol"),
-        (WORKSPACE / "RECALL_MAP.md", "recall_map", "protocol"),
-        (WORKSPACE / "memory" / "active-state.md", "active", "active"),
-        (WORKSPACE / "mission-control" / "data" / "tasks.json", "task_json", "task"),
-        (WORKSPACE / "mission-control" / "data" / "protocol.json", "protocol_json", "protocol"),
-    ]
-    for path, kind, route in static_sources:
-        spec = add(path, kind, route)
-        if spec:
-            yield spec
-
-    memory_dir = WORKSPACE / "memory"
-    if memory_dir.exists():
-        for path in sorted(memory_dir.glob("20??-??-??.md")):
-            spec = add(path, "daily", "daily")
+    for rule in load_source_rules():
+        pattern = rule["pattern"]
+        kind = rule["kind"]
+        route = rule["route"]
+        matched = sorted(WORKSPACE.glob(pattern))
+        for path in matched:
+            spec = add(path, kind, route)
             if spec:
                 yield spec
-
-    references_dir = WORKSPACE / "references"
-    if references_dir.exists():
-        for path in sorted(references_dir.rglob("*.md")):
-            spec = add(path, "reference", "reference")
-            if spec:
-                yield spec
-
-    agent_dir = WORKSPACE / "agent-namecards"
-    if agent_dir.exists():
-        for path in sorted(agent_dir.rglob("*.md")):
-            spec = add(path, "branch_doc", "branch")
-            if spec:
-                yield spec
-        for path in sorted(agent_dir.rglob("*.json")):
-            spec = add(path, "branch_json", "branch")
-            if spec:
-                yield spec
-
-    workers_dir = WORKSPACE / "workers"
-    if workers_dir.exists():
-        for path in sorted(workers_dir.rglob("*.json")):
-            spec = add(path, "worker_json", "branch")
-            if spec:
-                yield spec
-
-    skills_dir = WORKSPACE / "skills"
-    if skills_dir.exists():
-        for path in sorted(skills_dir.rglob("SKILL.md")):
-            spec = add(path, "skill", "protocol")
-            if spec:
-                yield spec
-        for path in sorted(skills_dir.rglob("*.md")):
-            if "references" in path.parts:
-                spec = add(path, "skill_reference", "reference")
-                if spec:
-                    yield spec
 
 
 def manifest_for_sources(sources: Iterable[Dict[str, Any]]) -> List[Dict[str, Any]]:
@@ -158,7 +152,11 @@ def index_stale() -> bool:
     state = load_state()
     saved_manifest = state.get("manifest")
     current_manifest = manifest_for_sources(sources)
-    return saved_manifest != current_manifest or not CHUNKS_PATH.exists()
+    return (
+        saved_manifest != current_manifest
+        or state.get("configDigest") != source_config_digest()
+        or not CHUNKS_PATH.exists()
+    )
 
 
 def flatten_json(value: Any, prefix: str = "") -> List[str]:
@@ -353,6 +351,8 @@ def build_index() -> Dict[str, Any]:
         "builtAt": now_iso(),
         "chunkCount": len(chunks),
         "sourceCount": len(sources),
+        "configPath": relpath(CONFIG_PATH) if CONFIG_PATH.exists() else None,
+        "configDigest": source_config_digest(),
         "manifest": manifest_for_sources(sources),
     }
     STATE_PATH.write_text(json.dumps(state, indent=2) + "\n", encoding="utf-8")
@@ -489,7 +489,11 @@ def score_chunk(query: str, chunk: Dict[str, Any], primary_route: str) -> Option
     if match_points <= 0:
         return None
 
-    route_bonus = 1.25 if chunk["route"] == primary_route else 0.0
+    route_bonus = 3.0 if chunk["route"] == primary_route else 0.0
+    if primary_route == "protocol" and chunk.get("kind") in {"protocol_spine", "recall_map"}:
+        route_bonus += 4.0
+    if primary_route == "active" and query_lower in GENERIC_REANCHOR_PHRASES and chunk["route"] == "active":
+        route_bonus += 5.0
     recency_bonus = extract_date_bonus(chunk)
     score = match_points + route_bonus + recency_bonus
 

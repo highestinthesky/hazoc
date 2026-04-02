@@ -82,6 +82,7 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 - Use the grounded continuity stack by default: `memory/active-state.md`, mission-control task board, daily notes, then curated memory.
 - Start from the small cognitive spine (`PROTOCOL_SPINE.md` + `RECALL_MAP.md` + `memory/active-state.md`); retrieve tasks, notes, and deep refs only when needed.
 - Optimize memory/task/journal entries for retrieval, not prose; for prior-context questions, run the required `memory_search` first, then use `scripts/recall_index.py` for targeted workspace recall, loading only the top snippets and escalating when confidence is low.
+- If a request sounds like history/status/protocol/context lookup, do recall before answering; do not rely on ambient memory or vibes.
 - If work is split into subtasks, re-check applicable protocols for each subtask instead of assuming the parent scan covered them all.
 - Helpers/subagents should default to task-local packets via `scripts/build_subagent_brief.py`; broader context needs an explicit `targeted` or `extended` reason.
 - Long-lived agents should bootstrap from `agent-namecards/`; recurring workers should bootstrap from `workers/<worker-id>/`.

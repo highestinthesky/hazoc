@@ -31,6 +31,18 @@ Recall them on demand.
 - Load only the top relevant snippet(s) or line ranges first.
 - Escalate retrieval if the first pass is not enough.
 
+## Automatic recall triggers
+
+Do recall before answering when a request asks about or clearly depends on:
+- prior work / what we were doing
+- current project/task status, blockers, or next steps
+- dates, decisions, timelines, or history
+- user preferences / standing rules / "remember" items
+- workflow/protocol/process details
+- any context that feels likely to live in the workspace rather than the message itself
+
+If the request is self-contained, answer directly.
+
 ## Write-back routing
 
 - Live current focus / blocker / next step -> `memory/active-state.md`

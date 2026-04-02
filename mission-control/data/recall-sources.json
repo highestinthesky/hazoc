@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "notes": "Derived recall source registry for scripts/recall_index.py. Update this file to widen or narrow the searchable workspace surfaces without editing the script itself.",
+  "rules": [
+    { "pattern": "SOUL.md", "kind": "identity", "route": "preference" },
+    { "pattern": "IDENTITY.md", "kind": "identity", "route": "preference" },
+    { "pattern": "USER.md", "kind": "user", "route": "preference" },
+    { "pattern": "MEMORY.md", "kind": "curated", "route": "curated" },
+    { "pattern": "AGENTS.md", "kind": "protocol", "route": "protocol" },
+    { "pattern": "TOOLS.md", "kind": "reference", "route": "reference" },
+    { "pattern": "PROTOCOL_SPINE.md", "kind": "protocol_spine", "route": "protocol" },
+    { "pattern": "RECALL_MAP.md", "kind": "recall_map", "route": "protocol" },
+    { "pattern": "memory/active-state.md", "kind": "active", "route": "active" },
+    { "pattern": "mission-control/data/tasks.json", "kind": "task_json", "route": "task" },
+    { "pattern": "mission-control/data/protocol.json", "kind": "protocol_json", "route": "protocol" },
+    { "pattern": "memory/20??-??-??.md", "kind": "daily", "route": "daily" },
+    { "pattern": "references/**/*.md", "kind": "reference", "route": "reference" },
+    { "pattern": "agent-namecards/**/*.md", "kind": "branch_doc", "route": "branch" },
+    { "pattern": "agent-namecards/**/*.json", "kind": "branch_json", "route": "branch" },
+    { "pattern": "workers/**/*.json", "kind": "worker_json", "route": "branch" },
+    { "pattern": "skills/**/SKILL.md", "kind": "skill", "route": "protocol" },
+    { "pattern": "skills/**/references/**/*.md", "kind": "skill_reference", "route": "reference" }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "reanchor-current-focus",
+      "query": "what were we doing",
+      "route": "auto",
+      "expectEffectiveRoute": "active",
+      "expectPathContains": "memory/active-state.md"
+    },
+    {
+      "id": "history-main-task-ping",
+      "query": "when did we decide main-task completion ping",
+      "route": "history",
+      "expectEffectiveRoute": "history",
+      "expectPathContains": "mission-control/data/protocol.json"
+    },
+    {
+      "id": "preference-token-usage",
+      "query": "what does haolun prefer when optimizing context token usage",
+      "route": "auto",
+      "expectEffectiveRoute": "preference",
+      "expectPathContains": "USER.md"
+    },
+    {
+      "id": "protocol-subagent-default",
+      "query": "subagents task-local default",
+      "route": "protocol",
+      "expectEffectiveRoute": "protocol",
+      "expectPathContainsAny": ["PROTOCOL_SPINE.md", "mission-control/data/protocol.json"]
+    }
+  ]
+}

@@ -6,6 +6,8 @@
 - Treat this file as live state only. Historical detail belongs in daily notes and task memory.
 - The token-efficiency pass is complete: startup prompt was compressed, default/main heartbeat is disabled, default session context is now `160000`, compaction is triggered earlier, and main-task closeout now uses a lightweight best-effort announce path with `--wake now`.
 - The cheap recall first pass is now implemented: `PROTOCOL_SPINE.md`, `RECALL_MAP.md`, `scripts/recall_index.py`, and `scripts/build_subagent_brief.py` exist, and `AGENTS.md` / protocol registry were updated to make the behavior durable.
+- The recall helper now reads its searchable source registry from `mission-control/data/recall-sources.json` and the always-loaded spine now includes explicit automatic-recall triggers for history/status/protocol/context questions.
+- There is now a lightweight regression harness (`scripts/recall_regression.py` + `mission-control/data/recall-regression.json`) to catch common recall-route failures like bad re-anchor or preference/history lookup behavior.
 
 ## Current focus
 - Validate and tune the new recall-first memory path instead of trimming blindly.

@@ -118,3 +118,6 @@ Useful routes:
 - `protocol`
 - `branch`
 - `unknown`
+
+The searchable source list lives in `mission-control/data/recall-sources.json`.
+`scripts/recall_index.py` auto-rebuilds its derived index when tracked sources or that registry change.
