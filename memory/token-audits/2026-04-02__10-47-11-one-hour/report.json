@@ -1,0 +1,243 @@
+{
+  "window": {
+    "startCapturedAt": "2026-04-02T10:47:11-04:00",
+    "endCapturedAt": "2026-04-02T11:52:39-04:00"
+  },
+  "totals": {
+    "totalTokens": 228539,
+    "inputTokens": 286379,
+    "outputTokens": 8376,
+    "cacheRead": 687872
+  },
+  "byAgent": [
+    {
+      "agentId": "main",
+      "totalTokens": 228539,
+      "inputTokens": 286379,
+      "outputTokens": 8376,
+      "cacheRead": 687872
+    }
+  ],
+  "byRoute": [
+    {
+      "routeKind": "cron",
+      "totalTokens": 228539,
+      "inputTokens": 204668,
+      "outputTokens": 8376,
+      "cacheRead": 687872
+    },
+    {
+      "routeKind": "main",
+      "totalTokens": 0,
+      "inputTokens": 81711,
+      "outputTokens": 0,
+      "cacheRead": 0
+    }
+  ],
+  "sessions": [
+    {
+      "sessionKey": "agent:main:cron:f6839000-f802-4bba-9d8c-30249ce732c5:run:dcb07dc6-f27f-4d7d-a121-a99684d933cc",
+      "label": "Cron: maintain-workspace-hourly",
+      "agentId": "main",
+      "routeKind": "cron",
+      "startUpdatedAt": null,
+      "endUpdatedAt": 1775142088602,
+      "totalTokens": 47461,
+      "inputTokens": 42273,
+      "outputTokens": 4667,
+      "cacheRead": 315136
+    },
+    {
+      "sessionKey": "agent:main:cron:fa5ffaf8-8bf5-418b-8309-71412602f9fe:run:16e529af-2f41-4f2a-82d2-c40c1a14f170",
+      "label": "Cron: recover-main-task-closeouts",
+      "agentId": "main",
+      "routeKind": "cron",
+      "startUpdatedAt": null,
+      "endUpdatedAt": 1775143498432,
+      "totalTokens": 13946,
+      "inputTokens": 10399,
+      "outputTokens": 192,
+      "cacheRead": 30720
+    },
+    {
+      "sessionKey": "agent:main:cron:fa5ffaf8-8bf5-418b-8309-71412602f9fe:run:2c0c4068-6402-42c6-9f6a-0185eea33375",
+      "label": "Cron: recover-main-task-closeouts",
+      "agentId": "main",
+      "routeKind": "cron",
+      "startUpdatedAt": null,
+      "endUpdatedAt": 1775141989612,
+      "totalTokens": 13945,
+      "inputTokens": 12445,
+      "outputTokens": 191,
+      "cacheRead": 28672
+    },
+    {
+      "sessionKey": "agent:main:cron:fa5ffaf8-8bf5-418b-8309-71412602f9fe:run:8a8b8750-74e2-4dba-8d09-ad1648603393",
+      "label": "Cron: recover-main-task-closeouts",
+      "agentId": "main",
+      "routeKind": "cron",
+      "startUpdatedAt": null,
+      "endUpdatedAt": 1775142892564,
+      "totalTokens": 13935,
+      "inputTokens": 13961,
+      "outputTokens": 181,
+      "cacheRead": 27136
+    },
+    {
+      "sessionKey": "agent:main:cron:fa5ffaf8-8bf5-418b-8309-71412602f9fe:run:eda4a272-44c5-4c45-ac4a-312131fce769",
+      "label": "Cron: recover-main-task-closeouts",
+      "agentId": "main",
+      "routeKind": "cron",
+      "startUpdatedAt": null,
+      "endUpdatedAt": 1775145011487,
+      "totalTokens": 13929,
+      "inputTokens": 11389,
+      "outputTokens": 175,
+      "cacheRead": 29696
+    },
+    {
+      "sessionKey": "agent:main:cron:fa5ffaf8-8bf5-418b-8309-71412602f9fe:run:16b64e60-e5bf-4b92-8ab6-ffa7d48f9aab",
+      "label": "Cron: recover-main-task-closeouts",
+      "agentId": "main",
+      "routeKind": "cron",
+      "startUpdatedAt": null,
+      "endUpdatedAt": 1775144404327,
+      "totalTokens": 13928,
+      "inputTokens": 21115,
+      "outputTokens": 174,
+      "cacheRead": 19968
+    },
+    {
+      "sessionKey": "agent:main:cron:fa5ffaf8-8bf5-418b-8309-71412602f9fe:run:e211fbf5-e0e5-4a6b-b200-336e93de5892",
+      "label": "Cron: recover-main-task-closeouts",
+      "agentId": "main",
+      "routeKind": "cron",
+      "startUpdatedAt": null,
+      "endUpdatedAt": 1775144707272,
+      "totalTokens": 13928,
+      "inputTokens": 10363,
+      "outputTokens": 174,
+      "cacheRead": 30720
+    },
+    {
+      "sessionKey": "agent:main:cron:fa5ffaf8-8bf5-418b-8309-71412602f9fe:run:07c4aef5-d716-4e86-b049-20b7e1a090a1",
+      "label": "Cron: recover-main-task-closeouts",
+      "agentId": "main",
+      "routeKind": "cron",
+      "startUpdatedAt": null,
+      "endUpdatedAt": 1775142589622,
+      "totalTokens": 13927,
+      "inputTokens": 13945,
+      "outputTokens": 173,
+      "cacheRead": 27136
+    },
+    {
+      "sessionKey": "agent:main:cron:fa5ffaf8-8bf5-418b-8309-71412602f9fe:run:e58d3e59-824c-41ba-9821-5862019c7a70",
+      "label": "Cron: recover-main-task-closeouts",
+      "agentId": "main",
+      "routeKind": "cron",
+      "startUpdatedAt": null,
+      "endUpdatedAt": 1775143801378,
+      "totalTokens": 13925,
+      "inputTokens": 10357,
+      "outputTokens": 171,
+      "cacheRead": 30720
+    },
+    {
+      "sessionKey": "agent:main:cron:fa5ffaf8-8bf5-418b-8309-71412602f9fe:run:81fd56e5-1ed8-4c72-9b05-b1a969f76812",
+      "label": "Cron: recover-main-task-closeouts",
+      "agentId": "main",
+      "routeKind": "cron",
+      "startUpdatedAt": null,
+      "endUpdatedAt": 1775142289616,
+      "totalTokens": 13924,
+      "inputTokens": 10355,
+      "outputTokens": 170,
+      "cacheRead": 30720
+    },
+    {
+      "sessionKey": "agent:main:cron:fa5ffaf8-8bf5-418b-8309-71412602f9fe:run:1a4a4de5-ef7a-450d-85d9-bc270508aafb",
+      "label": "Cron: recover-main-task-closeouts",
+      "agentId": "main",
+      "routeKind": "cron",
+      "startUpdatedAt": null,
+      "endUpdatedAt": 1775141382347,
+      "totalTokens": 13923,
+      "inputTokens": 13937,
+      "outputTokens": 169,
+      "cacheRead": 27136
+    },
+    {
+      "sessionKey": "agent:main:cron:fa5ffaf8-8bf5-418b-8309-71412602f9fe:run:4e2a4212-b114-4931-9739-aa4e63d272d3",
+      "label": "Cron: recover-main-task-closeouts",
+      "agentId": "main",
+      "routeKind": "cron",
+      "startUpdatedAt": null,
+      "endUpdatedAt": 1775144101383,
+      "totalTokens": 13923,
+      "inputTokens": 10353,
+      "outputTokens": 169,
+      "cacheRead": 30720
+    },
+    {
+      "sessionKey": "agent:main:cron:fa5ffaf8-8bf5-418b-8309-71412602f9fe:run:9cd6fc78-de46-4973-91c4-8c948a6a2345",
+      "label": "Cron: recover-main-task-closeouts",
+      "agentId": "main",
+      "routeKind": "cron",
+      "startUpdatedAt": null,
+      "endUpdatedAt": 1775143195494,
+      "totalTokens": 13921,
+      "inputTokens": 10349,
+      "outputTokens": 167,
+      "cacheRead": 30720
+    },
+    {
+      "sessionKey": "agent:main:cron:fa5ffaf8-8bf5-418b-8309-71412602f9fe:run:f73394d2-0684-4539-abf1-650c80c40755",
+      "label": "Cron: recover-main-task-closeouts",
+      "agentId": "main",
+      "routeKind": "cron",
+      "startUpdatedAt": null,
+      "endUpdatedAt": 1775141685288,
+      "totalTokens": 13920,
+      "inputTokens": 12395,
+      "outputTokens": 166,
+      "cacheRead": 28672
+    },
+    {
+      "sessionKey": "agent:main:cron:fa5ffaf8-8bf5-418b-8309-71412602f9fe",
+      "label": "Cron: recover-main-task-closeouts",
+      "agentId": "main",
+      "routeKind": "cron",
+      "startUpdatedAt": 1775141079388,
+      "endUpdatedAt": 1775145011487,
+      "totalTokens": 4,
+      "inputTokens": 1032,
+      "outputTokens": 4,
+      "cacheRead": 0
+    },
+    {
+      "sessionKey": "agent:main:main",
+      "label": "Main \u2014 facility manager",
+      "agentId": "main",
+      "routeKind": "main",
+      "startUpdatedAt": 1775141188660,
+      "endUpdatedAt": 1775144310238,
+      "totalTokens": 0,
+      "inputTokens": 81711,
+      "outputTokens": 0,
+      "cacheRead": 0
+    },
+    {
+      "sessionKey": "agent:main:cron:f6839000-f802-4bba-9d8c-30249ce732c5",
+      "label": "Cron: maintain-workspace-hourly",
+      "agentId": "main",
+      "routeKind": "cron",
+      "startUpdatedAt": 1775138488607,
+      "endUpdatedAt": 1775142088602,
+      "totalTokens": 0,
+      "inputTokens": 0,
+      "outputTokens": 1433,
+      "cacheRead": 0
+    }
+  ]
+}
