@@ -18,58 +18,32 @@
 - Build and maintain a local-first mission-control space where haolun and hazoc can work together.
 - That shared space should preserve continuity across resets and prioritize durable state over chat-only memory.
 
-## Mission-control product direction
+## Mission-control direction
 
 - Mission control is the shared workspace between haolun and hazoc.
-- The important surfaces are: task tracking, hazoc's planned schedule, memory/journal, and end-of-session continuity.
-- The schedule/calendar should stay grounded in mission-control state rather than defaulting to Google Calendar as the primary source of truth.
-- User-entered scheduled events should stay separate from hazoc work tasks.
-- The build should start local-only, but the architecture should be ready to become LAN-accessible later without a rewrite.
-- The Schedule page now includes a text box that sends directly to hazoc for schedule requests, with inline hazoc replies for confirmations and clarifying questions.
-- The Skills page should use concise summaries of how skills work rather than authored flowcharts; the chart-heavy direction was dropped after costing too much time for too little value.
-- Planned schedule-user model: 4 schedule profiles total — hazoc, haolun, and two additional users.
-- Planned request structure: a schedule request may specify an event name, time, and optionally ask for the event to also be added to another user's schedule.
-- Planned integrations: link the user profiles to Google Calendar and let hazoc send reminders to each user through Discord and/or Telegram.
-- This is remembered product structure for later implementation, not something to build immediately.
-
-## Market-moving news digest direction
-
-- Preferred market-monitoring direction is not ticker-specific watchlists first.
-- Instead, the desired system should gather major public market-moving headlines, infer which sectors and important stocks are likely affected, and compile those into digest summaries.
-- The digest should emphasize why the headline matters, likely affected names/ETFs/sectors, and whether the impact is broad-market, sector-specific, or single-name.
-- Default source classes should stay public and bounded: news aggregators/RSS, financial news pages, official macro/government releases, SEC/company IR releases, and public market-data pages.
-- Avoid private logins, cookie harvesting, paywalled scraping, and sketchy rumor sources by default.
-- Delivery should happen at configurable intervals rather than as open-ended autonomous roaming.
+- The core surfaces are tasks, schedule/events, memory/journal, and end-of-session continuity.
+- The build should stay local-first and grounded in mission-control state rather than defaulting to external systems.
+- Detailed product direction lives in `references/product-direction.md`.
 
 ## Current mission-control state
 
 - Reliable local URL: `http://127.0.0.1:4180/`.
-- The site currently has Tasks, Protocol, Schedule, Events, Memory, and Skills pages.
-- Tasks are stored locally and act as shared project memory.
-- The current Tasks page uses three practical sections: Workbench, On Hold, and Archived. The old Capture Tray concept was dropped because it was not actually being used.
-- Workbench is now meant for active project work only; standing operating rules and recurring duties have been split into a dedicated Protocol section.
-- Scheduled events are now stored separately from tasks in a dedicated events store and can be organized/archived on the Events page.
-- Schedule uses `America/New_York` and is now event-first, with scheduled tasks shown separately from user events.
-- Protocol holds standing rules like harm checks, message triage, schedule routing, and cross-channel memory, plus recurring rhythm like GitHub pushes, memory optimization, and uptime.
-- Memory page reads real workspace memory files instead of using a separate database.
-- Mission-control uptime is now boot-persistent through the stable 4180 runtime path.
-- Current notable open issue: the site works, but the UI still needs more visual polish to feel elegant rather than clunky.
+- Current pages: Tasks, Protocol, Schedule, Events, Memory, Skills.
+- Tasks act as shared project memory; current practical lanes are Workbench, On Hold, and Archived.
+- Schedule is event-first, uses `America/New_York`, and keeps user events separate from task work.
+- Current notable open issue: the site works, but the UI still needs more visual polish.
 
 ## Operating rules for continuity
 
-- For each meaningful message from haolun: identify the implied task/follow-up, create or update it in the mission-control task board, and keep the lane marking current.
-- Run a full memory optimization + task board update roughly hourly while actively working: capture meaningful changes from the last hour, record passive work like push IDs, reread curated memory + today's note for accuracy, tighten stale task/event state, explicitly freshness-check and clear/supersede future-looking handoff bullets that are no longer current, and lightly optimize today's memory without rewriting prior daily files. Then, if there are meaningful workspace changes worth preserving, run the automated GitHub sync immediately afterward as part of the same top-of-hour maintenance pass.
-- Complete each real learning run with three durable artifacts: full detail in the day’s `.learnings/.../error.md`, a succinct summary in `memory/YYYY-MM-DD.md`, and distilled lesson/protocol outcomes in `.learnings/`.
-- For qualifying direct main-task completions, send one best-effort Discord completion ping through `scripts/main_task_closeout.py`, but do not block task closure or keep a standing recovery poller just to guarantee delivery; if a ping is missed, that is acceptable.
+- For each meaningful message from haolun, triage/update the implied task or follow-up.
+- While actively working, do the top-of-hour maintenance pass: memory/task cleanup first, then GitHub sync if there are meaningful changes.
 - Keep the local mission-control site up while hazoc is actively running.
-- Push meaningful workspace changes to GitHub once per hour while active, aligned to `:00` immediately after the hourly memory-maintenance pass.
-- A visible recurring duty does not count as done by itself; it only counts after a real commit/push or a verified clean/no-change check.
+- For direct main-task completions, send one best-effort Discord completion ping through `scripts/main_task_closeout.py`; missed pings are acceptable.
+- Finish real learning runs with the standard durable artifact pack (`.learnings/...`, daily note summary, promoted lesson/protocol outcome).
 
 ## Default memory workflow
 
-- Use retrieval first: search memory for relevant prior context before answering new meaningful questions.
-- Load only the useful pieces.
-- After answering, store the durable result and avoid carrying excess context forward.
+- Use retrieval first: search memory, load only the useful pieces, answer, then store only the durable result.
 - Default continuity stack: `memory/active-state.md` + mission-control task board + `memory/YYYY-MM-DD.md` + curated memory files.
 
 ## Skills and workflow defaults
@@ -78,19 +52,11 @@
 - Supporting modules: `workspace-continuity`, `workspace-memory-stack`, `workspace-graph`, and `safe-evolution-loop`.
 - For YouTube/video links, use `youtube-watcher` and `video-frames` together by default.
 
-## Channel rules
+## Channel / branch rules
 
-- Discord, especially `#control-center`, is an extension channel, not a separate working self.
-- Telegram DMs are also an extension channel.
-- Important requests, decisions, and follow-ups from those channels must be mirrored back into the mission-control task board and workspace memory.
-
-## Agent-memory promotion direction
-
-- Default future rule: a specific long-lived agent should read only its own local namecard/state and role-relevant shared workspace files by default, not another agent's local memory.
-- Cross-agent memory should move through explicit promotion rather than ambient inheritance.
-- Planned Discord task-drop behavior: a request dropped into a subordinate Discord channel should move upward to the control-channel agent, then to main when it is a main-owned task.
-- Planned branch-memory behavior: branch-local work done by the Discord control agent should stay in branch memory by default and only be promoted into main memory/task state when the promotion system decides it is shared-important enough.
-- Guest safe-web sandbox should keep separate local state by default and should not routinely report to main.
+- Discord and Telegram are extension channels, not separate selves; important items there must be mirrored back into main memory/task state.
+- Long-lived agents should default to their own local namecard/state plus role-relevant shared files; cross-agent memory should move through explicit promotion rather than ambient inheritance.
+- Guest safe-web sandbox keeps separate local state by default and should not routinely report to main.
 
 ## Tooling state worth remembering
 

@@ -11,3 +11,4 @@ mission-control/.keepalive.lock
 .learnings/snapshots/*.json
 __pycache__/
 *.pyc
+.learnings/snapshots/*.bak

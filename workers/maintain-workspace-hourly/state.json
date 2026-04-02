@@ -2,13 +2,13 @@
   "workerId": "maintain-workspace-hourly",
   "displayName": "Maintain workspace hourly",
   "status": "idle",
-  "bootstrapCount": 9,
-  "lastBootstrapAt": "2026-04-02T14:01:43-04:00",
-  "lastWakeAt": "2026-04-02T14:01:43-04:00",
+  "bootstrapCount": 10,
+  "lastBootstrapAt": "2026-04-02T15:01:44-04:00",
+  "lastWakeAt": "2026-04-02T15:01:44-04:00",
   "lastWakeSource": "cron-hourly-maintenance",
   "lastWakeNote": "",
-  "lastAction": "bootstrap",
-  "lastActionAt": "2026-04-02T14:01:43-04:00",
+  "lastAction": "maintenance-pass",
+  "lastActionAt": "2026-04-02T15:01:00-04:00",
   "lastGitResult": "pushed",
   "lastGitSyncAt": "2026-04-02T13:03:00-04:00"
 }

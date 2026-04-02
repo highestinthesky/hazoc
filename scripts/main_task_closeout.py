@@ -212,7 +212,7 @@ def enqueue_best_effort_send(
         "--best-effort-deliver",
         "--delete-after-run",
         "--wake",
-        "next-heartbeat",
+        "now",
         "--timeout-seconds",
         "20",
     ]
