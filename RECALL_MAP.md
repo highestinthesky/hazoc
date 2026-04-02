@@ -35,7 +35,8 @@ Use for:
 
 ### 3. Project/task context
 Check first:
-- `mission-control/data/tasks.json`
+- compact task anchors via the local recall helper
+- then `mission-control/data/tasks.json` if the anchors are insufficient
 - or the local recall helper with `route=task`
 
 Use for:
@@ -47,8 +48,8 @@ Use for:
 
 ### 4. Recent timeline
 Check first:
-- today's daily note
-- then the most recent relevant daily note
+- compact daily anchors via the local recall helper
+- then today's / recent daily note only if the anchors are insufficient
 
 Use for:
 - what changed today
@@ -59,8 +60,9 @@ Use for:
 ### 5. Older history / dates / prior decisions
 Check in order:
 1. `MEMORY.md`
-2. targeted daily-note recall
-3. project task history if the topic is project-specific
+2. targeted daily-anchor recall
+3. targeted daily-note recall if the anchors are insufficient
+4. project task history if the topic is project-specific
 
 Use for:
 - when something was decided
@@ -95,7 +97,7 @@ Do not preload branch state into main by default.
 
 - Prefer routing over broad search when the request type is obvious.
 - Prefer curated memory before raw history for durable questions.
-- Prefer recent notes before older archives for recent-work questions.
+- Prefer compact anchors before raw notes/tasks for recent-work questions.
 - Prefer exact snippets before whole-file reads.
 - Stop when confidence is good enough.
 - Escalate instead of bluffing.
@@ -121,3 +123,4 @@ Useful routes:
 
 The searchable source list lives in `mission-control/data/recall-sources.json`.
 `scripts/recall_index.py` auto-rebuilds its derived index when tracked sources or that registry change.
+It also auto-builds compact task/daily anchors under `tmp/recall-anchors/` so raw daily logs and long task descriptions do not have to be the first recall surface.

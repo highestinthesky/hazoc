@@ -28,8 +28,16 @@ Recall them on demand.
 - Route each request to the smallest likely memory layer first.
 - For prior-work / dates / preferences / todo recall, run `memory_search` first when required.
 - For broader workspace recall, use the local recall helper.
+- Prefer compact derived anchors/summaries before raw prose-heavy sources.
 - Load only the top relevant snippet(s) or line ranges first.
 - Escalate retrieval if the first pass is not enough.
+
+## Retrieval boundary
+
+- Daily notes are raw capture by default, not the first recall surface.
+- Task records should be treated as active project state, not journals.
+- Cheap recall should hit compact summaries/anchors first; raw logs and long descriptions are escalation layers.
+- Keep one canonical rule source per behavior when possible; other surfaces should point to it instead of re-explaining it.
 
 ## Automatic recall triggers
 

@@ -230,5 +230,40 @@
     ],
     "createdAt": "2026-04-02T19:35:00.000Z",
     "updatedAt": "2026-04-02T19:35:00.000Z"
+  },
+  {
+    "id": "protocol-retrieval-boundary",
+    "title": "Keep capture, recall, and rule surfaces separated",
+    "summary": "Treat daily notes as capture-first, task records as active project state, and compact anchors/summaries as the first cheap-recall surface. Raw logs and long descriptions are escalation layers, not the default recall path.",
+    "category": "memory",
+    "cadence": "whenever designing or updating recall-visible files",
+    "status": "active",
+    "scope": "global",
+    "owner": "main",
+    "canonicalPaths": [
+      "PROTOCOL_SPINE.md",
+      "RECALL_MAP.md",
+      "scripts/build_recall_anchors.py",
+      "scripts/recall_index.py"
+    ],
+    "createdAt": "2026-04-02T22:56:00.000Z",
+    "updatedAt": "2026-04-02T22:56:00.000Z"
+  },
+  {
+    "id": "protocol-anchor-first-recall",
+    "title": "Use derived anchors before raw prose-heavy sources",
+    "summary": "For task and daily-note recall, hit compact derived anchors first. Only widen to raw tasks, raw daily notes, or deep references when the anchors are insufficient for answer quality.",
+    "category": "memory",
+    "cadence": "whenever recall depends on task or daily-note context",
+    "status": "active",
+    "scope": "global",
+    "owner": "main",
+    "canonicalPaths": [
+      "mission-control/data/recall-sources.json",
+      "scripts/build_recall_anchors.py",
+      "scripts/recall_index.py"
+    ],
+    "createdAt": "2026-04-02T22:56:00.000Z",
+    "updatedAt": "2026-04-02T22:56:00.000Z"
   }
 ]

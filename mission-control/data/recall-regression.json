@@ -28,6 +28,20 @@
       "route": "protocol",
       "expectEffectiveRoute": "protocol",
       "expectPathContainsAny": ["PROTOCOL_SPINE.md", "mission-control/data/protocol.json"]
+    },
+    {
+      "id": "task-anchor-first",
+      "query": "cheap memory recall path",
+      "route": "task",
+      "expectEffectiveRoute": "task",
+      "expectPathContains": "tmp/recall-anchors/task-anchors.json"
+    },
+    {
+      "id": "daily-anchor-first",
+      "query": "github push protection blocked sync",
+      "route": "history",
+      "expectEffectiveRoute": "history",
+      "expectPathContainsAny": ["tmp/recall-anchors/daily-anchors.json", "memory/2026-04-02.md"]
     }
   ]
 }

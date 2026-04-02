@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "notes": "Derived recall source registry for scripts/recall_index.py. Update this file to widen or narrow the searchable workspace surfaces without editing the script itself.",
+  "notes": "Derived recall source registry for scripts/recall_index.py. Update this file to widen or narrow the searchable workspace surfaces without editing the script itself. Prefer compact derived anchors before raw prose-heavy capture surfaces.",
   "rules": [
     { "pattern": "SOUL.md", "kind": "identity", "route": "preference" },
     { "pattern": "IDENTITY.md", "kind": "identity", "route": "preference" },
@@ -11,7 +11,9 @@
     { "pattern": "PROTOCOL_SPINE.md", "kind": "protocol_spine", "route": "protocol" },
     { "pattern": "RECALL_MAP.md", "kind": "recall_map", "route": "protocol" },
     { "pattern": "memory/active-state.md", "kind": "active", "route": "active" },
+    { "pattern": "tmp/recall-anchors/task-anchors.json", "kind": "task_anchor_json", "route": "task" },
     { "pattern": "mission-control/data/tasks.json", "kind": "task_json", "route": "task" },
+    { "pattern": "tmp/recall-anchors/daily-anchors.json", "kind": "daily_anchor_json", "route": "daily" },
     { "pattern": "mission-control/data/protocol.json", "kind": "protocol_json", "route": "protocol" },
     { "pattern": "memory/20??-??-??.md", "kind": "daily", "route": "daily" },
     { "pattern": "references/**/*.md", "kind": "reference", "route": "reference" },

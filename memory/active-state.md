@@ -8,15 +8,16 @@
 - The cheap recall first pass is now implemented: `PROTOCOL_SPINE.md`, `RECALL_MAP.md`, `scripts/recall_index.py`, and `scripts/build_subagent_brief.py` exist, and `AGENTS.md` / protocol registry were updated to make the behavior durable.
 - The recall helper now reads its searchable source registry from `mission-control/data/recall-sources.json` and the always-loaded spine now includes explicit automatic-recall triggers for history/status/protocol/context questions.
 - There is now a lightweight regression harness (`scripts/recall_regression.py` + `mission-control/data/recall-regression.json`) to catch common recall-route failures like bad re-anchor or preference/history lookup behavior.
+- The latest optimization pass added a real retrieval boundary: compact task/daily anchors are now auto-built under `tmp/recall-anchors/`, `scripts/recall_index.py` indexes them automatically, and task/history recall now prefers those anchors before raw task prose or raw daily logs.
 
 ## Current focus
 - Validate and tune the new recall-first memory path instead of trimming blindly.
 - Working task: `task-design-cheap-memory-recall-path`.
 
 ## Next checks
-1. Test `scripts/recall_index.py` on active/task/history/protocol queries and tune routing/scoring if needed.
-2. Test fresh-session re-anchor against the new startup spine.
-3. Test `scripts/build_subagent_brief.py` in `minimal` and `targeted` modes on a real helper task.
+1. See whether mission-control should consume compact task summaries/anchors directly instead of relying only on raw `tasks.json`.
+2. Decide whether to split the mission-control frontend (`src/App.jsx`) now or wait until the next UI change batch.
+3. Keep watching whether anchor-first recall actually reduces raw-note/task loads in real work.
 4. Tighten wording only after real usage friction shows where it is weak.
 
 ## Current caution

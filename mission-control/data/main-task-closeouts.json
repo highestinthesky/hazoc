@@ -501,5 +501,95 @@
     },
     "error": null,
     "enqueueRequestedAt": "2026-04-02T15:05:15-04:00"
+  },
+  {
+    "id": "closeout-20260402-004",
+    "createdAt": "2026-04-02T18:58:46-04:00",
+    "status": "preview",
+    "result": "Finished the first optimization batch on workspace organization and cheap recall.",
+    "analogy": "I added index cards and section dividers so I stop rereading whole binders.",
+    "notificationLine": "<@1049450008505757706> hazoc finished: Finished the first optimization batch on workspace organization and cheap recall.. Like I added index cards and section dividers so I stop rereading whole binders.. Full report is in the control UI.",
+    "taskRef": "task-design-cheap-memory-recall-path",
+    "note": "Ready for haolun feedback.",
+    "sourceSession": "",
+    "delivery": {
+      "mode": "cron-announce",
+      "channel": "discord",
+      "to": "channel:1487645227421536327",
+      "desiredServer": "hzwp",
+      "desiredChannel": "#main_updates",
+      "fallbackTo": "channel:1485016833819021495",
+      "fallbackChannelLabel": "#control-center",
+      "fallbackPolicy": "manual-only",
+      "bestEffort": true
+    },
+    "policy": {
+      "bestEffort": true,
+      "blocksTaskClosure": false,
+      "missedPingTolerance": "acceptable"
+    },
+    "cronJobId": null,
+    "enqueueResponse": null,
+    "error": null
+  },
+  {
+    "id": "closeout-20260402-005",
+    "createdAt": "2026-04-02T18:58:54-04:00",
+    "status": "send-enqueued",
+    "result": "Finished the first optimization batch on workspace organization and cheap recall.",
+    "analogy": "I added index cards and section dividers so I stop rereading whole binders.",
+    "notificationLine": "<@1049450008505757706> hazoc finished: Finished the first optimization batch on workspace organization and cheap recall.. Like I added index cards and section dividers so I stop rereading whole binders.. Full report is in the control UI.",
+    "taskRef": "task-design-cheap-memory-recall-path",
+    "note": "Ready for haolun feedback.",
+    "sourceSession": "",
+    "delivery": {
+      "mode": "cron-announce",
+      "channel": "discord",
+      "to": "channel:1487645227421536327",
+      "desiredServer": "hzwp",
+      "desiredChannel": "#main_updates",
+      "fallbackTo": "channel:1485016833819021495",
+      "fallbackChannelLabel": "#control-center",
+      "fallbackPolicy": "manual-only",
+      "bestEffort": true
+    },
+    "policy": {
+      "bestEffort": true,
+      "blocksTaskClosure": false,
+      "missedPingTolerance": "acceptable"
+    },
+    "cronJobId": "0f866ac5-a856-4ee7-8058-aeb38c105526",
+    "enqueueResponse": {
+      "id": "0f866ac5-a856-4ee7-8058-aeb38c105526",
+      "name": "main-task-closeout-closeout-20260402-005",
+      "enabled": true,
+      "deleteAfterRun": true,
+      "createdAtMs": 1775170738943,
+      "updatedAtMs": 1775170738943,
+      "schedule": {
+        "kind": "at",
+        "at": "2026-04-02T22:59:03.880Z"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "Reply with EXACTLY the following one-line text and nothing else:\n<@1049450008505757706> hazoc finished: Finished the first optimization batch on workspace organization and cheap recall.. Like I added index cards and section dividers so I stop rereading whole binders.. Full report is in the control UI.\nNo preface. No markdown fences. No extra text.",
+        "thinking": "minimal",
+        "timeoutSeconds": 20,
+        "lightContext": true
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "discord",
+        "to": "channel:1487645227421536327",
+        "bestEffort": true
+      },
+      "state": {
+        "nextRunAtMs": 1775170743880
+      }
+    },
+    "error": null,
+    "enqueueRequestedAt": "2026-04-02T18:58:59-04:00"
   }
 ]

@@ -10,6 +10,8 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional
 
+from recall_anchor_lib import build_all_anchors
+
 WORKSPACE = Path(__file__).resolve().parent.parent
 INDEX_DIR = WORKSPACE / "tmp" / "recall-index"
 CHUNKS_PATH = INDEX_DIR / "chunks.json"
@@ -25,7 +27,7 @@ ROUTE_STAGES: Dict[str, List[List[str]]] = {
     "active": [["active"], ["task", "daily"], ["curated"]],
     "task": [["task"], ["active"], ["daily", "curated"]],
     "recent": [["active", "daily"], ["task"], ["curated"]],
-    "history": [["curated", "protocol"], ["daily"], ["task", "reference"]],
+    "history": [["curated", "protocol", "daily"], ["task", "reference"]],
     "protocol": [["protocol"], ["reference"], ["curated"]],
     "branch": [["branch"], ["task", "reference"]],
     "unknown": [["active", "preference", "curated", "task"], ["daily", "protocol"], ["reference", "branch"]],
@@ -61,7 +63,9 @@ def default_source_rules() -> List[Dict[str, str]]:
         {"pattern": "PROTOCOL_SPINE.md", "kind": "protocol_spine", "route": "protocol"},
         {"pattern": "RECALL_MAP.md", "kind": "recall_map", "route": "protocol"},
         {"pattern": "memory/active-state.md", "kind": "active", "route": "active"},
+        {"pattern": "tmp/recall-anchors/task-anchors.json", "kind": "task_anchor_json", "route": "task"},
         {"pattern": "mission-control/data/tasks.json", "kind": "task_json", "route": "task"},
+        {"pattern": "tmp/recall-anchors/daily-anchors.json", "kind": "daily_anchor_json", "route": "daily"},
         {"pattern": "mission-control/data/protocol.json", "kind": "protocol_json", "route": "protocol"},
         {"pattern": "memory/20??-??-??.md", "kind": "daily", "route": "daily"},
         {"pattern": "references/**/*.md", "kind": "reference", "route": "reference"},
@@ -147,7 +151,12 @@ def load_state() -> Dict[str, Any]:
     return json.loads(STATE_PATH.read_text())
 
 
+def ensure_derived_sources() -> Dict[str, Any]:
+    return build_all_anchors()
+
+
 def index_stale() -> bool:
+    ensure_derived_sources()
     sources = list(iter_source_specs())
     state = load_state()
     saved_manifest = state.get("manifest")
@@ -308,6 +317,73 @@ def chunk_protocol_json(path: Path) -> List[Dict[str, Any]]:
     return chunks
 
 
+def chunk_task_anchors_json(path: Path) -> List[Dict[str, Any]]:
+    data = json.loads(path.read_text(encoding="utf-8"))
+    chunks: List[Dict[str, Any]] = []
+    for item in data:
+        task_id = item.get("id", "unknown-task")
+        title = item.get("title", task_id)
+        highlights = item.get("highlights", [])
+        content = "\n".join(
+            [
+                f"Task ID: {task_id}",
+                f"Title: {title}",
+                f"Lane: {item.get('lane', '')}",
+                f"Summary: {item.get('summary', '')}",
+                f"Highlights: {' | '.join(highlights)}",
+                f"Keywords: {' | '.join(item.get('keywords', []))}",
+            ]
+        ).strip()
+        chunks.append(
+            {
+                "id": short_hash(f"task-anchor::{task_id}"),
+                "path": relpath(path),
+                "kind": "task_anchor",
+                "route": "task",
+                "title": title,
+                "source_ref": task_id,
+                "start_line": None,
+                "end_line": None,
+                "updated_at": item.get("updatedAt"),
+                "content": content,
+            }
+        )
+    return chunks
+
+
+def chunk_daily_anchors_json(path: Path) -> List[Dict[str, Any]]:
+    data = json.loads(path.read_text(encoding="utf-8"))
+    chunks: List[Dict[str, Any]] = []
+    for item in data:
+        daily_ref = item.get("date", "unknown-date")
+        title = f"Daily anchor {daily_ref}"
+        content = "\n".join(
+            [
+                f"Date: {daily_ref}",
+                f"Source path: {item.get('path', '')}",
+                f"Summary: {item.get('summary', '')}",
+                f"Headings: {' | '.join(item.get('headings', []))}",
+                f"Recent bullets: {' | '.join(item.get('recentBullets', []))}",
+                f"Bullet count: {item.get('bulletCount', 0)}",
+            ]
+        ).strip()
+        chunks.append(
+            {
+                "id": short_hash(f"daily-anchor::{daily_ref}"),
+                "path": relpath(path),
+                "kind": "daily_anchor",
+                "route": "daily",
+                "title": title,
+                "source_ref": daily_ref,
+                "start_line": None,
+                "end_line": None,
+                "updated_at": f"{daily_ref}T23:59:59+00:00",
+                "content": content,
+            }
+        )
+    return chunks
+
+
 def chunk_generic_json(path: Path, kind: str, route: str) -> List[Dict[str, Any]]:
     data = json.loads(path.read_text(encoding="utf-8"))
     content = "\n".join(flatten_json(data))
@@ -330,6 +406,7 @@ def chunk_generic_json(path: Path, kind: str, route: str) -> List[Dict[str, Any]
 
 
 def build_index() -> Dict[str, Any]:
+    anchor_state = ensure_derived_sources()
     INDEX_DIR.mkdir(parents=True, exist_ok=True)
     sources = list(iter_source_specs())
     chunks: List[Dict[str, Any]] = []
@@ -340,6 +417,10 @@ def build_index() -> Dict[str, Any]:
         if path.suffix.lower() == ".json":
             if path.name == "tasks.json":
                 chunks.extend(chunk_tasks_json(path))
+            elif path.name == "task-anchors.json":
+                chunks.extend(chunk_task_anchors_json(path))
+            elif path.name == "daily-anchors.json":
+                chunks.extend(chunk_daily_anchors_json(path))
             elif path.name == "protocol.json":
                 chunks.extend(chunk_protocol_json(path))
             else:
@@ -351,6 +432,7 @@ def build_index() -> Dict[str, Any]:
         "builtAt": now_iso(),
         "chunkCount": len(chunks),
         "sourceCount": len(sources),
+        "anchorState": anchor_state,
         "configPath": relpath(CONFIG_PATH) if CONFIG_PATH.exists() else None,
         "configDigest": source_config_digest(),
         "manifest": manifest_for_sources(sources),
@@ -378,6 +460,7 @@ def state_summary(state: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         "builtAt": state.get("builtAt"),
         "chunkCount": state.get("chunkCount", 0),
         "sourceCount": state.get("sourceCount", 0),
+        "anchorState": state.get("anchorState", {}),
         "stale": index_stale(),
     }
 
@@ -493,6 +576,10 @@ def score_chunk(query: str, chunk: Dict[str, Any], primary_route: str) -> Option
     if primary_route == "protocol" and chunk.get("kind") in {"protocol_spine", "recall_map"}:
         route_bonus += 4.0
     if primary_route == "active" and query_lower in GENERIC_REANCHOR_PHRASES and chunk["route"] == "active":
+        route_bonus += 5.0
+    if primary_route == "task" and chunk.get("kind") == "task_anchor":
+        route_bonus += 3.0
+    if primary_route in {"recent", "history"} and chunk.get("kind") == "daily_anchor":
         route_bonus += 5.0
     recency_bonus = extract_date_bonus(chunk)
     score = match_points + route_bonus + recency_bonus
