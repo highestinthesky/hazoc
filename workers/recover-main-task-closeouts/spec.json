@@ -3,6 +3,11 @@
   "displayName": "Recover main task closeouts",
   "kind": "managed-recurring-worker",
   "purpose": "Drain queued main-task Discord completion pings that were durably queued but not yet dispatched, especially after restarts or interrupted closeout.",
+  "runtimeHints": {
+    "preferredThinking": "minimal",
+    "preferredReasoning": "off",
+    "budgetClass": "tiny-recovery-worker"
+  },
   "bootstrap": {
     "command": "python3 scripts/bootstrap_worker.py --worker-id recover-main-task-closeouts --source cron-recovery --json",
     "mustRead": [

@@ -3,6 +3,11 @@
   "displayName": "Maintain workspace hourly",
   "kind": "managed-recurring-worker",
   "purpose": "Run the top-of-hour workspace maintenance pass: optimize memory/task state first, audit pending branch-important items, then immediately run git auto sync if there are meaningful changes worth preserving.",
+  "runtimeHints": {
+    "preferredThinking": "low",
+    "preferredReasoning": "off",
+    "budgetClass": "maintenance-worker"
+  },
   "bootstrap": {
     "command": "python3 scripts/bootstrap_worker.py --worker-id maintain-workspace-hourly --source cron-hourly-maintenance --json",
     "mustRead": [

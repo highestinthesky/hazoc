@@ -10,9 +10,14 @@
   ],
   "reportsTo": null,
   "receivesReportsFrom": [
-    "agent:main:discord:channel:1485016833819021495"
+    "agent:discord-control:discord:channel:1485016833819021495"
   ],
   "memoryPolicy": "May use the full main-session memory stack, including MEMORY.md.",
+  "runtimeHints": {
+    "preferredThinking": "xhigh",
+    "preferredReasoning": "on",
+    "budgetClass": "main-deep-work"
+  },
   "bootstrap": {
     "command": "python3 scripts/bootstrap_agent_identity.py --card-id main-facility-manager --source session-startup --json",
     "mustRead": [

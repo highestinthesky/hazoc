@@ -1,0 +1,11 @@
+{
+  "startedAtLocal": "2026-04-02T10:47:11-04:00",
+  "expectedEndLocal": "2026-04-02T11:47:11-04:00",
+  "window": "one-hour",
+  "stateRoot": "/home/haolun/.openclaw",
+  "startSnapshot": "start.json",
+  "endSnapshot": "end.json",
+  "reportJson": "report.json",
+  "reportMd": "report.md",
+  "logFile": "/tmp/2026-04-02__10-47-11-token-audit.log"
+}

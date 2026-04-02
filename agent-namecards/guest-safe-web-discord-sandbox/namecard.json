@@ -3,7 +3,7 @@
   "displayName": "Guest safe-web Discord sandbox",
   "sessionKey": "agent:guest-safe-web:discord:channel:1487561215038460047",
   "role": "Safeguarded sandbox agent for a separate user to probe around safely.",
-  "reportsTo": "agent:main:discord:channel:1485016833819021495",
+  "reportsTo": "agent:discord-control:discord:channel:1485016833819021495",
   "reportingPolicy": "Do not routinely report back to main. Report important sandbox-management, safety, or boundary issues to the Discord control-channel agent rather than directly to main, unless a direct safety escalation is clearly required.",
   "importanceRubric": {
     "reference": "agent-namecards/importance-rubric.md",
@@ -20,6 +20,11 @@
     "pendingStateKey": "importantPendingForControl"
   },
   "memoryPolicy": "Keep separate local state for this sandbox and do not merge routine sandbox activity into main memory.",
+  "runtimeHints": {
+    "preferredThinking": "low",
+    "preferredReasoning": "off",
+    "budgetClass": "safeguarded-sandbox"
+  },
   "statePath": "agent-namecards/guest-safe-web-discord-sandbox/state.json",
   "bootstrap": {
     "command": "python3 scripts/bootstrap_agent_identity.py --card-id guest-safe-web-discord-sandbox --source session-wake --json",

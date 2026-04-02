@@ -7,8 +7,8 @@
     "state": "agent-namecards/main-facility-manager/state.json"
   },
   "discord-control-branch": {
-    "sessionKey": "agent:main:discord:channel:1485016833819021495",
-    "agentNamespace": "main",
+    "sessionKey": "agent:discord-control:discord:channel:1485016833819021495",
+    "agentNamespace": "discord-control",
     "surface": "Discord #control-center",
     "namecard": "agent-namecards/discord-control-branch/namecard.json",
     "state": "agent-namecards/discord-control-branch/state.json"

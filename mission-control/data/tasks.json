@@ -372,5 +372,16 @@
     "scheduledEnd": "",
     "createdAt": "2026-03-29T03:29:00.000Z",
     "updatedAt": "2026-03-29T03:43:00.000Z"
+  },
+  {
+    "id": "task-token-governance-workers-vs-main",
+    "title": "Reduce background token burn while keeping main on xhigh",
+    "notes": "New direction from haolun on 2026-04-02: keep main at `thinking=xhigh` and `reasoning=on`, but lower the cognitive budget for other agents/workers significantly to conserve weekly quota. Current diagnosis: the biggest drains are not hidden mystery agents but frequent wakes plus large startup prompts, especially the 5-minute `recover-main-task-closeouts` worker and the hourly `maintain-workspace-hourly` worker. Namecards may carry the intended thinking posture, but actual enforcement needs to live in OpenClaw config and/or per-run cron/spawn payloads; namecards alone are advisory. First persistent pass is now applied: global default thinking is `low`, `main` stays `xhigh/on`, `main.subagents.thinking=low`, `guest-safe-web` defaults to `low/off`, `recover-main-task-closeouts` cron now requests `thinking=minimal`, and `maintain-workspace-hourly` remains explicitly `thinking=low`. Second persistent pass on 2026-04-02 bound Discord `#control-center` to a dedicated `discord-control` agent with `thinking=low` and `reasoning=off`, and updated the branch namecards/AGENTS references to the new session key `agent:discord-control:discord:channel:1485016833819021495`. One-hour token audit started at 2026-04-02 10:47 EDT with durable outputs under `memory/token-audits/2026-04-02__10-47-11-one-hour/`; use it to measure what actually burns usage while haolun is away.",
+    "description": "Project memory\n\nGoal\n- Keep the main direct session high-capability while making background/branch work much cheaper so weekly usage lasts.\n\nWhat is known\n- `main` currently defaults to `thinkingDefault: xhigh` and `reasoningDefault: on`.\n- Global defaults are also currently aggressive (`agents.defaults.thinkingDefault = xhigh`).\n- Most of the expensive recurring work is still happening under `agentId: main`, so per-agent separation is currently weak.\n- `maintain-workspace-hourly` already requests low thinking in its cron payload; `recover-main-task-closeouts` does not.\n- OpenClaw docs indicate namecards do not enforce thinking/reasoning levels; config/session/payload settings do.\n\nPreferred direction\n- Main stays expensive by default.\n- Background workers and branch agents get cheaper defaults and explicit per-run overrides where possible.\n- Use namecards to document intended posture, not as the only enforcement layer.\n\nNext steps\n- Step through the setup change safely instead of doing one big blind rewrite.\n- Decide the exact cheap default for non-main work (likely `low` or `minimal`).\n- Then update config/cron payloads and, if needed later, split recurring workers onto a dedicated low-cost agent.",
+    "lane": "workbench",
+    "scheduledStart": "",
+    "scheduledEnd": "",
+    "createdAt": "2026-04-02T14:08:00.000Z",
+    "updatedAt": "2026-04-02T14:47:00.000Z"
   }
 ]

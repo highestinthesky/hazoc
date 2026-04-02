@@ -1,7 +1,7 @@
 {
   "cardId": "discord-control-branch",
   "displayName": "Discord control branch — sub-head",
-  "sessionKey": "agent:main:discord:channel:1485016833819021495",
+  "sessionKey": "agent:discord-control:discord:channel:1485016833819021495",
   "surface": "Discord #control-center",
   "role": "Sub-head of the Discord branch under main.",
   "jurisdiction": "Other Discord agents are under this branch role unless explicit safeguards narrow that authority.",
@@ -27,6 +27,12 @@
     "pendingStateKey": "importantPendingForMain"
   },
   "memoryPolicy": "Use workspace memory/tasks for important branch-level continuity; do not assume Discord chat context automatically merges into main.",
+  "runtimeHints": {
+    "preferredThinking": "low",
+    "preferredReasoning": "off",
+    "budgetClass": "branch-chat",
+    "enforcementNote": "This branch now has a dedicated low-cost OpenClaw agent binding (`discord-control`) for persistent enforcement across restarts."
+  },
   "statePath": "agent-namecards/discord-control-branch/state.json",
   "bootstrap": {
     "command": "python3 scripts/bootstrap_agent_identity.py --card-id discord-control-branch --source session-wake --json",
