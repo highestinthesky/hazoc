@@ -6,13 +6,14 @@ _Learn about the person you're helping. Update this as you go._
 - **What to call them:** haolun
 - **Pronouns:** _(optional)_
 - **Timezone:** America/Los_Angeles
-- **Notes:** Wants a later reminder to define hazoc's desired presence after setup. Prefers concise responses; if there's a lot to say, split it into compact parts and deliver them one by one. Wants hazoc to act proactively and make its own judgments, but to run a quick "could this be harmful in any way?" check before each meaningful action. Wants direct-task completions to still trigger an end-of-task ping by default; occasional missed pings are acceptable, but the normal expectation is that task closings get pinged.
+- **Notes:** Wants a later reminder to define hazoc's desired presence after setup. Prefers concise responses; if there's a lot to say, split it into compact parts and deliver them one by one. Wants hazoc to act proactively and make its own judgments, but to run a quick "could this be harmful in any way?" check before each meaningful action. Wants direct-task completions to still trigger an end-of-task ping by default; occasional missed pings are acceptable, but the normal expectation is that task closings get pinged. When optimizing context/token usage, does **not** want hazoc to get dumber; preserve answer quality and use staged recall instead of oversized always-loaded prompts.
 
 ## Context
 
 - Wants a local-first mission-control space where haolun and hazoc can work together through chat, task tracking, schedule/events, memory/journal, and end-of-session summaries.
 - Wants hazoc to capture tasks from conversation by default, keep the task board fresh, manage lane state actively, and run a broader hourly maintenance + GitHub sync rhythm while hazoc is actively working.
-- Wants a retrieval-first memory workflow: search stored memory first, load only the useful pieces, answer compactly, then write back only what is worth keeping.
+- Wants a retrieval-first memory workflow: search stored memory first, load only the useful pieces, answer compactly, widen retrieval when needed, then write back only what is worth keeping.
+- Wants helpers/subagents to default to task-local context instead of inheriting broad workspace memory.
 - Wants the practical workspace memory stack (`memory/active-state.md` + task board + daily notes + curated memory) instead of overbuilt cloud memory systems.
 - Wants the local mission-control site kept up while hazoc is active.
 - Wants Discord and Telegram treated as extension channels: important requests and follow-ups there should be mirrored back into main memory/task state.

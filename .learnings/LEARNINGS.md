@@ -130,3 +130,27 @@ Low-stakes Discord completion pings should not use a standing recovery poller; a
 Canonical protocol paths: AGENTS.md, mission-control/data/notifications.json, mission-control/data/protocol.json, mission-control/data/main-task-closeouts.json, TOOLS.md, MEMORY.md, memory/active-state.md, scripts/main_task_closeout.py
 
 ---
+
+## [LRN-20260402-001] openclaw-cron-add-rejected-at-5s
+
+**Logged**: 2026-04-02T15:06:05-04:00
+**Priority**: medium
+**Status**: pending
+**Area**: tooling
+
+### Summary
+OpenClaw cron add rejected --at +5s
+
+### Details
+On OpenClaw 2026.3.28, the closeout helper failed with 'Invalid --at; use ISO time or duration like 20m' when it passed '--at +5s'. Switching to the bare duration '5s' succeeded.
+
+### Suggested Action
+For one-shot cron jobs on this runtime, use bare durations like 5s/20m instead of +5s until the parser behavior changes.
+
+### Metadata
+- Source: self_observation
+- Related Files: none
+- Tags: openclaw, cron, closeout
+- See Also: none
+
+---

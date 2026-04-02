@@ -12,8 +12,12 @@ Before doing anything else:
 
 1. Read `SOUL.md` — this is who you are
 2. Read `USER.md` — this is who you're helping
-3. Read `memory/YYYY-MM-DD.md` (today + yesterday) for recent context
-4. **If in MAIN SESSION** (direct chat with your human): Also read `MEMORY.md`
+3. Read `PROTOCOL_SPINE.md` — this is the always-loaded operating spine
+4. Read `RECALL_MAP.md` — this is the routing map for cheap recall
+5. Read `memory/active-state.md` if it exists — this is the live anchor
+6. **If in MAIN SESSION** (direct chat with your human): Also read `MEMORY.md`
+7. Do **not** load tasks, old daily notes, branch state, or deep references by default. Pull them on demand through recall/search.
+8. If `memory/active-state.md` is missing, obviously stale, or the task depends on a recent timeline, then read the relevant daily note(s).
 
 Don't ask permission. Just do it.
 
@@ -21,6 +25,7 @@ Don't ask permission. Just do it.
 
 You wake up fresh each session. These files are your continuity:
 
+- **Live anchor:** `memory/active-state.md` — current focus, blockers, next steps
 - **Daily notes:** `memory/YYYY-MM-DD.md` (create `memory/` if needed) — raw logs of what happened
 - **Long-term:** `MEMORY.md` — your curated memories, like a human's long-term memory
 
@@ -75,8 +80,10 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 - When actively working, do the top-of-hour maintenance pass: memory/task cleanup first, then GitHub sync if there are meaningful changes.
 - Keep the local mission-control site up while hazoc is actively running.
 - Use the grounded continuity stack by default: `memory/active-state.md`, mission-control task board, daily notes, then curated memory.
-- Optimize memory/task/journal entries for retrieval, not prose; search stored memory first and load only the useful pieces.
+- Start from the small cognitive spine (`PROTOCOL_SPINE.md` + `RECALL_MAP.md` + `memory/active-state.md`); retrieve tasks, notes, and deep refs only when needed.
+- Optimize memory/task/journal entries for retrieval, not prose; for prior-context questions, run the required `memory_search` first, then use `scripts/recall_index.py` for targeted workspace recall, loading only the top snippets and escalating when confidence is low.
 - If work is split into subtasks, re-check applicable protocols for each subtask instead of assuming the parent scan covered them all.
+- Helpers/subagents should default to task-local packets via `scripts/build_subagent_brief.py`; broader context needs an explicit `targeted` or `extended` reason.
 - Long-lived agents should bootstrap from `agent-namecards/`; recurring workers should bootstrap from `workers/<worker-id>/`.
 - Main direct identity should bootstrap from `agent-namecards/main-facility-manager/namecard.json`.
 - `agent:discord-control:discord:channel:1485016833819021495` is the Discord control-branch sub-head; `agent:guest-safe-web:discord:channel:1487561215038460047` stays sandboxed/separate. Use `agent-namecards/importance-rubric.md` for promotion decisions.

@@ -410,5 +410,96 @@
     "cronJobId": null,
     "enqueueResponse": null,
     "error": null
+  },
+  {
+    "id": "closeout-20260402-002",
+    "createdAt": "2026-04-02T15:04:00-04:00",
+    "status": "send-enqueue-failed",
+    "result": "token-efficiency pass finished",
+    "analogy": "like trimming a pack before a climb",
+    "notificationLine": "<@1049450008505757706> hazoc finished: token-efficiency pass finished. Like like trimming a pack before a climb. Full report is in the control UI.",
+    "taskRef": "task-token-governance-workers-vs-main",
+    "note": "",
+    "sourceSession": "agent:main:main",
+    "delivery": {
+      "mode": "cron-announce",
+      "channel": "discord",
+      "to": "channel:1487645227421536327",
+      "desiredServer": "hzwp",
+      "desiredChannel": "#main_updates",
+      "fallbackTo": "channel:1485016833819021495",
+      "fallbackChannelLabel": "#control-center",
+      "fallbackPolicy": "manual-only",
+      "bestEffort": true
+    },
+    "policy": {
+      "bestEffort": true,
+      "blocksTaskClosure": false,
+      "missedPingTolerance": "acceptable"
+    },
+    "cronJobId": null,
+    "enqueueResponse": null,
+    "error": "Error: Invalid --at; use ISO time or duration like 20m",
+    "enqueueRequestedAt": "2026-04-02T15:04:02-04:00"
+  },
+  {
+    "id": "closeout-20260402-003",
+    "createdAt": "2026-04-02T15:05:11-04:00",
+    "status": "send-enqueued",
+    "result": "token-efficiency pass finished",
+    "analogy": "like trimming a pack before a climb",
+    "notificationLine": "<@1049450008505757706> hazoc finished: token-efficiency pass finished. Like like trimming a pack before a climb. Full report is in the control UI.",
+    "taskRef": "task-token-governance-workers-vs-main",
+    "note": "",
+    "sourceSession": "agent:main:main",
+    "delivery": {
+      "mode": "cron-announce",
+      "channel": "discord",
+      "to": "channel:1487645227421536327",
+      "desiredServer": "hzwp",
+      "desiredChannel": "#main_updates",
+      "fallbackTo": "channel:1485016833819021495",
+      "fallbackChannelLabel": "#control-center",
+      "fallbackPolicy": "manual-only",
+      "bestEffort": true
+    },
+    "policy": {
+      "bestEffort": true,
+      "blocksTaskClosure": false,
+      "missedPingTolerance": "acceptable"
+    },
+    "cronJobId": "c031e341-59e5-41be-aadb-c55b665307a0",
+    "enqueueResponse": {
+      "id": "c031e341-59e5-41be-aadb-c55b665307a0",
+      "name": "main-task-closeout-closeout-20260402-003",
+      "enabled": true,
+      "deleteAfterRun": true,
+      "createdAtMs": 1775156715505,
+      "updatedAtMs": 1775156715505,
+      "schedule": {
+        "kind": "at",
+        "at": "2026-04-02T19:05:20.399Z"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "Reply with EXACTLY the following one-line text and nothing else:\n<@1049450008505757706> hazoc finished: token-efficiency pass finished. Like like trimming a pack before a climb. Full report is in the control UI.\nNo preface. No markdown fences. No extra text.",
+        "thinking": "minimal",
+        "timeoutSeconds": 20,
+        "lightContext": true
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "discord",
+        "to": "channel:1487645227421536327",
+        "bestEffort": true
+      },
+      "state": {
+        "nextRunAtMs": 1775156720399
+      }
+    },
+    "error": null,
+    "enqueueRequestedAt": "2026-04-02T15:05:15-04:00"
   }
 ]

@@ -1,47 +1,22 @@
 # Active State
 
-## Live anchor (updated 2026-03-29 3:05 PM EDT)
+## Live anchor (updated 2026-04-02 3:35 PM EDT)
 - Mission control is the shared local-first workspace between haolun and hazoc.
 - Local URL: `http://127.0.0.1:4180/`.
-- Current LAN URL: `http://192.168.12.188:4180/`.
-- Treat this file as live state only. Historical handoffs belong in daily notes, and older "expected next move" bullets should not be surfaced as current truth unless a newer note or the current conversation still corroborates them.
+- Treat this file as live state only. Historical detail belongs in daily notes and task memory.
+- The token-efficiency pass is complete: startup prompt was compressed, default/main heartbeat is disabled, default session context is now `160000`, compaction is triggered earlier, and main-task closeout now uses a lightweight best-effort announce path with `--wake now`.
+- The cheap recall first pass is now implemented: `PROTOCOL_SPINE.md`, `RECALL_MAP.md`, `scripts/recall_index.py`, and `scripts/build_subagent_brief.py` exist, and `AGENTS.md` / protocol registry were updated to make the behavior durable.
 
-## Current product state
-- Mission control currently has Tasks, Protocol, Schedule, Events, Memory, and Skills pages.
-- Tasks use Workbench, On Hold, and Archived.
-- Protocol holds standing rules plus recurring rhythm.
-- Schedule is event-first in `America/New_York`, with scheduled user events separated from hazoc work tasks.
-- Skills-page direction changed: abandon skill flowcharts and use concise summaries of how each skill works instead.
-- Main notable open product issue: the site works, but the UI still feels visually clunky and needs more polish.
+## Current focus
+- Validate and tune the new recall-first memory path instead of trimming blindly.
+- Working task: `task-design-cheap-memory-recall-path`.
 
-## Current active threads
-- Mission-control UI polish.
-- Market-moving news digest design.
-- Multi-user schedule architecture.
-- Learning-system / grounded-evolver refinement.
-
-## Freshest learning-system state
-- Grounded-evolver's two-branch model is already in place: `build-pattern` vs `repair-pattern`.
-- The revised framework/chart handoff already happened after the restart; do not treat it as a pending next step.
-- A completed learning run now needs a standard artifact pack: full detail in the day’s `.learnings/.../error.md`, a succinct summary in `memory/YYYY-MM-DD.md`, and lesson/protocol outcomes in `.learnings/`.
-- `skills/learning-loop/scripts/log_learning_run.py` now exists as the one-shot helper to write that artifact pack consistently.
-- Qualifying direct main-task completions now use a best-effort closeout path: `scripts/main_task_closeout.py` appends a local ledger entry in `mission-control/data/main-task-closeouts.json` and enqueues one lightweight one-shot announce job to `#main_updates`; no standing recovery worker or retry loop remains.
-- Managed recurring workers now have a small workspace-local identity pattern: `workers/<worker-id>/spec.json` (read-only purpose/contract), `workers/<worker-id>/state.json` (writable checkpoint), and `scripts/bootstrap_worker.py` as the wake-time bootstrap helper. The live worker still on this pattern is `maintain-workspace-hourly`.
-- Long-lived agent/channel identities now also have lightweight role cards under `agent-namecards/`: main is the facility manager, the Discord control-channel agent is the sub-head of the Discord branch, and the guest-safe-web Discord sandbox is a safeguarded subordinate sandbox with separate local state.
-- Agent identity hardening now exists in lightweight form: `scripts/bootstrap_agent_identity.py` + `agent-namecards/index.json` give long-lived identities a real bootstrap bundle, and the namecards now record their bootstrap commands.
-- Branch-important memory now uses a written rubric in `agent-namecards/importance-rubric.md`: branch agents make the first importance call, and the hourly maintenance worker audits pending important items from the Discord branch state files and promotes unresolved shared-important items into main memory/task state when appropriate.
-- Future promotion direction is now written in `agent-namecards/promotion-pipeline.md`: default to per-agent local memory/state, promote upward explicitly, and do not let agents inherit each other's local memory by default.
-- Step-1 helper extraction is now done inside grounded-evolver: `scripts/prepare_outside_review.py` turns planner JSON into reusable preferred/fallback clean-room spawn payloads, and `scripts/snapshot_revert.py` provides cheap reversible file snapshots for protocol/workflow edits.
-- Current likely follow-ups if learning-system work resumes: gradual protocol-registry backfill, stronger per-repair regression checks, and a lightweight review surface for recent runs / repeat failure classes.
-
-## Operating rhythm to preserve
-- For each meaningful message: triage the implied task/follow-up and update durable state.
-- Run a full hourly memory optimization + task board update at the top of the hour while active, then run git auto sync immediately afterward if there are meaningful changes worth preserving.
-- Mirror important Discord/Telegram items back into main project memory.
-- The hourly maintenance pass only counts after the real memory upkeep happened and the git-sync result is either pushed, blocked, or verified clean/no-change.
-- Keep mission control up while active.
-- Before meaningful actions, do a quick harm check.
-- Use memory retrieval before answering new meaningful questions.
+## Next checks
+1. Test `scripts/recall_index.py` on active/task/history/protocol queries and tune routing/scoring if needed.
+2. Test fresh-session re-anchor against the new startup spine.
+3. Test `scripts/build_subagent_brief.py` in `minimal` and `targeted` modes on a real helper task.
+4. Tighten wording only after real usage friction shows where it is weak.
 
 ## Current caution
-- When anchoring after resets or interruptions, distinguish between confirmed current state and last recorded historical expectation. If there is any mismatch, report the uncertainty instead of collapsing them together.
+- Answer quality beats token savings. If confidence is low, widen retrieval.
+- Older long-lived sessions may still show the previous larger footprint until they compact or roll over.

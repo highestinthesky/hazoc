@@ -161,7 +161,7 @@
   {
     "id": "protocol-learning-run-artifacts",
     "title": "Finish each learning run with durable artifacts",
-    "summary": "A completed learning run must leave behind full problem detail in the day’s `.learnings/.../error.md`, a succinct summary in `memory/YYYY-MM-DD.md`, and lesson/protocol outcomes in `.learnings/`, with accepted protocols also promoted into their canonical home.",
+    "summary": "A completed learning run must leave behind full problem detail in the day\u2019s `.learnings/.../error.md`, a succinct summary in `memory/YYYY-MM-DD.md`, and lesson/protocol outcomes in `.learnings/`, with accepted protocols also promoted into their canonical home.",
     "category": "learning",
     "cadence": "at the end of every completed learning run",
     "status": "active",
@@ -176,5 +176,59 @@
     ],
     "createdAt": "2026-03-29T19:42:00.000Z",
     "updatedAt": "2026-03-29T19:42:00.000Z"
+  },
+  {
+    "id": "protocol-startup-cognitive-spine",
+    "title": "Start from the small cognitive spine instead of preloading the whole workspace",
+    "summary": "On startup, always load the small operating core (`SOUL.md`, `USER.md`, `PROTOCOL_SPINE.md`, `RECALL_MAP.md`, `memory/active-state.md`, and `MEMORY.md` in main). Do not preload tasks, older daily notes, branch state, or deep references unless the request or active-state actually needs them.",
+    "category": "continuity",
+    "cadence": "on every session startup",
+    "status": "active",
+    "scope": "global",
+    "owner": "main",
+    "canonicalPaths": [
+      "AGENTS.md",
+      "PROTOCOL_SPINE.md",
+      "RECALL_MAP.md",
+      "memory/active-state.md",
+      "MEMORY.md"
+    ],
+    "createdAt": "2026-04-02T19:35:00.000Z",
+    "updatedAt": "2026-04-02T19:35:00.000Z"
+  },
+  {
+    "id": "protocol-staged-recall-routing",
+    "title": "Route recall to the smallest likely memory layer first",
+    "summary": "When prior context is needed, classify the request first, run required `memory_search` for memory recall, then search the most likely local workspace layer via the recall helper. Load only the top snippets first and escalate to deeper notes/playbooks only if confidence is low.",
+    "category": "memory",
+    "cadence": "whenever a request depends on prior context",
+    "status": "active",
+    "scope": "global",
+    "owner": "main",
+    "canonicalPaths": [
+      "AGENTS.md",
+      "PROTOCOL_SPINE.md",
+      "RECALL_MAP.md",
+      "scripts/recall_index.py"
+    ],
+    "createdAt": "2026-04-02T19:35:00.000Z",
+    "updatedAt": "2026-04-02T19:35:00.000Z"
+  },
+  {
+    "id": "protocol-task-local-subagents",
+    "title": "Keep helpers/subagents task-local by default",
+    "summary": "Spawn helpers with minimal task packets by default: goal, constraints, expected output, and only exact excerpts required. Broader context should require explicit targeted/extended mode instead of ambient workspace-memory inheritance.",
+    "category": "subagents",
+    "cadence": "whenever spawning a helper/subagent",
+    "status": "active",
+    "scope": "global",
+    "owner": "main",
+    "canonicalPaths": [
+      "AGENTS.md",
+      "PROTOCOL_SPINE.md",
+      "scripts/build_subagent_brief.py"
+    ],
+    "createdAt": "2026-04-02T19:35:00.000Z",
+    "updatedAt": "2026-04-02T19:35:00.000Z"
   }
 ]
