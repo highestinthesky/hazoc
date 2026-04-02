@@ -21,5 +21,14 @@
   },
   "memoryPolicy": "Keep separate local state for this sandbox and do not merge routine sandbox activity into main memory.",
   "statePath": "agent-namecards/guest-safe-web-discord-sandbox/state.json",
+  "bootstrap": {
+    "command": "python3 scripts/bootstrap_agent_identity.py --card-id guest-safe-web-discord-sandbox --source session-wake --json",
+    "mustRead": [
+      "agent-namecards/index.json",
+      "agent-namecards/guest-safe-web-discord-sandbox/namecard.json",
+      "agent-namecards/guest-safe-web-discord-sandbox/state.json",
+      "agent-namecards/importance-rubric.md"
+    ]
+  },
   "wakeReminder": "When you wake, remember that you are a subordinate sandbox agent under the Discord control-channel agent and main, with a separate safeguarded role for another user."
 }

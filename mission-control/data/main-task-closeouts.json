@@ -348,5 +348,37 @@
     "wakeRequestedJobId": "fa5ffaf8-8bf5-418b-8309-71412602f9fe",
     "wakeRequestedJobName": "recover-main-task-closeouts",
     "lastAttemptAt": "2026-03-29T20:31:43-04:00"
+  },
+  {
+    "id": "closeout-20260329-013",
+    "createdAt": "2026-03-29T21:11:01-04:00",
+    "status": "dispatched",
+    "result": "agent bootstrap + promotion design",
+    "analogy": "issuing manuals with an intake desk",
+    "notificationLine": "<@1049450008505757706> hazoc finished: agent bootstrap + promotion design. Like issuing manuals with an intake desk. Full report is in the control UI.",
+    "taskRef": "add agent bootstrap helper and write promotion-pipeline design",
+    "note": "Implemented bootstrap_agent_identity plus agent-namecard index/state, and wrote the future promotion pipeline for branch-to-main memory promotion with default local-memory isolation.",
+    "sourceSession": "agent:main:main",
+    "delivery": {
+      "channel": "discord",
+      "to": "channel:1487645227421536327",
+      "desiredServer": "hzwp",
+      "desiredChannel": "#main_updates",
+      "fallbackTo": "channel:1485016833819021495",
+      "fallbackChannelLabel": "#control-center"
+    },
+    "resolution": "ping-sent",
+    "attempts": 1,
+    "dispatchStartedAt": "2026-04-02T09:44:17-04:00",
+    "dispatchedAt": "2026-04-02T09:44:17-04:00",
+    "dispatchJobId": null,
+    "recoveryJob": "recover-main-task-closeouts",
+    "recoveryWorkerId": "recover-main-task-closeouts",
+    "recoveryWorkerSpec": "workers/recover-main-task-closeouts/spec.json",
+    "recoveryWorkerState": "workers/recover-main-task-closeouts/state.json",
+    "wakeRequestedAt": "2026-03-29T21:11:07-04:00",
+    "wakeRequestedJobId": "fa5ffaf8-8bf5-418b-8309-71412602f9fe",
+    "wakeRequestedJobName": "recover-main-task-closeouts",
+    "lastAttemptAt": "2026-04-02T09:44:17-04:00"
   }
 ]

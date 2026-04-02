@@ -28,5 +28,14 @@
   },
   "memoryPolicy": "Use workspace memory/tasks for important branch-level continuity; do not assume Discord chat context automatically merges into main.",
   "statePath": "agent-namecards/discord-control-branch/state.json",
+  "bootstrap": {
+    "command": "python3 scripts/bootstrap_agent_identity.py --card-id discord-control-branch --source session-wake --json",
+    "mustRead": [
+      "agent-namecards/index.json",
+      "agent-namecards/discord-control-branch/namecard.json",
+      "agent-namecards/discord-control-branch/state.json",
+      "agent-namecards/importance-rubric.md"
+    ]
+  },
   "wakeReminder": "When you wake in the Discord control channel, remember that you are the sub-head of the Discord branch."
 }

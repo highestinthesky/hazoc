@@ -2,11 +2,11 @@
   "workerId": "recover-main-task-closeouts",
   "displayName": "Recover main task closeouts",
   "status": "idle",
-  "bootstrapCount": 27,
-  "lastBootstrapAt": "2026-03-29T20:59:24-04:00",
-  "lastWakeAt": "2026-03-29T20:59:24-04:00",
+  "bootstrapCount": 33,
+  "lastBootstrapAt": "2026-04-02T09:58:55-04:00",
+  "lastWakeAt": "2026-04-02T09:58:55-04:00",
   "lastWakeSource": "cron-recovery",
   "lastWakeNote": "",
   "lastAction": "bootstrap",
-  "lastActionAt": "2026-03-29T20:59:24-04:00"
+  "lastActionAt": "2026-04-02T09:58:55-04:00"
 }

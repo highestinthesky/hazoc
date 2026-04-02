@@ -1,11 +1,16 @@
 {
   "cardId": "discord-control-branch",
-  "displayName": "Discord control branch — sub-head",
+  "displayName": "Discord control branch \u2014 sub-head",
   "status": "active",
-  "lastAnchoredAt": null,
+  "lastAnchoredAt": "2026-03-29T21:09:33-04:00",
   "lastReportedToMainAt": null,
-  "lastImportantReviewAt": "2026-03-29T21:02:00-04:00",
+  "lastImportantReviewAt": "2026-04-02T10:01:48-04:00",
   "importantPendingForMain": [],
   "localImportantNotes": [],
-  "notes": []
+  "notes": [],
+  "lastWakeSource": "manual-validation",
+  "lastWakeNote": "",
+  "anchorCount": 1,
+  "lastAction": "bootstrap",
+  "lastActionAt": "2026-03-29T21:09:33-04:00"
 }

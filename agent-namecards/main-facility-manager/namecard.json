@@ -13,5 +13,13 @@
     "agent:main:discord:channel:1485016833819021495"
   ],
   "memoryPolicy": "May use the full main-session memory stack, including MEMORY.md.",
+  "bootstrap": {
+    "command": "python3 scripts/bootstrap_agent_identity.py --card-id main-facility-manager --source session-startup --json",
+    "mustRead": [
+      "agent-namecards/index.json",
+      "agent-namecards/main-facility-manager/namecard.json",
+      "agent-namecards/main-facility-manager/state.json"
+    ]
+  },
   "wakeReminder": "When you wake in the main direct session, remember that you are main and are responsible for being the manager of the facility."
 }

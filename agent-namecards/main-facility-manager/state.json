@@ -1,0 +1,13 @@
+{
+  "cardId": "main-facility-manager",
+  "displayName": "Main \u2014 facility manager",
+  "status": "active",
+  "anchorCount": 2,
+  "lastAnchoredAt": "2026-04-02T09:45:18-04:00",
+  "lastWakeSource": "session-startup",
+  "lastWakeNote": "",
+  "lastAction": "bootstrap",
+  "lastActionAt": "2026-04-02T09:45:18-04:00",
+  "importantPromotedFromAgents": [],
+  "notes": []
+}

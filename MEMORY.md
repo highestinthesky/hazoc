@@ -84,6 +84,14 @@
 - Telegram DMs are also an extension channel.
 - Important requests, decisions, and follow-ups from those channels must be mirrored back into the mission-control task board and workspace memory.
 
+## Agent-memory promotion direction
+
+- Default future rule: a specific long-lived agent should read only its own local namecard/state and role-relevant shared workspace files by default, not another agent's local memory.
+- Cross-agent memory should move through explicit promotion rather than ambient inheritance.
+- Planned Discord task-drop behavior: a request dropped into a subordinate Discord channel should move upward to the control-channel agent, then to main when it is a main-owned task.
+- Planned branch-memory behavior: branch-local work done by the Discord control agent should stay in branch memory by default and only be promoted into main memory/task state when the promotion system decides it is shared-important enough.
+- Guest safe-web sandbox should keep separate local state by default and should not routinely report to main.
+
 ## Tooling state worth remembering
 
 - The `gog` skill and CLI are installed and authenticated for Google Workspace use.

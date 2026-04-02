@@ -1,0 +1,23 @@
+{
+  "main-facility-manager": {
+    "sessionKey": "agent:main:main",
+    "agentNamespace": "main",
+    "surface": "main direct session",
+    "namecard": "agent-namecards/main-facility-manager/namecard.json",
+    "state": "agent-namecards/main-facility-manager/state.json"
+  },
+  "discord-control-branch": {
+    "sessionKey": "agent:main:discord:channel:1485016833819021495",
+    "agentNamespace": "main",
+    "surface": "Discord #control-center",
+    "namecard": "agent-namecards/discord-control-branch/namecard.json",
+    "state": "agent-namecards/discord-control-branch/state.json"
+  },
+  "guest-safe-web-discord-sandbox": {
+    "sessionKey": "agent:guest-safe-web:discord:channel:1487561215038460047",
+    "agentNamespace": "guest-safe-web",
+    "surface": "Discord sandbox channel",
+    "namecard": "agent-namecards/guest-safe-web-discord-sandbox/namecard.json",
+    "state": "agent-namecards/guest-safe-web-discord-sandbox/state.json"
+  }
+}
