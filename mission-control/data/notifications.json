@@ -3,18 +3,15 @@
     "enabled": true,
     "scope": "main-agent-only",
     "trigger": "When main finishes a task assigned directly by haolun in the main direct-chat session and the task is actually complete.",
-    "closeoutGate": {
-      "required": true,
-      "resolveBeforeTaskIsClosed": true,
+    "closeoutPolicy": {
       "helper": "scripts/main_task_closeout.py",
-      "queueFile": "mission-control/data/main-task-closeouts.json",
-      "recoveryJobName": "recover-main-task-closeouts",
-      "workerId": "recover-main-task-closeouts",
-      "workerSpec": "workers/recover-main-task-closeouts/spec.json",
-      "workerState": "workers/recover-main-task-closeouts/state.json",
-      "bootstrapCommand": "python3 scripts/bootstrap_worker.py --worker-id recover-main-task-closeouts --source cron-recovery --json",
+      "ledgerFile": "mission-control/data/main-task-closeouts.json",
+      "bestEffort": true,
+      "blocksTaskClosure": false,
+      "missedPingTolerance": "acceptable",
       "resolutionBranches": [
-        "queued-and-woke-recovery-worker",
+        "best-effort-send-requested",
+        "best-effort-send-failed",
         "not-applicable",
         "blocked-or-deferred-with-reason"
       ]
@@ -26,6 +23,7 @@
     ],
     "delivery": {
       "mode": "cron-announce",
+      "bestEffort": true,
       "channel": "discord",
       "to": "channel:1487645227421536327",
       "currentChannelLabel": "#main_updates",
@@ -33,7 +31,8 @@
       "desiredChannel": "#main_updates",
       "status": "active-main_updates-channel-tested",
       "fallbackTo": "channel:1485016833819021495",
-      "fallbackChannelLabel": "#control-center"
+      "fallbackChannelLabel": "#control-center",
+      "fallbackPolicy": "manual-only"
     },
     "mention": "<@1049450008505757706>",
     "format": {
@@ -49,9 +48,18 @@
     },
     "implementation": {
       "tool": "cron",
-      "pattern": "Resolve the closeout gate through `scripts/main_task_closeout.py`: queue the notification durably, wake the standing `recover-main-task-closeouts` worker immediately, and rely on its recurring schedule to drain any queued entries that survive a restart. That worker must bootstrap from `workers/recover-main-task-closeouts/` on each wake instead of relying on vague session memory.",
-      "tested": true,
-      "lastVerifiedAt": "2026-03-29T23:42:00.000Z"
+      "pattern": "Use `scripts/main_task_closeout.py` to append a local closeout ledger entry and enqueue one lightweight one-shot isolated announce job. Do not keep a persistent recovery worker or automatic retry loop; if the ping is missed, accept the miss and move on.",
+      "cronShape": {
+        "schedule": "one-shot + auto-delete",
+        "sessionTarget": "isolated",
+        "lightContext": true,
+        "thinking": "minimal",
+        "wakeMode": "next-heartbeat",
+        "delivery": "announce",
+        "bestEffort": true
+      },
+      "tested": false,
+      "lastVerifiedAt": "2026-04-02T17:34:00.000Z"
     }
   }
 }

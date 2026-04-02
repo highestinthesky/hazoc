@@ -380,5 +380,35 @@
     "wakeRequestedJobId": "fa5ffaf8-8bf5-418b-8309-71412602f9fe",
     "wakeRequestedJobName": "recover-main-task-closeouts",
     "lastAttemptAt": "2026-04-02T09:44:17-04:00"
+  },
+  {
+    "id": "closeout-20260402-001",
+    "createdAt": "2026-04-02T13:38:11-04:00",
+    "status": "preview",
+    "result": "token efficiency cleanup",
+    "analogy": "retiring a night watchman",
+    "notificationLine": "<@1049450008505757706> hazoc finished: token efficiency cleanup. Like retiring a night watchman. Full report is in the control UI.",
+    "taskRef": "closeout system simplification",
+    "note": "",
+    "sourceSession": "agent:main:main",
+    "delivery": {
+      "mode": "cron-announce",
+      "channel": "discord",
+      "to": "channel:1487645227421536327",
+      "desiredServer": "hzwp",
+      "desiredChannel": "#main_updates",
+      "fallbackTo": "channel:1485016833819021495",
+      "fallbackChannelLabel": "#control-center",
+      "fallbackPolicy": "manual-only",
+      "bestEffort": true
+    },
+    "policy": {
+      "bestEffort": true,
+      "blocksTaskClosure": false,
+      "missedPingTolerance": "acceptable"
+    },
+    "cronJobId": null,
+    "enqueueResponse": null,
+    "error": null
   }
 ]

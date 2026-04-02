@@ -2,7 +2,10 @@
   "workerId": "recover-main-task-closeouts",
   "displayName": "Recover main task closeouts",
   "kind": "managed-recurring-worker",
-  "purpose": "Drain queued main-task Discord completion pings that were durably queued but not yet dispatched, especially after restarts or interrupted closeout.",
+  "status": "retired",
+  "retiredAt": "2026-04-02T13:36:00-04:00",
+  "supersededBy": "scripts/main_task_closeout.py best-effort one-shot announce path",
+  "purpose": "Historical worker artifact: formerly drained queued main-task Discord completion pings after restarts. Retired when the closeout system was simplified to best-effort one-shot sends.",
   "runtimeHints": {
     "preferredThinking": "minimal",
     "preferredReasoning": "off",
@@ -23,8 +26,8 @@
     "dispatchNext": "python3 scripts/main_task_closeout.py --root /home/haolun/.openclaw/workspace dispatch-next"
   },
   "wakeContract": {
-    "firstStep": "Run the bootstrap command before acting.",
-    "identityGuarantee": "Treat this spec plus state file as authoritative for purpose and current checkpoint; do not infer the role from session memory alone.",
-    "successRule": "If dispatchNext prints NO_REPLY, respond exactly NO_REPLY. Otherwise respond with the dispatch stdout exactly, unchanged, and nothing else."
+    "firstStep": "Do not wake this retired worker in normal operation.",
+    "identityGuarantee": "Treat this spec plus state file as historical context only unless explicitly reactivated by a future human-guided change.",
+    "successRule": "Retired. No live success path."
   }
 }

@@ -112,3 +112,21 @@ Discord completion closeout needed a durable queue and restart-safe recovery, no
 Canonical protocol paths: AGENTS.md, mission-control/data/notifications.json, mission-control/data/protocol.json, mission-control/data/main-task-closeouts.json, TOOLS.md, MEMORY.md, memory/active-state.md, scripts/main_task_closeout.py
 
 ---
+
+## 2026-04-02 — reliability should be proportional to notification importance
+
+**Area**: workflow
+**Source Run**: RUN-20260402-001
+
+### Summary
+Low-stakes Discord completion pings should not use a standing recovery poller; a one-shot best-effort send plus lightweight local logging is the better fit.
+
+### Lessons
+- Do not build persistent recovery loops for low-stakes notifications.
+- Match reliability machinery to the real cost of a miss, not to abstract discomfort about imperfection.
+- When a safety/reliability layer becomes the dominant ongoing cost, revisit whether the protected signal is important enough to justify it.
+
+### Promotion Notes
+Canonical protocol paths: AGENTS.md, mission-control/data/notifications.json, mission-control/data/protocol.json, mission-control/data/main-task-closeouts.json, TOOLS.md, MEMORY.md, memory/active-state.md, scripts/main_task_closeout.py
+
+---

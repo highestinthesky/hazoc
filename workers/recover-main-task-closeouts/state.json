@@ -1,12 +1,14 @@
 {
   "workerId": "recover-main-task-closeouts",
   "displayName": "Recover main task closeouts",
-  "status": "idle",
-  "bootstrapCount": 69,
-  "lastBootstrapAt": "2026-04-02T13:00:47-04:00",
-  "lastWakeAt": "2026-04-02T13:00:47-04:00",
+  "status": "retired",
+  "bootstrapCount": 76,
+  "lastBootstrapAt": "2026-04-02T13:36:05-04:00",
+  "lastWakeAt": "2026-04-02T13:36:05-04:00",
   "lastWakeSource": "cron-recovery",
   "lastWakeNote": "",
   "lastAction": "bootstrap",
-  "lastActionAt": "2026-04-02T13:00:47-04:00"
+  "lastActionAt": "2026-04-02T13:36:05-04:00",
+  "retiredAt": "2026-04-02T13:36:00-04:00",
+  "retiredReason": "Superseded by best-effort one-shot main-task closeout announces; recurring recovery poller removed for token efficiency."
 }

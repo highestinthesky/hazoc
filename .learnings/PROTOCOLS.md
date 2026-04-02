@@ -98,3 +98,30 @@ The protocol was advisory rather than gating: a direct task could still be treat
 The existing protocol guarded intent, not the delivery handoff. It lacked durable pending-state plus restart-safe recovery, so a restart or simple omission could still drop the notification even though the rule existed.
 
 ---
+
+## [PRT-20260402-001] low-stakes-completion-pings-should-not-justify-standing-recovery-pollers
+
+**Logged**: 2026-04-02T13:36:00-04:00
+**Status**: accepted
+**Area**: workflow
+**Source Run**: RUN-20260402-001
+
+### Protocol Outcomes
+- Replace the durable closeout gate for direct main-task Discord pings with a single best-effort completion ping.
+- Use `scripts/main_task_closeout.py` to append a local ledger entry and enqueue one lightweight one-shot announce job.
+- Do not block task closure on delivery success and do not keep a standing recovery worker for missed pings.
+
+### Canonical Homes
+- AGENTS.md
+- mission-control/data/notifications.json
+- mission-control/data/protocol.json
+- TOOLS.md
+- MEMORY.md
+- memory/active-state.md
+- scripts/main_task_closeout.py
+- mission-control/data/main-task-closeouts.json
+
+### Why
+The prior repair overfit reliability to a low-stakes signal. The standing recovery cron spent far more tokens checking for missed pings than the missed pings were worth.
+
+---

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Durable closeout helper for main-task Discord completion updates."""
+"""Best-effort closeout helper for main-task Discord completion updates."""
 
 from __future__ import annotations
 
@@ -8,11 +8,9 @@ import json
 import re
 import subprocess
 import sys
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
-
-STALE_SENDING_MINUTES = 10
 
 
 def now_local() -> datetime:
@@ -55,20 +53,20 @@ def load_config(root: Path) -> dict[str, Any]:
         return json.load(fh)
 
 
-def queue_path(root: Path) -> Path:
+def ledger_path(root: Path) -> Path:
     return root / "mission-control" / "data" / "main-task-closeouts.json"
 
 
-def load_queue(root: Path) -> list[dict[str, Any]]:
-    path = queue_path(root)
+def load_ledger(root: Path) -> list[dict[str, Any]]:
+    path = ledger_path(root)
     data = read_json(path, [])
     if not isinstance(data, list):
-        raise SystemExit(f"Unexpected closeout queue shape in {path}")
+        raise SystemExit(f"Unexpected closeout ledger shape in {path}")
     return data
 
 
-def save_queue(root: Path, rows: list[dict[str, Any]]) -> None:
-    write_json(queue_path(root), rows)
+def save_ledger(root: Path, rows: list[dict[str, Any]]) -> None:
+    write_json(ledger_path(root), rows)
 
 
 def build_send_line(config: dict[str, Any], result: str, analogy: str) -> str:
@@ -92,17 +90,55 @@ def next_entry_id(rows: list[dict[str, Any]], dt: datetime) -> str:
     return f"closeout-{slug}-{max(seen, default=0) + 1:03d}"
 
 
-def queue_send_impl(root: Path, result: str, analogy: str, task_ref: str, note: str, source_session: str, created_at_raw: str | None) -> tuple[dict[str, Any], dict[str, Any]]:
+def save_entry(root: Path, entry: dict[str, Any]) -> None:
+    rows = load_ledger(root)
+    rows.append(entry)
+    save_ledger(root, rows)
+
+
+def update_entry(root: Path, entry_id: str, mutate) -> dict[str, Any]:
+    rows = load_ledger(root)
+    updated: dict[str, Any] | None = None
+    for row in rows:
+        if row.get("id") == entry_id:
+            mutate(row)
+            updated = row
+            break
+    if updated is None:
+        raise SystemExit(f"Unknown closeout id: {entry_id}")
+    save_ledger(root, rows)
+    return updated
+
+
+def closeout_prompt(line: str) -> str:
+    return (
+        "Reply with EXACTLY the following one-line text and nothing else:\n"
+        f"{line}\n"
+        "No preface. No markdown fences. No extra text."
+    )
+
+
+def enqueue_best_effort_send(
+    root: Path,
+    result: str,
+    analogy: str,
+    task_ref: str,
+    note: str,
+    source_session: str,
+    created_at_raw: str | None,
+    as_json: bool,
+    dry_run: bool,
+) -> int:
     config = load_config(root)
     block = config["mainTaskCompletionDiscord"]
-    rows = load_queue(root)
+    rows = load_ledger(root)
     created_at = parse_dt(created_at_raw) or now_local()
     entry_id = next_entry_id(rows, created_at)
     line = build_send_line(config, result, analogy)
     entry = {
         "id": entry_id,
         "createdAt": created_at.isoformat(),
-        "status": "queued",
+        "status": "preview" if dry_run else "send-requested",
         "result": result.strip(),
         "analogy": analogy.strip(),
         "notificationLine": line,
@@ -110,196 +146,140 @@ def queue_send_impl(root: Path, result: str, analogy: str, task_ref: str, note: 
         "note": note.strip(),
         "sourceSession": source_session.strip(),
         "delivery": {
+            "mode": block["delivery"]["mode"],
             "channel": block["delivery"]["channel"],
             "to": block["delivery"]["to"],
             "desiredServer": block["delivery"]["desiredServer"],
             "desiredChannel": block["delivery"]["desiredChannel"],
             "fallbackTo": block["delivery"].get("fallbackTo"),
             "fallbackChannelLabel": block["delivery"].get("fallbackChannelLabel"),
+            "fallbackPolicy": block["delivery"].get("fallbackPolicy", "manual-only"),
+            "bestEffort": block["delivery"].get("bestEffort", True),
         },
-        "resolution": "ping-sent",
-        "attempts": 0,
-        "dispatchStartedAt": None,
-        "dispatchedAt": None,
-        "dispatchJobId": None,
-        "recoveryJob": block.get("closeoutGate", {}).get("recoveryJobName", "recover-main-task-closeouts"),
-        "recoveryWorkerId": block.get("closeoutGate", {}).get("workerId", "recover-main-task-closeouts"),
-        "recoveryWorkerSpec": block.get("closeoutGate", {}).get("workerSpec", "workers/recover-main-task-closeouts/spec.json"),
-        "recoveryWorkerState": block.get("closeoutGate", {}).get("workerState", "workers/recover-main-task-closeouts/state.json"),
+        "policy": {
+            "bestEffort": True,
+            "blocksTaskClosure": False,
+            "missedPingTolerance": "acceptable",
+        },
+        "cronJobId": None,
+        "enqueueResponse": None,
+        "error": None,
     }
-    rows.append(entry)
-    save_queue(root, rows)
+    save_entry(root, entry)
+
     payload = {
-        "closeoutResolved": False,
-        "decision": "queued-for-dispatch",
+        "closeoutResolved": True,
+        "taskMayClose": True,
+        "decision": "best-effort-send-preview" if dry_run else "best-effort-send-requested",
         "id": entry_id,
         "notificationLine": line,
         "target": block["delivery"]["to"],
         "server": block["delivery"]["desiredServer"],
         "channel": block["delivery"]["desiredChannel"],
-        "queueFile": str(queue_path(root)),
-        "recoveryJobName": entry["recoveryJob"],
-        "nextAction": "Wake the standing recovery worker now so it can dispatch this queued closeout without spawning a throwaway per-task cron.",
+        "ledgerFile": str(ledger_path(root)),
     }
-    return entry, payload
 
-
-def queue_send(root: Path, result: str, analogy: str, task_ref: str, note: str, source_session: str, created_at_raw: str | None, as_json: bool) -> int:
-    entry, payload = queue_send_impl(root, result, analogy, task_ref, note, source_session, created_at_raw)
-    if as_json:
-        print(json.dumps(payload, indent=2))
-    else:
-        print(f"Queued closeout: {entry['id']}")
-        print(f"Target: {payload['server']} / {payload['channel']} ({payload['target']})")
-        print(f"Notification line: {payload['notificationLine']}")
-        print(payload["nextAction"])
-    return 0
-
-
-def find_recovery_job(root: Path, job_name: str) -> dict[str, Any]:
-    raw = subprocess.check_output(["openclaw", "cron", "list", "--json"], text=True, cwd=str(root))
-    obj = json.loads(raw)
-    jobs = obj.get("jobs", obj if isinstance(obj, list) else [])
-    matches = [job for job in jobs if job.get("name") == job_name]
-    if not matches:
-        raise SystemExit(f"Recovery cron job not found: {job_name}")
-    enabled = [job for job in matches if job.get("enabled", True)]
-    chosen = enabled[0] if enabled else matches[0]
-    return chosen
-
-
-def stamp_wake_request(root: Path, entry_id: str, job: dict[str, Any]) -> None:
-    rows = load_queue(root)
-    for row in rows:
-        if row.get("id") == entry_id:
-            row["wakeRequestedAt"] = now_local().isoformat()
-            row["wakeRequestedJobId"] = job.get("id")
-            row["wakeRequestedJobName"] = job.get("name")
-            save_queue(root, rows)
-            return
-    raise SystemExit(f"Unknown closeout id: {entry_id}")
-
-
-def wake_recovery_job(root: Path, entry_id: str, timeout_ms: int, expect_final: bool, as_json: bool) -> int:
-    config = load_config(root)
-    job_name = config["mainTaskCompletionDiscord"]["closeoutGate"].get("recoveryJobName", "recover-main-task-closeouts")
-    job = find_recovery_job(root, job_name)
-    stamp_wake_request(root, entry_id, job)
-    cmd = ["openclaw", "cron", "run", job["id"], "--timeout", str(timeout_ms)]
-    if expect_final:
-        cmd.append("--expect-final")
-    output = subprocess.check_output(cmd, text=True, cwd=str(root)).strip()
-    payload = {
-        "closeoutResolved": True,
-        "decision": "queued-and-woke-recovery-worker",
-        "id": entry_id,
-        "recoveryJobId": job["id"],
-        "recoveryJobName": job_name,
-        "runOutput": output,
-    }
-    if as_json:
-        print(json.dumps(payload, indent=2))
-    else:
-        print(f"Queued closeout: {entry_id}")
-        print(f"Woke recovery worker: {job_name} ({job['id']})")
-        if output:
-            print(output)
-    return 0
-
-
-def queue_and_wake(root: Path, result: str, analogy: str, task_ref: str, note: str, source_session: str, created_at_raw: str | None, timeout_ms: int, expect_final: bool, as_json: bool) -> int:
-    entry, payload = queue_send_impl(root, result, analogy, task_ref, note, source_session, created_at_raw)
-    try:
-        return wake_recovery_job(root, entry["id"], timeout_ms, expect_final, as_json)
-    except Exception as exc:
-        fallback = {
-            **payload,
-            "error": str(exc),
-            "nextAction": "The closeout is still durably queued. The standing recovery worker's recurring schedule will retry later, but the immediate wake failed and should be investigated.",
-        }
+    if dry_run:
         if as_json:
-            print(json.dumps(fallback, indent=2))
+            print(json.dumps(payload, indent=2))
         else:
-            print(f"Queued closeout: {entry['id']}")
-            print(f"Immediate wake failed: {exc}")
-            print(fallback["nextAction"])
-        return 1
-
-
-def mark_job(root: Path, entry_id: str, job_id: str, as_json: bool) -> int:
-    rows = load_queue(root)
-    for row in rows:
-        if row.get("id") == entry_id:
-            row["dispatchJobId"] = job_id.strip()
-            if row.get("status") == "queued":
-                row["status"] = "armed"
-            row["scheduledAt"] = now_local().isoformat()
-            save_queue(root, rows)
-            payload = {"ok": True, "id": entry_id, "jobId": job_id.strip(), "status": row["status"]}
-            if as_json:
-                print(json.dumps(payload, indent=2))
-            else:
-                print(f"Marked {entry_id} with dispatch job {job_id.strip()}")
-            return 0
-    raise SystemExit(f"Unknown closeout id: {entry_id}")
-
-
-def stale_sending(row: dict[str, Any], now: datetime) -> bool:
-    if row.get("status") != "sending":
-        return False
-    started = parse_dt(row.get("dispatchStartedAt"))
-    if not started:
-        return True
-    return now - started >= timedelta(minutes=STALE_SENDING_MINUTES)
-
-
-def claim_entry(rows: list[dict[str, Any]], target_id: str | None) -> dict[str, Any] | None:
-    now = now_local()
-    candidates = []
-    for row in rows:
-        status = row.get("status")
-        if status in {"queued", "armed"} or stale_sending(row, now):
-            if target_id is None or row.get("id") == target_id:
-                candidates.append(row)
-    if not candidates:
-        return None
-    candidates.sort(key=lambda row: row.get("createdAt", ""))
-    chosen = candidates[0]
-    chosen["status"] = "sending"
-    chosen["attempts"] = int(chosen.get("attempts") or 0) + 1
-    chosen["dispatchStartedAt"] = now.isoformat()
-    chosen["lastAttemptAt"] = now.isoformat()
-    return chosen
-
-
-def dispatch(root: Path, entry_id: str | None, as_json: bool, record_only: bool = False) -> int:
-    rows = load_queue(root)
-    row = claim_entry(rows, entry_id)
-    if row is None:
-        if as_json:
-            print(json.dumps({"shouldSend": False, "message": "NO_REPLY"}, indent=2))
-        else:
-            print("NO_REPLY")
+            print(f"Preview closeout: {entry_id}")
+            print(f"Target: {payload['server']} / {payload['channel']} ({payload['target']})")
+            print(f"Notification line: {payload['notificationLine']}")
         return 0
 
-    now = now_local()
-    row["status"] = "dispatched" if record_only else "dispatched"
-    row["dispatchedAt"] = now.isoformat()
-    save_queue(root, rows)
+    cmd = [
+        "openclaw",
+        "cron",
+        "add",
+        "--json",
+        "--name",
+        f"main-task-closeout-{entry_id}",
+        "--at",
+        "+5s",
+        "--session",
+        "isolated",
+        "--message",
+        closeout_prompt(line),
+        "--light-context",
+        "--thinking",
+        "minimal",
+        "--announce",
+        "--channel",
+        block["delivery"]["channel"],
+        "--to",
+        block["delivery"]["to"],
+        "--best-effort-deliver",
+        "--delete-after-run",
+        "--wake",
+        "next-heartbeat",
+        "--timeout-seconds",
+        "20",
+    ]
+
+    proc = subprocess.run(cmd, cwd=str(root), capture_output=True, text=True)
+    stdout = proc.stdout.strip()
+    stderr = proc.stderr.strip()
+    raw = stdout or stderr
+
+    if proc.returncode == 0:
+        parsed: dict[str, Any] | None = None
+        if stdout:
+            try:
+                obj = json.loads(stdout)
+                if isinstance(obj, dict):
+                    parsed = obj
+            except json.JSONDecodeError:
+                parsed = None
+
+        def mutate(row: dict[str, Any]) -> None:
+            row["status"] = "send-enqueued"
+            row["enqueueRequestedAt"] = now_local().isoformat()
+            row["enqueueResponse"] = parsed if parsed is not None else raw
+            row["cronJobId"] = (
+                (parsed or {}).get("id")
+                or (parsed or {}).get("jobId")
+                or (parsed or {}).get("job", {}).get("id")
+            )
+
+        updated = update_entry(root, entry_id, mutate)
+        payload.update(
+            {
+                "decision": "best-effort-send-requested",
+                "cronJobId": updated.get("cronJobId"),
+                "enqueueResponse": updated.get("enqueueResponse"),
+            }
+        )
+        if as_json:
+            print(json.dumps(payload, indent=2))
+        else:
+            print(f"Closeout send requested: {entry_id}")
+            print(f"Target: {payload['server']} / {payload['channel']} ({payload['target']})")
+            print(f"Notification line: {payload['notificationLine']}")
+        return 0
+
+    def mutate_error(row: dict[str, Any]) -> None:
+        row["status"] = "send-enqueue-failed"
+        row["enqueueRequestedAt"] = now_local().isoformat()
+        row["error"] = raw or f"openclaw cron add exited {proc.returncode}"
+
+    update_entry(root, entry_id, mutate_error)
+    payload.update(
+        {
+            "decision": "best-effort-send-failed",
+            "error": raw or f"openclaw cron add exited {proc.returncode}",
+        }
+    )
     if as_json:
-        print(json.dumps({
-            "shouldSend": True,
-            "id": row["id"],
-            "notificationLine": row["notificationLine"],
-            "status": row["status"],
-        }, indent=2))
+        print(json.dumps(payload, indent=2))
     else:
-        print(row["notificationLine"])
-    return 0
+        print(f"Closeout send failed: {entry_id}")
+        print(payload["error"])
+    return 1
 
 
 def resolve_without_send(root: Path, decision: str, reason: str, task_ref: str, source_session: str, as_json: bool) -> int:
-    rows = load_queue(root)
+    rows = load_ledger(root)
     created_at = now_local()
     entry_id = next_entry_id(rows, created_at)
     status = "not-applicable" if decision == "not-applicable" else "blocked-deferred"
@@ -310,11 +290,20 @@ def resolve_without_send(root: Path, decision: str, reason: str, task_ref: str, 
         "reason": reason.strip(),
         "taskRef": task_ref.strip(),
         "sourceSession": source_session.strip(),
-        "resolution": status,
+        "policy": {
+            "bestEffort": True,
+            "blocksTaskClosure": False,
+            "missedPingTolerance": "acceptable",
+        },
     }
-    rows.append(entry)
-    save_queue(root, rows)
-    payload = {"closeoutResolved": True, "decision": status, "id": entry_id, "reason": reason.strip()}
+    save_entry(root, entry)
+    payload = {
+        "closeoutResolved": True,
+        "taskMayClose": True,
+        "decision": status,
+        "id": entry_id,
+        "reason": reason.strip(),
+    }
     if as_json:
         print(json.dumps(payload, indent=2))
     else:
@@ -324,8 +313,8 @@ def resolve_without_send(root: Path, decision: str, reason: str, task_ref: str, 
 
 
 def list_pending(root: Path, as_json: bool) -> int:
-    rows = load_queue(root)
-    pending = [row for row in rows if row.get("status") in {"queued", "armed", "sending"}]
+    rows = load_ledger(root)
+    pending = [row for row in rows if row.get("status") in {"send-requested", "send-enqueued"}]
     if as_json:
         print(json.dumps(pending, indent=2))
     else:
@@ -334,10 +323,20 @@ def list_pending(root: Path, as_json: bool) -> int:
     return 0
 
 
+def dispatch_noop(as_json: bool) -> int:
+    payload = {"shouldSend": False, "message": "NO_REPLY", "note": "Closeout recovery worker retired; no dispatch loop remains."}
+    if as_json:
+        print(json.dumps(payload, indent=2))
+    else:
+        print("NO_REPLY")
+    return 0
+
+
 def parse_args(argv: list[str]) -> argparse.Namespace:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--root", default=str(Path(__file__).resolve().parents[1]))
     p.add_argument("--json", action="store_true")
+    p.add_argument("--dry-run", action="store_true", help="Build/log the closeout payload without enqueueing a cron send.")
     p.add_argument("--decision", choices=["send", "not-applicable", "deferred"], help="Compatibility mode from the earlier helper.")
     p.add_argument("--result", default="", help="Very short result summary for the Discord line.")
     p.add_argument("--analogy", default="", help="Tiny analogy for the Discord line.")
@@ -346,10 +345,19 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     p.add_argument("--note", default="", help="Optional operator note.")
     p.add_argument("--source-session", default="", help="Optional source session key.")
     p.add_argument("--created-at", default="", help="Optional ISO timestamp override.")
-    p.add_argument("--timeout-ms", type=int, default=30000, help="Timeout for immediate recovery-worker wake calls.")
-    p.add_argument("--expect-final", action="store_true", help="Wait for final worker completion when waking the recovery cron immediately.")
+    p.add_argument("--timeout-ms", type=int, default=30000, help="Unused compatibility field from the earlier helper.")
+    p.add_argument("--expect-final", action="store_true", help="Unused compatibility flag from the earlier helper.")
 
     sub = p.add_subparsers(dest="action")
+
+    send_parser = sub.add_parser("send-now")
+    send_parser.add_argument("--result", required=True)
+    send_parser.add_argument("--analogy", required=True)
+    send_parser.add_argument("--task-ref", default="")
+    send_parser.add_argument("--note", default="")
+    send_parser.add_argument("--source-session", default="")
+    send_parser.add_argument("--created-at", default="")
+    send_parser.add_argument("--dry-run", action="store_true")
 
     queue_send_parser = sub.add_parser("queue-send")
     queue_send_parser.add_argument("--result", required=True)
@@ -358,6 +366,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     queue_send_parser.add_argument("--note", default="")
     queue_send_parser.add_argument("--source-session", default="")
     queue_send_parser.add_argument("--created-at", default="")
+    queue_send_parser.add_argument("--dry-run", action="store_true")
 
     queue_and_wake_parser = sub.add_parser("queue-and-wake")
     queue_and_wake_parser.add_argument("--result", required=True)
@@ -366,12 +375,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     queue_and_wake_parser.add_argument("--note", default="")
     queue_and_wake_parser.add_argument("--source-session", default="")
     queue_and_wake_parser.add_argument("--created-at", default="")
-    queue_and_wake_parser.add_argument("--timeout-ms", type=int, default=30000)
-    queue_and_wake_parser.add_argument("--expect-final", action="store_true")
-
-    mark_job_parser = sub.add_parser("mark-job")
-    mark_job_parser.add_argument("--id", required=True)
-    mark_job_parser.add_argument("--job-id", required=True)
+    queue_and_wake_parser.add_argument("--dry-run", action="store_true")
 
     dispatch_one_parser = sub.add_parser("dispatch-one")
     dispatch_one_parser.add_argument("--id", required=True)
@@ -396,7 +400,7 @@ def compatibility_mode(args: argparse.Namespace, root: Path) -> int:
     if args.decision == "send":
         if not args.result.strip() or not args.analogy.strip():
             raise SystemExit("--decision send requires both --result and --analogy")
-        return queue_and_wake(root, args.result, args.analogy, args.task_ref, args.note, args.source_session, args.created_at, args.timeout_ms, args.expect_final, args.json)
+        return enqueue_best_effort_send(root, args.result, args.analogy, args.task_ref, args.note, args.source_session, args.created_at, args.json, args.dry_run)
     if args.decision == "not-applicable":
         return resolve_without_send(root, "not-applicable", args.reason, args.task_ref, args.source_session, args.json)
     if args.decision == "deferred":
@@ -408,16 +412,12 @@ def main(argv: list[str]) -> int:
     args = parse_args(argv)
     root = Path(args.root).expanduser().resolve()
 
-    if args.action == "queue-send":
-        return queue_send(root, args.result, args.analogy, args.task_ref, args.note, args.source_session, args.created_at, args.json)
-    if args.action == "queue-and-wake":
-        return queue_and_wake(root, args.result, args.analogy, args.task_ref, args.note, args.source_session, args.created_at, args.timeout_ms, args.expect_final, args.json)
-    if args.action == "mark-job":
-        return mark_job(root, getattr(args, 'id'), getattr(args, 'job_id'), args.json)
+    if args.action in {"send-now", "queue-send", "queue-and-wake"}:
+        return enqueue_best_effort_send(root, args.result, args.analogy, args.task_ref, args.note, args.source_session, args.created_at, args.json, args.dry_run)
     if args.action == "dispatch-one":
-        return dispatch(root, getattr(args, 'id'), args.json)
+        return dispatch_noop(args.json)
     if args.action == "dispatch-next":
-        return dispatch(root, None, args.json)
+        return dispatch_noop(args.json)
     if args.action == "list-pending":
         return list_pending(root, args.json)
     if args.action == "resolve-not-applicable":
