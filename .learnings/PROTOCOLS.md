@@ -125,3 +125,24 @@ The existing protocol guarded intent, not the delivery handoff. It lacked durabl
 The prior repair overfit reliability to a low-stakes signal. The standing recovery cron spent far more tokens checking for missed pings than the missed pings were worth.
 
 ---
+
+## [PRT-20260402-002] github-push-protection-blocked-workspace-sync-because-a-secret-b
+
+**Logged**: 2026-04-02T18:30:15-04:00
+**Status**: accepted
+**Area**: infra
+**Source Run**: RUN-20260402-001
+
+### Protocol Outcomes
+- Keep .learnings/snapshots/*.bak ignored because backup snapshots may contain secrets even when the paired .json path is ignored.
+- If git auto-sync reports push_failed, inspect the emitted detail text before assuming SSH/auth is broken.
+
+### Canonical Homes
+- .gitignore
+- TOOLS.md
+- scripts/git-auto-sync.sh
+
+### Why
+A config backup file with live secrets was allowed into tracked git history, and scripts/git-auto-sync.sh suppressed push stderr so the true blocker was hidden.
+
+---

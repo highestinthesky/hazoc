@@ -22,3 +22,4 @@
 ## Current caution
 - Answer quality beats token savings. If confidence is low, widen retrieval.
 - Older long-lived sessions may still show the previous larger footprint until they compact or roll over.
+- GitHub sync blocker is resolved: the secret-bearing backup snapshot was removed from local history, `.learnings/snapshots/*.bak` is now ignored, and `origin/main` was pushed successfully again.

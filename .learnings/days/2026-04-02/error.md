@@ -50,3 +50,41 @@ Do not build persistent recovery loops for low-stakes notifications. Match relia
 
 ## Remaining follow-up
 - The hourly maintenance worker is still the next biggest recurring sink and should be tuned separately.
+
+## [RUN-20260402-001] github-push-protection-blocked-workspace-sync-because-a-secret-b
+
+**Logged**: 2026-04-02T18:30:15-04:00
+**Summary**: GitHub push protection blocked workspace sync because a secret-bearing backup snapshot entered git history
+**Branch**: build-pattern
+**Signal Kind**: blocker
+**Area**: infra
+**Priority**: high
+**Status**: accepted
+**Source**: tool_failure
+
+### Full Problem
+Hourly workspace sync looked like an auth/network issue, but a manual push surfaced GitHub GH013 push protection. A backup snapshot under .learnings/snapshots contained a Discord bot token, so origin/main rejected the pushed local commit range.
+
+### Context
+No extra context recorded.
+
+### Root Cause
+A config backup file with live secrets was allowed into tracked git history, and scripts/git-auto-sync.sh suppressed push stderr so the true blocker was hidden.
+
+### Lessons Captured
+- Do not allow secret-bearing backup snapshots into tracked git history; ignore them before they can be auto-committed.
+- When automated git sync fails, preserve a trimmed version of fetch/push stderr so auth problems can be distinguished from push-protection or policy failures.
+
+### Protocol Outcomes
+- Keep .learnings/snapshots/*.bak ignored because backup snapshots may contain secrets even when the paired .json path is ignored.
+- If git auto-sync reports push_failed, inspect the emitted detail text before assuming SSH/auth is broken.
+
+### Changes Made
+Rewrote the 4 local commits ahead of origin/main to remove the secret-bearing .bak file from history, added .learnings/snapshots/*.bak to .gitignore, pushed the cleaned branch successfully, and updated scripts/git-auto-sync.sh + TOOLS.md with the new guardrails.
+
+### Validation
+git push --dry-run origin main succeeded after the rewrite, the real push to origin/main succeeded, the secret-bearing path no longer appears in git history, and auto-sync now preserves a trimmed detail string on fetch/push failure.
+
+### Related Files
+- .learnings/snapshots/openclaw.json.main-token-efficiency-pass-2026-04-02.bak
+- scripts/git-auto-sync.sh

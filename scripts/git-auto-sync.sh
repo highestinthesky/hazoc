@@ -5,6 +5,11 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 LOCK_FILE="$ROOT/.git-auto-sync.lock"
 REMOTE="${GIT_SYNC_REMOTE:-origin}"
 
+trim_detail() {
+  local file="$1"
+  tr '\n' ' ' <"$file" | sed 's/[[:space:]]\+/ /g; s/^ //; s/ $//' | cut -c1-500
+}
+
 exec 9>"$LOCK_FILE"
 if ! flock -n 9; then
   echo "RESULT=skipped reason=locked"
@@ -47,10 +52,14 @@ relation() {
 }
 
 if git remote get-url "$REMOTE" >/dev/null 2>&1; then
-  if ! git fetch "$REMOTE" "$BRANCH" --quiet; then
-    echo "RESULT=blocked reason=fetch_failed remote=$REMOTE branch=$BRANCH"
+  fetch_log="$(mktemp)"
+  if ! git fetch "$REMOTE" "$BRANCH" --quiet >"$fetch_log" 2>&1; then
+    detail="$(trim_detail "$fetch_log")"
+    rm -f "$fetch_log"
+    echo "RESULT=blocked reason=fetch_failed remote=$REMOTE branch=$BRANCH detail=$detail"
     exit 4
   fi
+  rm -f "$fetch_log"
 fi
 
 pre_relation="$(relation)"
@@ -83,20 +92,28 @@ case "$post_relation" in
     exit 0
     ;;
   ahead)
-    if ! git push "$REMOTE" "$BRANCH" >/dev/null 2>&1; then
-      echo "RESULT=blocked reason=push_failed remote=$REMOTE branch=$BRANCH"
+    push_log="$(mktemp)"
+    if ! git push "$REMOTE" "$BRANCH" >"$push_log" 2>&1; then
+      detail="$(trim_detail "$push_log")"
+      rm -f "$push_log"
+      echo "RESULT=blocked reason=push_failed remote=$REMOTE branch=$BRANCH detail=$detail"
       exit 7
     fi
+    rm -f "$push_log"
     commit="$(git rev-parse --short HEAD)"
     stamp_local="$(TZ=America/New_York date '+%Y-%m-%d %I:%M %p %Z')"
     echo "RESULT=pushed remote=$REMOTE branch=$BRANCH commit=$commit local_time=$stamp_local"
     exit 0
     ;;
   no_upstream)
-    if ! git push -u "$REMOTE" "$BRANCH" >/dev/null 2>&1; then
-      echo "RESULT=blocked reason=push_failed remote=$REMOTE branch=$BRANCH"
+    push_log="$(mktemp)"
+    if ! git push -u "$REMOTE" "$BRANCH" >"$push_log" 2>&1; then
+      detail="$(trim_detail "$push_log")"
+      rm -f "$push_log"
+      echo "RESULT=blocked reason=push_failed remote=$REMOTE branch=$BRANCH detail=$detail"
       exit 8
     fi
+    rm -f "$push_log"
     commit="$(git rev-parse --short HEAD)"
     stamp_local="$(TZ=America/New_York date '+%Y-%m-%d %I:%M %p %Z')"
     echo "RESULT=pushed remote=$REMOTE branch=$BRANCH commit=$commit local_time=$stamp_local"

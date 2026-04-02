@@ -154,3 +154,23 @@ For one-shot cron jobs on this runtime, use bare durations like 5s/20m instead o
 - See Also: none
 
 ---
+
+## [LRN-20260402-002] github-push-protection-blocked-workspace-sync-because-a-secret-b
+
+**Logged**: 2026-04-02T18:30:15-04:00
+**Priority**: high
+**Status**: accepted
+**Area**: infra
+**Source Run**: RUN-20260402-001
+
+### Summary
+GitHub push protection blocked workspace sync because a secret-bearing backup snapshot entered git history
+
+### Lessons
+- Do not allow secret-bearing backup snapshots into tracked git history; ignore them before they can be auto-committed.
+- When automated git sync fails, preserve a trimmed version of fetch/push stderr so auth problems can be distinguished from push-protection or policy failures.
+
+### Promotion Notes
+Canonical protocol paths: .gitignore, TOOLS.md, scripts/git-auto-sync.sh
+
+---

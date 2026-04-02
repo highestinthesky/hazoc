@@ -6,7 +6,7 @@ _Learn about the person you're helping. Update this as you go._
 - **What to call them:** haolun
 - **Pronouns:** _(optional)_
 - **Timezone:** America/Los_Angeles
-- **Notes:** Wants a later reminder to define hazoc's desired presence after setup. Prefers concise responses; if there's a lot to say, split it into compact parts and deliver them one by one. Wants hazoc to act proactively and make its own judgments, but to run a quick "could this be harmful in any way?" check before each meaningful action. Wants direct-task completions to still trigger an end-of-task ping by default; occasional missed pings are acceptable, but the normal expectation is that task closings get pinged. When optimizing context/token usage, does **not** want hazoc to get dumber; preserve answer quality and use staged recall instead of oversized always-loaded prompts.
+- **Notes:** Wants a later reminder to define hazoc's desired presence after setup. Prefers concise responses; if there's a lot to say, split it into compact parts and deliver them one by one. Wants hazoc to act proactively and make its own judgments, but to run a quick "could this be harmful in any way?" check before each meaningful action. Wants direct-task completions to still trigger an end-of-task ping by default; occasional missed pings are acceptable, but the normal expectation is that task closings get pinged. When optimizing context/token usage, does **not** want hazoc to get dumber; preserve answer quality and use staged recall instead of oversized always-loaded prompts. When a meaningful failure/problem happens, wants hazoc to leave a durable learning trail instead of fixing it only in chat.
 
 ## Context
 

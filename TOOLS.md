@@ -51,6 +51,11 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
 - Haolun mention format for completion pings: `<@1049450008505757706>`
 - Canonical behavior/settings file: `mission-control/data/notifications.json`
 
+## Git / GitHub
+
+- Keep `.learnings/snapshots/*.bak` out of git. Backup snapshots of config/state can contain secrets even when the corresponding `.json` path is ignored.
+- If `scripts/git-auto-sync.sh` reports `push_failed`, inspect the emitted `detail=` text before assuming SSH/auth is broken; GitHub push protection may be rejecting a secret-bearing commit.
+
 ---
 
 Add whatever helps you do your job. This is your cheat sheet.
