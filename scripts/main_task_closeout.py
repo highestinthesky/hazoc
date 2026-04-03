@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import subprocess
 import sys
@@ -40,7 +41,7 @@ def read_json(path: Path, default: Any) -> Any:
 
 def write_json(path: Path, payload: Any) -> None:
     ensure_parent(path)
-    temp = path.with_suffix(path.suffix + ".tmp")
+    temp = path.with_name(f"{path.name}.{os.getpid()}.tmp")
     with temp.open("w", encoding="utf-8") as fh:
         json.dump(payload, fh, indent=2)
         fh.write("\n")
@@ -69,10 +70,24 @@ def save_ledger(root: Path, rows: list[dict[str, Any]]) -> None:
     write_json(ledger_path(root), rows)
 
 
+def normalize_brief_phrase(text: str) -> str:
+    cleaned = re.sub(r"\s+", " ", text.strip())
+    return cleaned.rstrip(" .!?")
+
+
+def normalize_analogy(text: str) -> str:
+    cleaned = normalize_brief_phrase(text)
+    cleaned = re.sub(r"(?i)^like\s+", "", cleaned)
+    return cleaned
+
+
 def build_send_line(config: dict[str, Any], result: str, analogy: str) -> str:
     block = config["mainTaskCompletionDiscord"]
     template = block["format"]["template"]
-    return template.format(very_short_result=result.strip(), tiny_analogy=analogy.strip())
+    return template.format(
+        very_short_result=normalize_brief_phrase(result),
+        tiny_analogy=normalize_analogy(analogy),
+    )
 
 
 def day_slug(dt: datetime) -> str:
@@ -139,8 +154,8 @@ def enqueue_best_effort_send(
         "id": entry_id,
         "createdAt": created_at.isoformat(),
         "status": "preview" if dry_run else "send-requested",
-        "result": result.strip(),
-        "analogy": analogy.strip(),
+        "result": normalize_brief_phrase(result),
+        "analogy": normalize_analogy(analogy),
         "notificationLine": line,
         "taskRef": task_ref.strip(),
         "note": note.strip(),
@@ -323,6 +338,30 @@ def list_pending(root: Path, as_json: bool) -> int:
     return 0
 
 
+def mark_delivery_status(root: Path, entry_id: str, status: str, note: str, as_json: bool) -> int:
+    timestamp = now_local().isoformat()
+
+    def mutate(row: dict[str, Any]) -> None:
+        row["status"] = status
+        row["deliveryVerifiedAt"] = timestamp
+        row["deliveryNote"] = note.strip()
+
+    updated = update_entry(root, entry_id, mutate)
+    payload = {
+        "id": entry_id,
+        "status": updated.get("status"),
+        "deliveryVerifiedAt": updated.get("deliveryVerifiedAt"),
+        "deliveryNote": updated.get("deliveryNote", ""),
+    }
+    if as_json:
+        print(json.dumps(payload, indent=2))
+    else:
+        print(f"Updated {entry_id}: {payload['status']}")
+        if payload["deliveryNote"]:
+            print(payload["deliveryNote"])
+    return 0
+
+
 def dispatch_noop(as_json: bool) -> int:
     payload = {"shouldSend": False, "message": "NO_REPLY", "note": "Closeout recovery worker retired; no dispatch loop remains."}
     if as_json:
@@ -383,6 +422,14 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     sub.add_parser("dispatch-next")
     sub.add_parser("list-pending")
 
+    mark_delivered = sub.add_parser("mark-delivered")
+    mark_delivered.add_argument("--id", required=True)
+    mark_delivered.add_argument("--note", default="")
+
+    mark_failed = sub.add_parser("mark-failed")
+    mark_failed.add_argument("--id", required=True)
+    mark_failed.add_argument("--note", default="")
+
     not_app_parser = sub.add_parser("resolve-not-applicable")
     not_app_parser.add_argument("--reason", required=True)
     not_app_parser.add_argument("--task-ref", default="")
@@ -420,6 +467,10 @@ def main(argv: list[str]) -> int:
         return dispatch_noop(args.json)
     if args.action == "list-pending":
         return list_pending(root, args.json)
+    if args.action == "mark-delivered":
+        return mark_delivery_status(root, args.id, "delivered", args.note, args.json)
+    if args.action == "mark-failed":
+        return mark_delivery_status(root, args.id, "delivery-failed", args.note, args.json)
     if args.action == "resolve-not-applicable":
         return resolve_without_send(root, "not-applicable", args.reason, args.task_ref, args.source_session, args.json)
     if args.action == "resolve-deferred":

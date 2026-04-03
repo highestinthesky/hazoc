@@ -1,39 +1,21 @@
-# .learnings
+# .learnings layout
 
-This directory is the canonical holding area for **lessons that are not yet fully promoted**.
+This folder has four different jobs. Keep them separate.
 
-It is not the final home for accepted operating protocols.
-Accepted protocols should be promoted into their canonical operating file and then indexed in `mission-control/data/protocol.json`.
+- `LEARNINGS.md` — promoted durable lessons
+- `PROTOCOLS.md` — promoted workflow/protocol changes
+- `errors/` — canonical readable error history, organized by month
+- `days/YYYY-MM-DD/` — day-scoped raw/archive capture only
 
-## Storage model
+## Reading order
 
-### Draft lessons
+If you want to understand what went wrong, read in this order:
+1. `errors/YYYY-MM.md`
+2. `ERROR_INDEX.md`
+3. `days/YYYY-MM-DD/` only when you need date-local raw context
 
-- `LEARNINGS.md` -> draft lessons, corrections, better practices, recurring patterns that are still being tested or are not yet promoted
-- `PROTOCOLS.md` -> protocol candidates, repairs, and accepted guardrail outcomes discovered through learning runs
-- `FEATURE_REQUESTS.md` -> missing capabilities, future tools/views, explicit later ideas
+## Important boundary
 
-### Error evidence
-
-- `days/YYYY-MM-DD/error.md` -> full-detail error log for that day’s completed learning runs
-- `errors.md` -> short landing page / format guide
-- `errors/YYYY-MM.md` -> older compact error entries, grouped by day
-
-## Accepted protocols
-
-Accepted protocols do **not** stay only in `.learnings/`.
-When a lesson becomes an accepted operating protocol:
-
-1. write the real operating text into its canonical home
-   - `AGENTS.md` for global operating rules
-   - `TOOLS.md` for environment/tool-specific rules
-   - skill docs for workflow-specific rules
-2. add or update its registry entry in `mission-control/data/protocol.json`
-3. leave `.learnings/` as the draft/evidence trail, not the only source of truth
-
-## Why this split
-
-- lessons and protocols have different lifecycles
-- `.learnings/` should stay a compact staging/evidence area
-- accepted protocols need a visible registry plus a canonical operating file
-- this avoids creating one giant mixed file with drafts, failures, and active rules all tangled together
+- Do **not** treat `days/` as the main readable error ledger.
+- Day folders are archive/capture surfaces.
+- Canonical error history lives in `errors/`.

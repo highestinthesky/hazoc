@@ -54,12 +54,12 @@
         "sessionTarget": "isolated",
         "lightContext": true,
         "thinking": "minimal",
-        "wakeMode": "next-heartbeat",
+        "wakeMode": "now",
         "delivery": "announce",
         "bestEffort": true
       },
-      "tested": false,
-      "lastVerifiedAt": "2026-04-02T17:34:00.000Z"
+      "tested": true,
+      "lastVerifiedAt": "2026-04-02T22:59:09.000Z"
     }
   }
 }

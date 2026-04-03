@@ -174,3 +174,44 @@ GitHub push protection blocked workspace sync because a secret-bearing backup sn
 Canonical protocol paths: .gitignore, TOOLS.md, scripts/git-auto-sync.sh
 
 ---
+
+## [LRN-20260402-003] learning-layout-was-misleading-current-error-details-landed-unde
+
+**Logged**: 2026-04-02T19:36:29-04:00
+**Priority**: high
+**Status**: accepted
+**Area**: memory
+**Source Run**: RUN-20260402-001
+
+### Summary
+Learning layout was misleading: current error details landed under .learnings/days even though the readable error corpus should live under .learnings/errors
+
+### Lessons
+- Keep one canonical home for readable error history (.learnings/errors/YYYY-MM.md) and treat .learnings/days/ as archive-only raw context.
+- Avoid root file/directory name collisions like errors.md vs errors/ when humans are expected to scan the tree quickly.
+
+### Promotion Notes
+Canonical protocol paths: .learnings/README.md, .learnings/ERROR_INDEX.md, .learnings/errors, skills/learning-loop/scripts/log_learning_run.py, skills/learning-loop/scripts/normalize_learning_layout.py, skills/learning-loop/scripts/check_learning_layout.py
+
+---
+
+## [LRN-20260402-004] learning-layout-drift-and-closeout-ledger-ambiguity-obscured-the
+
+**Logged**: 2026-04-02T20:36:49-04:00
+**Priority**: high
+**Status**: accepted
+**Area**: workflow
+**Source Run**: RUN-20260402-002
+
+### Summary
+Learning layout drift and closeout ledger ambiguity obscured the real state of errors and pings
+
+### Lessons
+- Keep one canonical readable error ledger and make archive day files point back to it instead of competing with it.
+- For best-effort completion pings, check actual cron run history before assuming delivery failed or rebuilding heavy recovery machinery.
+- Local JSON ledgers that may be updated concurrently should use unique temp-file names when writing.
+
+### Promotion Notes
+Canonical protocol paths: skills/learning-loop/SKILL.md, skills/learning-loop/references/promotion-map.md, skills/learning-loop/references/request-friction-protocol.md, scripts/main_task_closeout.py, mission-control/data/notifications.json
+
+---

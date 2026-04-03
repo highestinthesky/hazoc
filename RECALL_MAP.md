@@ -84,6 +84,14 @@ Use for:
 Check only if the request actually touches that branch.
 Do not preload branch state into main by default.
 
+### 8. Learning/error history
+Check first:
+- `.learnings/ERROR_INDEX.md`
+- `.learnings/errors/YYYY-MM.md`
+
+Do **not** start from `.learnings/days/` when the goal is understanding error history.
+Use day folders only for date-local archive context after the canonical monthly error ledger is insufficient.
+
 ## Retrieval routine
 
 1. Route the request.

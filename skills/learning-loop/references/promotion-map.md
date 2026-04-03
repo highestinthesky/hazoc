@@ -90,15 +90,25 @@ Use for:
 Treat this as a **draft lesson store**, not the final home for accepted protocols.
 When a lesson becomes an accepted operating rule, promote it into its canonical operating file and index it in `mission-control/data/protocol.json`.
 
+### `errors/YYYY-MM.md`
+
+Use for:
+
+- canonical readable error history
+- full problem details from completed learning runs
+- compact error notes that still need a durable searchable home
+
+Keep one `## YYYY-MM-DD` section per day.
+This is the default detailed evidence trail for completed learning runs.
+
 ### `days/YYYY-MM-DD/error.md`
 
 Use for:
 
-- full problem details from completed learning runs
-- one section per run for that day
-- richer incident context than the terse daily note should hold
+- an archive pointer back to the canonical monthly ledger
+- optional date-local raw context when a day needs extra scratch capture
 
-This is the default detailed evidence trail for completed learning runs.
+Do **not** treat this as the main readable error ledger.
 
 ### `PROTOCOLS.md`
 
@@ -112,17 +122,14 @@ Use for:
 Keep this as the protocol-outcome trail inside `.learnings/`.
 Do not let accepted protocols live only here.
 
-### `errors.md` + `errors/YYYY-MM.md` (legacy / compact error log)
+### `ERROR_INDEX.md`
 
 Use for:
 
-- broken commands
-- tool failures
-- config mistakes
-- reproducible bugs
+- a short landing page into the canonical monthly error ledgers
+- reminding future-you that `.learnings/errors/` is the first stop
 
-Keep `errors.md` short as the landing page/index.
-Older compact month logs remain under `errors/YYYY-MM.md`.
+Do not keep a second readable error corpus here.
 
 ### `FEATURE_REQUESTS.md`
 

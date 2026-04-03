@@ -146,3 +146,49 @@ The prior repair overfit reliability to a low-stakes signal. The standing recove
 A config backup file with live secrets was allowed into tracked git history, and scripts/git-auto-sync.sh suppressed push stderr so the true blocker was hidden.
 
 ---
+
+## [PRT-20260402-003] learning-layout-was-misleading-current-error-details-landed-unde
+
+**Logged**: 2026-04-02T19:36:29-04:00
+**Status**: accepted
+**Area**: memory
+**Source Run**: RUN-20260402-001
+
+### Protocol Outcomes
+- When reading or routing learning/error history, start from .learnings/errors/ and ERROR_INDEX.md; only open .learnings/days/ if date-local archive context is needed.
+
+### Canonical Homes
+- .learnings/README.md
+- .learnings/ERROR_INDEX.md
+- .learnings/errors
+- skills/learning-loop/scripts/log_learning_run.py
+- skills/learning-loop/scripts/normalize_learning_layout.py
+- skills/learning-loop/scripts/check_learning_layout.py
+
+### Why
+Capture/archive surfaces, canonical readable error history, and index/docs were not sharply separated, so writes and reads drifted into different places.
+
+---
+
+## [PRT-20260402-004] learning-layout-drift-and-closeout-ledger-ambiguity-obscured-the
+
+**Logged**: 2026-04-02T20:36:49-04:00
+**Status**: accepted
+**Area**: workflow
+**Source Run**: RUN-20260402-002
+
+### Protocol Outcomes
+- Canonical readable learning errors live in `.learnings/errors/YYYY-MM.md`; `.learnings/days/YYYY-MM-DD/error.md` is archive-pointer/day-local context only.
+- When a recent completion ping looks missing, verify cron run history plus the local closeout ledger before redesigning the notification architecture.
+
+### Canonical Homes
+- skills/learning-loop/SKILL.md
+- skills/learning-loop/references/promotion-map.md
+- skills/learning-loop/references/request-friction-protocol.md
+- scripts/main_task_closeout.py
+- mission-control/data/notifications.json
+
+### Why
+The canonical/archive boundary in the learning layout was only partially enforced across scripts, docs, and existing files, so old structure leaked back into current retrieval. Separately, the closeout ledger recorded enqueue state but did not automatically reconcile historical deliveries, which made a healthy transport path look suspect. The helper also used a shared temporary filename for ledger writes, which made concurrent/manual reconciliation fragile.
+
+---

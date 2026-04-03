@@ -1,138 +1,226 @@
 #!/usr/bin/env python3
-"""Append structured entries to workspace .learnings markdown logs."""
-
 from __future__ import annotations
 
 import argparse
 import datetime as dt
-import os
+import json
 import re
 from pathlib import Path
+from typing import Any
 
-ROOT = Path.cwd()
-LEARNINGS_DIR = ROOT / ".learnings"
-STATIC_FILES = {
-    "learning": LEARNINGS_DIR / "LEARNINGS.md",
-    "feature": LEARNINGS_DIR / "FEATURE_REQUESTS.md",
-}
-ERROR_INDEX = LEARNINGS_DIR / "errors.md"
-ERROR_DIR = LEARNINGS_DIR / "errors"
-PREFIX = {"learning": "LRN", "error": "ERR", "feature": "FEAT"}
-DAY_HEADING_RE = re.compile(r"^## (\d{4}-\d{2}-\d{2})$", re.MULTILINE)
+SCRIPT_DIR = Path(__file__).resolve().parent
+SKILL_DIR = SCRIPT_DIR.parent
+WORKSPACE = SKILL_DIR.parent.parent
+LEARNINGS_DIR = WORKSPACE / ".learnings"
+ERRORS_DIR = LEARNINGS_DIR / "errors"
+ERROR_INDEX_FILE = LEARNINGS_DIR / "ERROR_INDEX.md"
+LEARNINGS_FILE = LEARNINGS_DIR / "LEARNINGS.md"
+FEATURES_FILE = LEARNINGS_DIR / "FEATURE_REQUESTS.md"
+DAYS_DIR = LEARNINGS_DIR / "days"
+
+MONTHLY_DAY_RE = re.compile(r"^## (\d{4}-\d{2}-\d{2})\s*$", re.MULTILINE)
+ROOT_README = """# .learnings layout
+
+This folder has four different jobs. Keep them separate.
+
+- `LEARNINGS.md` — promoted durable lessons
+- `PROTOCOLS.md` — promoted workflow/protocol changes
+- `errors/` — canonical readable error history, organized by month
+- `days/YYYY-MM-DD/` — day-scoped raw/archive capture only
+
+## Reading order
+
+If you want to understand what went wrong, read in this order:
+1. `errors/YYYY-MM.md`
+2. `ERROR_INDEX.md`
+3. `days/YYYY-MM-DD/` only when you need date-local raw context
+
+## Important boundary
+
+- Do **not** treat `days/` as the main readable error ledger.
+- Day folders are archive/capture surfaces.
+- Canonical error history lives in `errors/`.
+"""
+ERRORS_README = """# Error ledger
+
+This directory is the canonical readable error history.
+
+- One file per month: `YYYY-MM.md`
+- Read this directory before looking at `.learnings/days/`
+- Day folders are archive-only context, not the primary error sink
+"""
+ERROR_INDEX_CONTENT = """# Error index
+
+Canonical readable error history lives in `.learnings/errors/YYYY-MM.md`.
+Use `.learnings/days/YYYY-MM-DD/` only for date-local raw/archive context.
+"""
 
 
 def parse_args() -> argparse.Namespace:
-    p = argparse.ArgumentParser(description=__doc__)
+    p = argparse.ArgumentParser(description="Append a durable learning-loop entry.")
     p.add_argument("--type", choices=["learning", "error", "feature"], required=True)
     p.add_argument("--summary", required=True)
     p.add_argument("--details", default="")
-    p.add_argument("--action", default="")
     p.add_argument("--error", default="")
     p.add_argument("--context", default="")
+    p.add_argument("--action", default="")
     p.add_argument("--source", default="conversation")
     p.add_argument("--area", default="general")
     p.add_argument("--priority", default="medium")
     p.add_argument("--status", default="pending")
     p.add_argument("--tags", default="")
-    p.add_argument("--related-files", default="")
-    p.add_argument("--see-also", default="")
-    p.add_argument("--complexity", default="medium")
-    p.add_argument("--frequency", default="first_time")
-    p.add_argument("--logged-at", default="")
-    p.add_argument("--root", default=str(ROOT))
+    p.add_argument("--related-file", action="append", default=[])
+    p.add_argument("--see-also", action="append", default=[])
+    p.add_argument("--json", action="store_true")
+    p.add_argument("--root", default=str(WORKSPACE))
     return p.parse_args()
 
 
-def slugify(text: str) -> str:
-    text = text.strip().lower()
-    text = re.sub(r"[^a-z0-9]+", "-", text)
-    return text.strip("-")[:48] or "entry"
-
-
-def compact(text: str) -> str:
-    return re.sub(r"\s+", " ", text.strip())
-
-
-def parse_logged_at(raw: str) -> dt.datetime:
-    if not raw.strip():
-        return dt.datetime.now().astimezone().replace(microsecond=0)
-
-    value = raw.strip().replace("Z", "+00:00")
-    try:
-        parsed = dt.datetime.fromisoformat(value)
-    except ValueError as exc:
-        raise SystemExit(f"Invalid --logged-at value: {raw}") from exc
-
-    if parsed.tzinfo is None:
-        parsed = parsed.replace(tzinfo=dt.datetime.now().astimezone().tzinfo)
-    return parsed.astimezone().replace(microsecond=0)
-
-
-def bullet_value(raw: str) -> str:
-    values = [part.strip() for part in raw.split(",") if part.strip()]
-    return ", ".join(values) if values else "none"
-
-
-def ensure_regular_file(path: Path, entry_type: str) -> None:
+def ensure_file(path: Path, header: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    if path.exists():
-        return
-    title = {
-        "learning": "# Learnings\n\nRaw lessons, corrections, and best practices that are not yet promoted.\n",
-        "feature": "# Feature Requests\n\nUser-requested capabilities and deferred build ideas.\n",
-    }[entry_type]
-    path.write_text(title + "\n", encoding="utf-8")
-
-
-def ensure_errors_index(path: Path) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    if path.exists():
-        return
-    path.write_text(
-        "# errors\n\n"
-        "Landing page for repeatable failures, broken workflows, and debugging notes.\n\n"
-        "## Structure\n\n"
-        "- keep the index file short: `.learnings/errors.md`\n"
-        "- for completed learning runs, store full problem detail in `.learnings/days/YYYY-MM-DD/error.md`\n"
-        "- older compact month logs remain in `.learnings/errors/YYYY-MM.md`\n"
-        "- use the daily `error.md` path when you want the full incident record, not just a terse bug note\n\n"
-        "Legacy month logs still live in `.learnings/errors/`.\n",
-        encoding="utf-8",
-    )
-
-
-def ensure_error_month_file(path: Path, month_label: str) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    if path.exists():
-        return
-    path.write_text(
-        f"# errors — {month_label}\n\n"
-        f"Compact daily error log for {month_label}.\n"
-        "Keep one `## YYYY-MM-DD` section per day and one compact entry per error.\n\n",
-        encoding="utf-8",
-    )
-
-
-def next_id(path: Path, prefix: str, day: str) -> str:
     if not path.exists():
-        return f"{prefix}-{day}-001"
+        path.write_text(header.rstrip() + "\n", encoding="utf-8")
+
+
+def ensure_layout_files() -> None:
+    LEARNINGS_DIR.mkdir(parents=True, exist_ok=True)
+    ERRORS_DIR.mkdir(parents=True, exist_ok=True)
+    ensure_file(LEARNINGS_DIR / "README.md", ROOT_README)
+    ensure_file(ERRORS_DIR / "README.md", ERRORS_README)
+    ensure_file(ERROR_INDEX_FILE, ERROR_INDEX_CONTENT)
+
+
+def append_text(path: Path, text: str) -> None:
+    existing = path.read_text(encoding="utf-8") if path.exists() else ""
+    if existing and not existing.endswith("\n"):
+        existing += "\n"
+    if existing and not existing.endswith("\n\n"):
+        existing += "\n"
+    path.write_text(existing + text, encoding="utf-8")
+
+
+def slug_date(now: dt.datetime) -> str:
+    return now.strftime("%Y%m%d")
+
+
+def next_id_from_text(text: str, prefix: str, day_slug: str) -> str:
+    pattern = re.compile(rf"{re.escape(prefix)}-{day_slug}-(\d{{3}})")
+    matches = [int(m.group(1)) for m in pattern.finditer(text)]
+    return f"{prefix}-{day_slug}-{max(matches, default=0) + 1:03d}"
+
+
+def split_monthly_sections(text: str) -> tuple[str, list[tuple[str, str]]]:
+    matches = list(MONTHLY_DAY_RE.finditer(text))
+    if not matches:
+        return text.strip(), []
+    preamble = text[: matches[0].start()].strip()
+    sections: list[tuple[str, str]] = []
+    for idx, match in enumerate(matches):
+        end = matches[idx + 1].start() if idx + 1 < len(matches) else len(text)
+        body = text[match.end() : end].strip()
+        sections.append((match.group(1), body))
+    return preamble, sections
+
+
+def compose_monthly(preamble: str, sections: list[tuple[str, str]]) -> str:
+    chunks: list[str] = []
+    if preamble.strip():
+        chunks.append(preamble.strip())
+    for day_key, body in sections:
+        section = f"## {day_key}"
+        if body.strip():
+            section += f"\n\n{body.strip()}"
+        chunks.append(section)
+    return "\n\n".join(chunks).rstrip() + "\n"
+
+
+def month_header(month_key: str) -> str:
+    return (
+        f"# errors — {month_key}\n\n"
+        f"Canonical readable error history for {month_key}.\n"
+        "Keep one `## YYYY-MM-DD` section per day.\n"
+        "Use `.learnings/days/YYYY-MM-DD/` only for date-local raw/archive context."
+    )
+
+
+def append_to_month_day(path: Path, day_key: str, block: str, month_key: str) -> None:
+    ensure_file(path, month_header(month_key))
     text = path.read_text(encoding="utf-8")
-    matches = re.findall(rf"{re.escape(prefix)}-{day}-(\d{{3}})", text)
-    n = max((int(m) for m in matches), default=0) + 1
-    return f"{prefix}-{day}-{n:03d}"
+    preamble, sections = split_monthly_sections(text)
+    cleaned_block = block.strip()
+
+    for idx, (existing_day, body) in enumerate(sections):
+        if existing_day != day_key:
+            continue
+        if cleaned_block in body:
+            return
+        new_body = f"{body.strip()}\n\n{cleaned_block}" if body.strip() else cleaned_block
+        sections[idx] = (existing_day, new_body)
+        path.write_text(compose_monthly(preamble, sections), encoding="utf-8")
+        return
+
+    sections.append((day_key, cleaned_block))
+    path.write_text(compose_monthly(preamble, sections), encoding="utf-8")
 
 
-def build_regular_entry(args: argparse.Namespace, entry_id: str, now: dt.datetime) -> str:
-    tags = bullet_value(args.tags)
-    related_files = bullet_value(args.related_files)
-    see_also = args.see_also.strip() or "none"
-    summary = args.summary.strip()
+def tags_list(raw: str) -> list[str]:
+    return [tag.strip() for tag in raw.split(",") if tag.strip()]
+
+
+def compact_error_line(entry_id: str, now: dt.datetime, area: str, priority: str, status: str, summary: str, detail: str, action: str, tags: list[str], source: str) -> str:
+    summary = summary.strip().replace("\n", " ")
+    detail = detail.strip().replace("\n", " ") or "No detail recorded."
+    action = action.strip().replace("\n", " ") or "No next step recorded."
+    tag_part = ", ".join(tags) if tags else "none"
+    return (
+        f"- `{entry_id}` {now.strftime('%H:%M')} `{area}` `{priority}/{status}` — {summary}\n"
+        f"  Problem: {detail}. Next: {action}. Tags: {tag_part}. Source: {source}."
+    )
+
+
+def main() -> int:
+    args = parse_args()
+    now = dt.datetime.now().astimezone().replace(microsecond=0)
+    day_slug = slug_date(now)
+    day_key = now.strftime("%Y-%m-%d")
+    month_key = now.strftime("%Y-%m")
+
+    root = Path(args.root).expanduser().resolve()
+    learnings_dir = root / ".learnings"
+    errors_dir = learnings_dir / "errors"
+    error_index_file = learnings_dir / "ERROR_INDEX.md"
+    learnings_file = learnings_dir / "LEARNINGS.md"
+    features_file = learnings_dir / "FEATURE_REQUESTS.md"
+
+    ensure_layout_files()
+    if learnings_dir != LEARNINGS_DIR:
+        learnings_dir.mkdir(parents=True, exist_ok=True)
+        errors_dir.mkdir(parents=True, exist_ok=True)
+        ensure_file(learnings_dir / "README.md", ROOT_README)
+        ensure_file(errors_dir / "README.md", ERRORS_README)
+        ensure_file(error_index_file, ERROR_INDEX_CONTENT)
+
+    target_file: Path
+    entry_id: str
+    body: str
+    details = args.details.strip()
+    error_text = args.error.strip()
+    context = args.context.strip()
+    action = args.action.strip()
+    tags = tags_list(args.tags)
+    related_files = [p.strip() for p in args.related_file if p.strip()]
+    see_also = [p.strip() for p in args.see_also if p.strip()]
 
     if args.type == "learning":
-        details = args.details.strip() or summary
-        action = args.action.strip() or "Promote or revisit if this recurs."
-        return f"""
-## [{entry_id}] {slugify(summary)}
+        ensure_file(
+            learnings_file,
+            "# Learnings\n\nRaw lessons, corrections, and best practices that are not yet promoted.\n",
+        )
+        text = learnings_file.read_text(encoding="utf-8")
+        entry_id = next_id_from_text(text, "LRN", day_slug)
+        target_file = learnings_file
+        body = f"""
+## [{entry_id}] {re.sub(r'[^a-z0-9]+', '-', args.summary.strip().lower()).strip('-')[:64] or 'entry'}
 
 **Logged**: {now.isoformat()}
 **Priority**: {args.priority}
@@ -140,148 +228,87 @@ def build_regular_entry(args: argparse.Namespace, entry_id: str, now: dt.datetim
 **Area**: {args.area}
 
 ### Summary
-{summary}
+{args.summary.strip()}
 
 ### Details
-{details}
+{details or 'No extra details recorded.'}
 
 ### Suggested Action
-{action}
+{action or 'No follow-up recorded.'}
 
 ### Metadata
 - Source: {args.source}
-- Related Files: {related_files}
-- Tags: {tags}
-- See Also: {see_also}
+- Related Files: {', '.join(related_files) if related_files else 'none'}
+- Tags: {', '.join(tags) if tags else 'none'}
+- See Also: {', '.join(see_also) if see_also else 'none'}
 
 ---
 """.lstrip()
+        append_text(target_file, body)
 
-    context = args.context.strip() or args.details.strip() or "No extra context recorded."
-    action = args.action.strip() or "Define scope and revisit when this becomes active work."
-    return f"""
-## [{entry_id}] {slugify(summary)}
+    elif args.type == "feature":
+        ensure_file(
+            features_file,
+            "# Feature Requests\n\nRequests and missing capabilities to revisit later.\n",
+        )
+        text = features_file.read_text(encoding="utf-8")
+        entry_id = next_id_from_text(text, "FEAT", day_slug)
+        target_file = features_file
+        body = f"""
+## [{entry_id}] {re.sub(r'[^a-z0-9]+', '-', args.summary.strip().lower()).strip('-')[:64] or 'entry'}
 
 **Logged**: {now.isoformat()}
 **Priority**: {args.priority}
 **Status**: {args.status}
 **Area**: {args.area}
 
-### Requested Capability
-{summary}
+### Request
+{args.summary.strip()}
 
-### User Context
-{context}
+### Context
+{context or details or 'No extra context recorded.'}
 
-### Complexity Estimate
-{args.complexity}
-
-### Suggested Implementation
-{action}
+### Suggested Next Step
+{action or 'No implementation plan recorded yet.'}
 
 ### Metadata
 - Source: {args.source}
-- Frequency: {args.frequency}
-- Related Files: {related_files}
-- Tags: {tags}
-- See Also: {see_also}
+- Related Files: {', '.join(related_files) if related_files else 'none'}
+- Tags: {', '.join(tags) if tags else 'none'}
+- See Also: {', '.join(see_also) if see_also else 'none'}
 
 ---
 """.lstrip()
+        append_text(target_file, body)
 
-
-def build_error_entry(args: argparse.Namespace, entry_id: str, now: dt.datetime) -> str:
-    summary = compact(args.summary)
-    tags = bullet_value(args.tags)
-    related_files = bullet_value(args.related_files)
-    see_also = args.see_also.strip() or "none"
-
-    detail_problem = compact(args.error or "")
-    if not detail_problem or detail_problem == summary:
-        detail_problem = compact(args.context or args.details or args.error or summary)
-
-    next_step = compact(args.action or "Investigate and document the stable fix if found.")
-
-    detail_parts = [f"Problem: {detail_problem}."]
-    if next_step:
-        detail_parts.append(f"Next: {next_step}.")
-    if tags != "none":
-        detail_parts.append(f"Tags: {tags}.")
-    if args.source.strip() and args.source.strip() != "conversation":
-        detail_parts.append(f"Source: {args.source.strip()}.")
-    if related_files != "none":
-        detail_parts.append(f"Refs: {related_files}.")
-    if see_also != "none":
-        detail_parts.append(f"See: {see_also}.")
-
-    return (
-        f"- `{entry_id}` {now.strftime('%H:%M')} `{args.area}` `{args.priority}/{args.status}` — {summary}\n"
-        f"  {' '.join(detail_parts)}\n"
-    )
-
-
-def append_regular_entry(path: Path, entry: str) -> None:
-    with path.open("a", encoding="utf-8") as fh:
-        if path.stat().st_size > 0:
-            fh.write("\n")
-        fh.write(entry)
-
-
-def append_error_entry(path: Path, day: str, entry: str) -> None:
-    text = path.read_text(encoding="utf-8") if path.exists() else ""
-    headings = DAY_HEADING_RE.findall(text)
-    last_heading = headings[-1] if headings else None
-
-    if day not in headings or last_heading != day:
-        if text and not text.endswith("\n"):
-            text += "\n"
-        if text and not text.endswith("\n\n"):
-            text += "\n"
-        text += f"## {day}\n\n{entry}"
     else:
-        if text and not text.endswith("\n"):
-            text += "\n"
-        text += entry
+        monthly_file = errors_dir / f"{month_key}.md"
+        existing_text = monthly_file.read_text(encoding="utf-8") if monthly_file.exists() else ""
+        entry_id = next_id_from_text(existing_text, "ERR", day_slug)
+        target_file = monthly_file
+        body = compact_error_line(
+            entry_id=entry_id,
+            now=now,
+            area=args.area,
+            priority=args.priority,
+            status=args.status,
+            summary=args.summary,
+            detail=error_text or details,
+            action=action,
+            tags=tags,
+            source=args.source,
+        )
+        append_to_month_day(monthly_file, day_key, body, month_key)
 
-    path.write_text(text, encoding="utf-8")
-
-
-def main() -> int:
-    args = parse_args()
-    root = Path(args.root).expanduser().resolve()
-    if not root.exists():
-        raise SystemExit(f"Root does not exist: {root}")
-
-    global ROOT, LEARNINGS_DIR, STATIC_FILES, ERROR_INDEX, ERROR_DIR
-    ROOT = root
-    LEARNINGS_DIR = ROOT / ".learnings"
-    STATIC_FILES = {
-        "learning": LEARNINGS_DIR / "LEARNINGS.md",
-        "feature": LEARNINGS_DIR / "FEATURE_REQUESTS.md",
+    result: dict[str, Any] = {
+        "id": entry_id,
+        "type": args.type,
+        "path": str(target_file.relative_to(root)),
     }
-    ERROR_INDEX = LEARNINGS_DIR / "errors.md"
-    ERROR_DIR = LEARNINGS_DIR / "errors"
-
-    now = parse_logged_at(args.logged_at)
-    day_slug = now.strftime("%Y%m%d")
-
-    if args.type == "error":
-        ensure_errors_index(ERROR_INDEX)
-        month_label = now.strftime("%Y-%m")
-        day_heading = now.strftime("%Y-%m-%d")
-        target = ERROR_DIR / f"{month_label}.md"
-        ensure_error_month_file(target, month_label)
-        entry_id = next_id(target, PREFIX[args.type], day_slug)
-        entry = build_error_entry(args, entry_id, now)
-        append_error_entry(target, day_heading, entry)
+    if args.json:
+        print(json.dumps(result, indent=2))
     else:
-        target = STATIC_FILES[args.type]
-        ensure_regular_file(target, args.type)
-        entry_id = next_id(target, PREFIX[args.type], day_slug)
-        entry = build_regular_entry(args, entry_id, now)
-        append_regular_entry(target, entry)
-
-    print(f"Appended {entry_id} to {os.path.relpath(target, ROOT)}")
+        print(f"Logged {entry_id} -> {target_file.relative_to(root)}")
     return 0
 
 

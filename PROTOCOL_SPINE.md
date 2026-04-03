@@ -31,6 +31,7 @@ Recall them on demand.
 - Prefer compact derived anchors/summaries before raw prose-heavy sources.
 - Load only the top relevant snippet(s) or line ranges first.
 - Escalate retrieval if the first pass is not enough.
+- For learning/error history, treat `.learnings/errors/` as canonical and `.learnings/days/` as archive-only unless date-local raw context is specifically needed.
 
 ## Retrieval boundary
 

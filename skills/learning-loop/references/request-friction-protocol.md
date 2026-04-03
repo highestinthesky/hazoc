@@ -101,7 +101,7 @@ Good fit:
 
 Typical persistence shape:
 - daily note entry for the failure and repair
-- `.learnings/errors.md` + `.learnings/errors/YYYY-MM.md` for repeatable failures / failed protections
+- `.learnings/errors/YYYY-MM.md` + `.learnings/ERROR_INDEX.md` for repeatable failures / failed protections
 - `AGENTS.md`, `TOOLS.md`, or grounded-evolver/skill docs when the repaired rule/workflow is stable
 - mission-control task memory if implementation work is still open
 
@@ -115,7 +115,7 @@ Good fit:
 Route outputs to the smallest correct home:
 
 - `memory/YYYY-MM-DD.md` -> raw incident note, context, what happened today
-- `.learnings/errors.md` / `.learnings/errors/YYYY-MM.md` -> reproducible failures, broken workflows, failed protections
+- `.learnings/errors/YYYY-MM.md` / `.learnings/ERROR_INDEX.md` -> reproducible failures, broken workflows, failed protections
 - `.learnings/LEARNINGS.md` -> not-yet-promoted lessons and recurring patterns
 - `AGENTS.md` -> durable global operating rules
 - `TOOLS.md` -> tool or environment-specific fixes
@@ -129,12 +129,13 @@ A good request-friction run should usually leave behind:
 
 1. grounded-evolver plan output
 2. chosen branch
-3. full detail in `.learnings/days/YYYY-MM-DD/error.md`
-4. succinct summary in `memory/YYYY-MM-DD.md`
-5. lesson entry in `.learnings/LEARNINGS.md`
-6. protocol outcome in `.learnings/PROTOCOLS.md` when applicable
-7. explicit note of what changed and why
-8. next step, if any remains
+3. canonical full detail in `.learnings/errors/YYYY-MM.md`
+4. a day pointer / optional raw context under `.learnings/days/YYYY-MM-DD/` when needed
+5. succinct summary in `memory/YYYY-MM-DD.md`
+6. lesson entry in `.learnings/LEARNINGS.md`
+7. protocol outcome in `.learnings/PROTOCOLS.md` when applicable
+8. explicit note of what changed and why
+9. next step, if any remains
 
 ## Boundary conditions
 

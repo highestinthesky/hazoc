@@ -445,7 +445,7 @@
   {
     "id": "closeout-20260402-003",
     "createdAt": "2026-04-02T15:05:11-04:00",
-    "status": "send-enqueued",
+    "status": "delivered",
     "result": "token-efficiency pass finished",
     "analogy": "like trimming a pack before a climb",
     "notificationLine": "<@1049450008505757706> hazoc finished: token-efficiency pass finished. Like like trimming a pack before a climb. Full report is in the control UI.",
@@ -500,7 +500,9 @@
       }
     },
     "error": null,
-    "enqueueRequestedAt": "2026-04-02T15:05:15-04:00"
+    "enqueueRequestedAt": "2026-04-02T15:05:15-04:00",
+    "deliveryVerifiedAt": "2026-04-02T20:37:58-04:00",
+    "deliveryNote": "Verified via cron runs: job c031e341-59e5-41be-aadb-c55b665307a0 finished with delivered=true."
   },
   {
     "id": "closeout-20260402-004",
@@ -535,7 +537,7 @@
   {
     "id": "closeout-20260402-005",
     "createdAt": "2026-04-02T18:58:54-04:00",
-    "status": "send-enqueued",
+    "status": "delivered",
     "result": "Finished the first optimization batch on workspace organization and cheap recall.",
     "analogy": "I added index cards and section dividers so I stop rereading whole binders.",
     "notificationLine": "<@1049450008505757706> hazoc finished: Finished the first optimization batch on workspace organization and cheap recall.. Like I added index cards and section dividers so I stop rereading whole binders.. Full report is in the control UI.",
@@ -590,6 +592,38 @@
       }
     },
     "error": null,
-    "enqueueRequestedAt": "2026-04-02T18:58:59-04:00"
+    "enqueueRequestedAt": "2026-04-02T18:58:59-04:00",
+    "deliveryVerifiedAt": "2026-04-02T20:33:50-04:00",
+    "deliveryNote": "Verified via cron runs: job 0f866ac5-a856-4ee7-8058-aeb38c105526 finished with delivered=true."
+  },
+  {
+    "id": "closeout-20260402-006",
+    "createdAt": "2026-04-02T20:32:19-04:00",
+    "status": "preview",
+    "result": "Finished the first optimization batch on workspace organization and cheap recall",
+    "analogy": "I added index cards and section dividers so I stop rereading whole binders",
+    "notificationLine": "<@1049450008505757706> hazoc finished: Finished the first optimization batch on workspace organization and cheap recall. Like I added index cards and section dividers so I stop rereading whole binders. Full report is in the control UI.",
+    "taskRef": "task-design-cheap-memory-recall-path",
+    "note": "dry-run validation",
+    "sourceSession": "",
+    "delivery": {
+      "mode": "cron-announce",
+      "channel": "discord",
+      "to": "channel:1487645227421536327",
+      "desiredServer": "hzwp",
+      "desiredChannel": "#main_updates",
+      "fallbackTo": "channel:1485016833819021495",
+      "fallbackChannelLabel": "#control-center",
+      "fallbackPolicy": "manual-only",
+      "bestEffort": true
+    },
+    "policy": {
+      "bestEffort": true,
+      "blocksTaskClosure": false,
+      "missedPingTolerance": "acceptable"
+    },
+    "cronJobId": null,
+    "enqueueResponse": null,
+    "error": null
   }
 ]

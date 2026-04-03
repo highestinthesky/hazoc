@@ -11,6 +11,8 @@
     { "pattern": "PROTOCOL_SPINE.md", "kind": "protocol_spine", "route": "protocol" },
     { "pattern": "RECALL_MAP.md", "kind": "recall_map", "route": "protocol" },
     { "pattern": "memory/active-state.md", "kind": "active", "route": "active" },
+    { "pattern": ".learnings/ERROR_INDEX.md", "kind": "learning_error_index", "route": "reference" },
+    { "pattern": ".learnings/errors/**/*.md", "kind": "learning_error_month", "route": "reference" },
     { "pattern": "tmp/recall-anchors/task-anchors.json", "kind": "task_anchor_json", "route": "task" },
     { "pattern": "mission-control/data/tasks.json", "kind": "task_json", "route": "task" },
     { "pattern": "tmp/recall-anchors/daily-anchors.json", "kind": "daily_anchor_json", "route": "daily" },

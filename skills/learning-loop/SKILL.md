@@ -27,7 +27,7 @@ Use this routing table before writing anything.
 | Tool/env/integration gotcha | `TOOLS.md` |
 | Important session event or deferred follow-up | `memory/YYYY-MM-DD.md` |
 | Correction, knowledge gap, best practice not ready for promotion | `.learnings/LEARNINGS.md` |
-| Completed learning run / full incident detail | `.learnings/days/YYYY-MM-DD/error.md` |
+| Completed learning run / canonical full incident detail | `.learnings/errors/YYYY-MM.md` |
 | Protocol or guardrail learned from a run | `.learnings/PROTOCOLS.md` + canonical file if accepted |
 | Missing capability or future build request | `.learnings/FEATURE_REQUESTS.md` |
 | Time-based follow-up the user explicitly wants later | `cron` reminder, plus memory if useful |
@@ -70,11 +70,12 @@ A completed learning run should not disappear into chat.
 
 By default, finish every real learning run with this artifact pack:
 
-1. **Full problem detail** in `.learnings/days/YYYY-MM-DD/error.md`
-2. **Succinct day summary** in `memory/YYYY-MM-DD.md`
-3. **Distilled lesson(s)** in `.learnings/LEARNINGS.md`
-4. **Protocol/guardrail outcome(s)** in `.learnings/PROTOCOLS.md` when applicable
-5. **Canonical promotion** into `AGENTS.md`, `TOOLS.md`, or skill docs if the protocol is accepted
+1. **Canonical full problem detail** in `.learnings/errors/YYYY-MM.md`
+2. **Archive pointer / day-local raw context** under `.learnings/days/YYYY-MM-DD/` when needed
+3. **Succinct day summary** in `memory/YYYY-MM-DD.md`
+4. **Distilled lesson(s)** in `.learnings/LEARNINGS.md`
+5. **Protocol/guardrail outcome(s)** in `.learnings/PROTOCOLS.md` when applicable
+6. **Canonical promotion** into `AGENTS.md`, `TOOLS.md`, or skill docs if the protocol is accepted
 
 If one of those artifacts is missing, the learning run is not really complete yet.
 
