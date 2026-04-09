@@ -1,31 +1,24 @@
 # Active State
 
-## Live anchor (updated 2026-04-02 8:35 PM EDT)
+## Live anchor (updated 2026-04-09 4:41 PM EDT)
 - Mission control is the shared local-first workspace between haolun and hazoc.
 - Local URL: `http://127.0.0.1:4180/`.
 - Treat this file as live state only. Historical detail belongs in daily notes and task memory.
-- The token-efficiency pass is complete: startup prompt was compressed, default/main heartbeat is disabled, default session context is now `160000`, compaction is triggered earlier, and main-task closeout now uses a lightweight best-effort announce path with `--wake now`.
-- The cheap recall first pass is now implemented: `PROTOCOL_SPINE.md`, `RECALL_MAP.md`, `scripts/recall_index.py`, and `scripts/build_subagent_brief.py` exist, and `AGENTS.md` / protocol registry were updated to make the behavior durable.
-- The recall helper now reads its searchable source registry from `mission-control/data/recall-sources.json` and the always-loaded spine now includes explicit automatic-recall triggers for history/status/protocol/context questions.
-- There is now a lightweight regression harness (`scripts/recall_regression.py` + `mission-control/data/recall-regression.json`) to catch common recall-route failures like bad re-anchor or preference/history lookup behavior.
-- The latest optimization pass added a real retrieval boundary: compact task/daily anchors are now auto-built under `tmp/recall-anchors/`, `scripts/recall_index.py` indexes them automatically, and task/history recall now prefers those anchors before raw task prose or raw daily logs.
-- The learning-system storage cleanup is now landed: `.learnings/errors/YYYY-MM.md` is the canonical readable error ledger, `.learnings/days/*/error.md` is archive-pointer/day-local context only, the legacy `.learnings/errors.md` landing page was retired into archive, and the learning-loop scripts/docs/checkers were aligned to the new boundary.
-- The closeout-path repair is also landed: the helper now normalizes ping wording, uses race-safe pid-scoped temp files for ledger writes, and the two suspicious 2026-04-02 closeout sends were verified via cron run history as `delivered=true`.
-- Current open follow-up: main webchat/control UI became unresponsive and incoming messages disappeared until haolun restarted hazoc; the incident is durably logged and is now the next investigation target.
+- The durable known-good baseline is still the 2026-04-02 optimization batch: startup prompt compressed, default/main heartbeat disabled, default session context `160000`, earlier compaction, lightweight best-effort closeout pings, cheap recall helpers (`PROTOCOL_SPINE.md`, `RECALL_MAP.md`, `scripts/recall_index.py`, `scripts/build_subagent_brief.py`), recall-source registry + regression harness, compact recall anchors under `tmp/recall-anchors/`, cleaned learning/error storage, and `contextPruning` enabled to mitigate tool-output pileup in main.
+- No newer user-facing project/task/event progress is visible in the workspace since the last recorded 2026-04-02 maintenance/git-sync window; today’s missing daily note was recreated during hourly maintenance.
+- The untracked `memory/2026-04-09-remote-access.md` file preserves a recovered transcript/summary of the 2026-04-02 remote-access planning conversation, but that planning has not yet been durably promoted into current task/state files beyond the older 2026-04-02 handoff language.
 
 ## Current focus
-- Investigate the tonight webchat unresponsive/disappearing-message incident now that the requested storage/closeout repairs are complete.
-- Keep the repaired learning/error layout and closeout path stable while testing the webchat issue.
-- Working task: `task-investigate-webchat-disappearing-messages`.
+- Keep memory/task state honest: do not present the old 2026-04-02 “tomorrow” Tailscale plan as current progress unless fresh work actually resumes.
+- Working task still open: `task-investigate-webchat-disappearing-messages`.
+- If remote-access work restarts, re-anchor from `memory/2026-04-09-remote-access.md` plus the older 2026-04-02 daily note before changing live state.
 
 ## Next checks
-1. Inspect the restart window for the webchat/session-store behavior that made messages disappear from the control UI.
-2. Determine whether the failure lived in the web UI, transcript/session store, or the agent runtime itself.
-3. Preserve the new learning/error layout boundary if any follow-up logging is needed.
-4. If another closeout ping question comes up, use cron run history plus the local ledger before assuming delivery failed.
+1. If active work resumes, decide whether the Tailscale travel-access plan is still current or obsolete before acting on it.
+2. Keep watching for any repeat of the old webchat overflow/compaction failure mode if main becomes active again.
+3. Keep Discord/Telegram branch agents as scoped/fallback paths only unless an explicit direct-to-main route is built.
 
 ## Current caution
 - Answer quality beats token savings. If confidence is low, widen retrieval.
 - Older long-lived sessions may still show the previous larger footprint until they compact or roll over.
-- GitHub sync blocker is resolved: the secret-bearing backup snapshot was removed from local history, `.learnings/snapshots/*.bak` is now ignored, and `origin/main` was pushed successfully again.
-- Do not let stale generated recall artifacts or archived task notes override the newly corrected canonical files.
+- Do not let stale generated recall artifacts, archived task notes, or old “tomorrow” handoff bullets masquerade as current state.
