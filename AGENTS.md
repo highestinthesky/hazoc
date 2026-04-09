@@ -85,8 +85,10 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 - Prefer compact derived anchors before raw daily logs or long task descriptions; let raw capture stay raw unless the anchors are insufficient.
 - If a request sounds like history/status/protocol/context lookup, do recall before answering; do not rely on ambient memory or vibes.
 - If work is split into subtasks, re-check applicable protocols for each subtask instead of assuming the parent scan covered them all.
-- Helpers/subagents should default to task-local packets via `scripts/build_subagent_brief.py`; broader context needs an explicit `targeted` or `extended` reason.
+- One-shot helpers/subagents should default to class-compiled task-local packets via `scripts/build_subagent_brief.py --class-id <class-id>`; broader context needs an explicit `targeted` or `extended` reason decided by the parent.
+- Disposable helpers should not browse the workspace to figure out who they are; the parent resolves `subagent-classes/` and hands them a compiled packet.
 - Long-lived agents should bootstrap from `agent-namecards/`; recurring workers should bootstrap from `workers/<worker-id>/`.
+- Persistent actors should get exact ids (`cardId` / `worker-id`) instead of searching the workspace for identity.
 - Main direct identity should bootstrap from `agent-namecards/main-facility-manager/namecard.json`.
 - `agent:discord-control:discord:channel:1485016833819021495` is the Discord control-branch sub-head; `agent:guest-safe-web:discord:channel:1487561215038460047` stays sandboxed/separate. Use `agent-namecards/importance-rubric.md` for promotion decisions.
 - Discord and Telegram are extension channels; important requests, decisions, and follow-ups there must be mirrored back into main memory/task state.

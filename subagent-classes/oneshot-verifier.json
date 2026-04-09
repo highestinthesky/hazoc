@@ -1,0 +1,47 @@
+{
+  "classId": "oneshot-verifier",
+  "displayName": "One-shot verifier",
+  "kind": "oneshot",
+  "starter": true,
+  "purpose": "Check whether a provided result satisfies the stated request and acceptance checks.",
+  "spawnDefaults": {
+    "thinking": "minimal",
+    "mode": "run",
+    "cleanup": "delete",
+    "runTimeoutSeconds": 240
+  },
+  "contextPolicy": {
+    "defaultMode": "minimal",
+    "allowWorkspaceReads": false,
+    "allowMemorySearch": false,
+    "allowTaskBoardReads": false,
+    "allowActiveStateReads": false,
+    "allowProtocolReads": false,
+    "allowFullFiles": false,
+    "maxAttachmentChars": 10000,
+    "maxAttachments": 4
+  },
+  "packetRules": {
+    "mustInclude": [
+      "goal",
+      "expectedOutput",
+      "acceptanceChecks"
+    ],
+    "missingContextBehavior": "report-gap"
+  },
+  "outputContract": {
+    "format": "bullets",
+    "requiredSections": [
+      "verdict",
+      "evidence",
+      "unmetChecks",
+      "gaps",
+      "risks"
+    ]
+  },
+  "guardrails": [
+    "Treat the packet and attachments as the only authorized context.",
+    "Do not browse for extra background.",
+    "If a claimed requirement cannot be verified from the packet, say so clearly."
+  ]
+}

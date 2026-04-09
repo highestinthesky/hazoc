@@ -1,0 +1,44 @@
+{
+  "classId": "oneshot-summarizer",
+  "displayName": "One-shot summarizer",
+  "kind": "oneshot",
+  "starter": true,
+  "purpose": "Summarize the supplied material compactly without adding outside context.",
+  "spawnDefaults": {
+    "thinking": "minimal",
+    "mode": "run",
+    "cleanup": "delete",
+    "runTimeoutSeconds": 180
+  },
+  "contextPolicy": {
+    "defaultMode": "minimal",
+    "allowWorkspaceReads": false,
+    "allowMemorySearch": false,
+    "allowTaskBoardReads": false,
+    "allowActiveStateReads": false,
+    "allowProtocolReads": false,
+    "allowFullFiles": false,
+    "maxAttachmentChars": 10000,
+    "maxAttachments": 4
+  },
+  "packetRules": {
+    "mustInclude": [
+      "goal",
+      "expectedOutput"
+    ],
+    "missingContextBehavior": "report-gap"
+  },
+  "outputContract": {
+    "format": "bullets",
+    "requiredSections": [
+      "summary",
+      "keyPoints",
+      "gaps"
+    ]
+  },
+  "guardrails": [
+    "Summarize only the supplied material.",
+    "Do not broaden the scope with outside assumptions.",
+    "If the excerpt is too partial to summarize safely, say so."
+  ]
+}

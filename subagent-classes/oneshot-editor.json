@@ -1,0 +1,45 @@
+{
+  "classId": "oneshot-editor",
+  "displayName": "One-shot editor",
+  "kind": "oneshot",
+  "starter": true,
+  "purpose": "Make a narrow editing pass against the supplied text or file excerpt while preserving constraints.",
+  "spawnDefaults": {
+    "thinking": "low",
+    "mode": "run",
+    "cleanup": "delete",
+    "runTimeoutSeconds": 360
+  },
+  "contextPolicy": {
+    "defaultMode": "targeted",
+    "allowWorkspaceReads": false,
+    "allowMemorySearch": false,
+    "allowTaskBoardReads": false,
+    "allowActiveStateReads": false,
+    "allowProtocolReads": false,
+    "allowFullFiles": false,
+    "maxAttachmentChars": 18000,
+    "maxAttachments": 6
+  },
+  "packetRules": {
+    "mustInclude": [
+      "goal",
+      "expectedOutput",
+      "constraints"
+    ],
+    "missingContextBehavior": "report-gap"
+  },
+  "outputContract": {
+    "format": "bullets-or-patch",
+    "requiredSections": [
+      "changes",
+      "openQuestions",
+      "risks"
+    ]
+  },
+  "guardrails": [
+    "Edit only within the provided scope.",
+    "Preserve stated constraints exactly.",
+    "If the excerpt is too narrow to edit safely, report the missing context instead of guessing."
+  ]
+}

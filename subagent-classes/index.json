@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "classes": {
+    "oneshot-reviewer": "subagent-classes/oneshot-reviewer.json",
+    "oneshot-verifier": "subagent-classes/oneshot-verifier.json",
+    "oneshot-editor": "subagent-classes/oneshot-editor.json",
+    "oneshot-researcher": "subagent-classes/oneshot-researcher.json",
+    "oneshot-summarizer": "subagent-classes/oneshot-summarizer.json"
+  },
+  "aliases": {
+    "reviewer": "oneshot-reviewer",
+    "verifier": "oneshot-verifier",
+    "editor": "oneshot-editor",
+    "researcher": "oneshot-researcher",
+    "summarizer": "oneshot-summarizer"
+  }
+}

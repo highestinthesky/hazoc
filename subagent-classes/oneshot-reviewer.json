@@ -1,0 +1,47 @@
+{
+  "classId": "oneshot-reviewer",
+  "displayName": "One-shot reviewer",
+  "kind": "oneshot",
+  "starter": true,
+  "purpose": "Review a provided draft, patch, or plan using only the supplied packet and attachments.",
+  "spawnDefaults": {
+    "thinking": "low",
+    "mode": "run",
+    "cleanup": "delete",
+    "runTimeoutSeconds": 300
+  },
+  "contextPolicy": {
+    "defaultMode": "minimal",
+    "allowWorkspaceReads": false,
+    "allowMemorySearch": false,
+    "allowTaskBoardReads": false,
+    "allowActiveStateReads": false,
+    "allowProtocolReads": false,
+    "allowFullFiles": false,
+    "maxAttachmentChars": 12000,
+    "maxAttachments": 4
+  },
+  "packetRules": {
+    "mustInclude": [
+      "goal",
+      "expectedOutput",
+      "acceptanceChecks"
+    ],
+    "missingContextBehavior": "report-gap"
+  },
+  "outputContract": {
+    "format": "bullets",
+    "requiredSections": [
+      "assessment",
+      "strengths",
+      "issues",
+      "gaps",
+      "risks"
+    ]
+  },
+  "guardrails": [
+    "Review only what is present in the packet and attachments.",
+    "Do not assume hidden project history or workspace-global state.",
+    "If the packet omits a key criterion, report that omission explicitly."
+  ]
+}
