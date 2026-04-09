@@ -223,3 +223,9 @@ assistant: [[reply_to_current]] yep. Here’s the plan for tomorrow.
 I also wrote this handoff into the daily note + active state, so we can pick it up cold tomorrow.
 
 Good stopping point.
+
+---
+
+## Later status note
+
+- 2026-04-09 — Haolun later said to assume this plan was effectively given up on after vacation and is not expected to resume any time soon. Treat this file as historical reference only unless the remote-access work is explicitly reopened.
