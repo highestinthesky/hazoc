@@ -1,134 +1,36 @@
 # RECALL_MAP.md
 
-Purpose: route context lookup cheaply before loading larger files.
-Start narrow, widen only when answer quality requires it.
+Start narrow. Widen only when answer quality requires it.
 
 ## First question
 
-Does this request actually need prior context?
-- If **no** -> answer directly.
-- If **yes** -> route to the smallest likely source first.
+- If the request is self-contained, answer directly.
+- If it needs prior context, route to the smallest likely source first.
 
-## Routing rules
+## Routes
 
-### 1. User preference / durable rule / identity
-Check first:
-- `USER.md`
-- `MEMORY.md`
-- `PROTOCOL_SPINE.md`
-
-Use for:
-- tone/format preferences
-- what to call haolun
-- standing expectations
-- durable mission direction
-
-### 2. What is active right now
-Check first:
-- `memory/active-state.md`
-
-Use for:
-- current focus
-- blockers
-- next step
-- handoff state
-
-### 3. Project/task context
-Check first:
-- compact task anchors via the local recall helper
-- then `mission-control/data/tasks.json` if the anchors are insufficient
-- or the local recall helper with `route=task`
-
-Use for:
-- project goals
-- work done
-- blockers
-- next steps
-- lane/status
-
-### 4. Recent timeline
-Check first:
-- compact daily anchors via the local recall helper
-- then today's / recent daily note only if the anchors are insufficient
-
-Use for:
-- what changed today
-- recent progress
-- recent failures/blockers
-- latest decisions
-
-### 5. Older history / dates / prior decisions
-Check in order:
-1. `MEMORY.md`
-2. targeted daily-anchor recall
-3. targeted daily-note recall if the anchors are insufficient
-4. project task history if the topic is project-specific
-
-Use for:
-- when something was decided
-- what happened last week
-- prior implementation passes
-
-### 6. Workflow / protocol detail
-Check in order:
-1. `PROTOCOL_SPINE.md`
-2. `mission-control/data/protocol.json`
-3. deep references only if still needed
-
-Use for:
-- workflow rules
-- protocol edge cases
-- skill/process detail
-
-### 7. Branch / agent / worker state
-Check only if the request actually touches that branch.
-Do not preload branch state into main by default.
-
-### 8. Learning/error history
-Check first:
-- `.learnings/ERROR_INDEX.md`
-- `.learnings/errors/YYYY-MM.md`
-
-Do **not** start from `.learnings/days/` when the goal is understanding error history.
-Use day folders only for date-local archive context after the canonical monthly error ledger is insufficient.
+- Preference / durable rule / identity -> `USER.md`, `MEMORY.md`, `PROTOCOL_SPINE.md`
+- Active now -> `memory/active-state.md`
+- Project/task state -> `scripts/recall_index.py` task route, then `mission-control/data/tasks.json` if needed
+- Recent timeline -> `scripts/recall_index.py` recent route, then the relevant daily note if needed
+- Older history / dates / decisions -> `MEMORY.md`, then `memory_search`, then daily/task history if needed
+- Workflow / protocol detail -> `PROTOCOL_SPINE.md`, then `mission-control/data/protocol.json`, then deep refs
+- Branch / agent / worker state -> only if the request actually touches that branch
+- Learning / error history -> `.learnings/ERROR_INDEX.md`, then `.learnings/errors/`, then day archives only if needed
 
 ## Retrieval routine
 
 1. Route the request.
-2. Search the most likely source first.
-3. Load only the top 1-3 snippets / smallest useful excerpts.
-4. If confidence is low, widen to the next layer.
-5. Answer from the retrieved context.
+2. Search the most likely small source first.
+3. Load only the smallest useful snippets or line ranges.
+4. Widen only if confidence is low.
+5. Answer from retrieved context.
 6. Write back only the durable result.
 
 ## Search defaults
 
-- Prefer routing over broad search when the request type is obvious.
-- Prefer curated memory before raw history for durable questions.
-- Prefer compact anchors before raw notes/tasks for recent-work questions.
+- Prefer routing over broad search.
+- Prefer curated memory and compact anchors before raw notes or long task prose.
 - Prefer exact snippets before whole-file reads.
-- Stop when confidence is good enough.
-- Escalate instead of bluffing.
-
-## Required + local helpers
-
-- For prior-work / people / dates / preferences / todos recall, run `memory_search` first when required by the platform.
-- For broader workspace recall with minimal tokens, use:
-
-```bash
-python3 scripts/recall_index.py search --query "..." --route auto --limit 3 --json
-```
-
-Useful routes:
-- `preference`
-- `active`
-- `task`
-- `recent`
-- `history`
-- `protocol`
-- `branch`
-- `unknown`
-
-The searchable source list lives in `mission-control/data/recall-sources.json`.
-`scripts/recall_index.py` auto-rebuilds its derived index when tracked sources or that registry change.
-It also auto-builds compact task/daily anchors under `tmp/recall-anchors/` so raw daily logs and long task descriptions do not have to be the first recall surface.
+- Stop when confidence is good enough; escalate instead of bluffing.
+- For prior-work / people / dates / preferences / todos recall, use `memory_search` first when required.

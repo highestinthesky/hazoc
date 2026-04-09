@@ -1,0 +1,143 @@
+{
+  "groups": {
+    "root": {
+      "files": [
+        "AGENTS.md",
+        "SOUL.md",
+        "TOOLS.md",
+        "IDENTITY.md",
+        "USER.md",
+        "HEARTBEAT.md",
+        "MEMORY.md"
+      ],
+      "maxCharsTotal": 9000
+    },
+    "startup": {
+      "files": [
+        "PROTOCOL_SPINE.md",
+        "RECALL_MAP.md",
+        "memory/active-state.md"
+      ],
+      "maxCharsTotal": 6000
+    },
+    "all": {
+      "maxCharsTotal": 14000
+    }
+  },
+  "fileBudgets": {
+    "AGENTS.md": 2600,
+    "SOUL.md": 900,
+    "TOOLS.md": 900,
+    "IDENTITY.md": 220,
+    "USER.md": 1200,
+    "HEARTBEAT.md": 20,
+    "MEMORY.md": 1800,
+    "PROTOCOL_SPINE.md": 2200,
+    "RECALL_MAP.md": 2000,
+    "memory/active-state.md": 1200
+  },
+  "checks": [
+    {
+      "id": "agents_startup_order",
+      "file": "AGENTS.md",
+      "needles": [
+        "Read `SOUL.md`.",
+        "Read `USER.md`.",
+        "Read `PROTOCOL_SPINE.md`.",
+        "Read `RECALL_MAP.md`.",
+        "Read `memory/active-state.md` if it exists.",
+        "In main/direct sessions, also read `MEMORY.md`."
+      ]
+    },
+    {
+      "id": "agents_no_bulk_default",
+      "file": "AGENTS.md",
+      "needles": [
+        "Do not load the task board, old daily notes, branch state, or deep references by default."
+      ]
+    },
+    {
+      "id": "agents_packet_first",
+      "file": "AGENTS.md",
+      "needles": [
+        "One-shot helpers are packet-first and task-local by default.",
+        "Persistent actors use exact ids and local bundles; they do not search the workspace for identity."
+      ]
+    },
+    {
+      "id": "agents_skill_vetting",
+      "file": "AGENTS.md",
+      "needles": [
+        "Before installing a third-party skill, vet it and write a short report."
+      ]
+    },
+    {
+      "id": "soul_group_boundary",
+      "file": "SOUL.md",
+      "needles": [
+        "In groups, be a useful participant, not haolun's proxy."
+      ]
+    },
+    {
+      "id": "user_preferences",
+      "file": "USER.md",
+      "needles": [
+        "Prefer concise replies.",
+        "split it into compact parts",
+        "Token efficiency must not make hazoc dumber",
+        "leave a durable learning trail"
+      ]
+    },
+    {
+      "id": "memory_mission",
+      "file": "MEMORY.md",
+      "needles": [
+        "Build and maintain a local-first mission-control space",
+        "Discord and Telegram are extension channels",
+        "Helpers/subagents should default to task-local packets"
+      ]
+    },
+    {
+      "id": "protocol_non_negotiables",
+      "file": "PROTOCOL_SPINE.md",
+      "needles": [
+        "Run a quick harm check before meaningful actions.",
+        "Do not exfiltrate private data or take external/public actions without approval.",
+        "Answer quality beats token savings when they conflict.",
+        "Do not bluff from thin context; retrieve more when confidence is low."
+      ]
+    },
+    {
+      "id": "protocol_recall",
+      "file": "PROTOCOL_SPINE.md",
+      "needles": [
+        "memory_search",
+        "scripts/recall_index.py"
+      ]
+    },
+    {
+      "id": "protocol_closeout",
+      "file": "PROTOCOL_SPINE.md",
+      "needles": [
+        "scripts/main_task_closeout.py"
+      ]
+    },
+    {
+      "id": "recall_routes",
+      "file": "RECALL_MAP.md",
+      "needles": [
+        "Start narrow. Widen only when answer quality requires it.",
+        "scripts/recall_index.py",
+        "memory_search"
+      ]
+    },
+    {
+      "id": "active_state_caution",
+      "file": "memory/active-state.md",
+      "needles": [
+        "Preserve rule coverage before slimming further.",
+        "Answer quality beats token savings."
+      ]
+    }
+  ]
+}

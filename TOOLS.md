@@ -1,61 +1,13 @@
 # TOOLS.md - Local Notes
 
-Skills define _how_ tools work. This file is for _your_ specifics — the stuff that's unique to your setup.
+## Messaging / reminders
 
-## What Goes Here
-
-Things like:
-
-- Camera names and locations
-- SSH hosts and aliases
-- Preferred voices for TTS
-- Speaker/room names
-- Device nicknames
-- Anything environment-specific
-
-## Examples
-
-```markdown
-### Cameras
-
-- living-room → Main area, 180° wide angle
-- front-door → Entrance, motion-triggered
-
-### SSH
-
-- home-server → 192.168.1.100, user: admin
-
-### TTS
-
-- Preferred voice: "Nova" (warm, slightly British)
-- Default speaker: Kitchen HomePod
-```
-
-## Why Separate?
-
-Skills are shared. Your setup is yours. Keeping them apart means you can update skills without losing your notes, and share skills without leaking your infrastructure.
-
-## OpenClaw reminders
-
-- For **visible timed pings in a chat/channel**, do not rely on a `cron` job that only injects a main-session `systemEvent`; that can wake the agent with an internal reminder without guaranteeing a surfaced channel message.
-- Prefer a reminder path with explicit chat delivery / announce behavior when the user asked to be pinged in-channel.
-
-## Discord routing
-
-- Main task-completion pings currently use explicit Discord announce delivery to: `hzwp / #main_updates` (`1487645227421536327`)
-- That route was live-tested successfully on 2026-03-28.
-- Current fallback channel remains available for manual fallback only: `hzwp / #control-center` (`1485016833819021495`)
-- Closeout helper for qualifying direct-task completions: `scripts/main_task_closeout.py`
-- Closeout ledger file: `mission-control/data/main-task-closeouts.json`
-- Current behavior: one lightweight best-effort one-shot announce job per qualifying completion; no standing recovery worker
-- Haolun mention format for completion pings: `<@1049450008505757706>`
-- Canonical behavior/settings file: `mission-control/data/notifications.json`
+- Visible timed pings need explicit chat delivery / announce behavior; a main-session `systemEvent` alone is not enough for in-channel reminders.
+- Main task closeout helper: `scripts/main_task_closeout.py`
+- Main task closeout config: `mission-control/data/notifications.json`
+- Closeout ledger: `mission-control/data/main-task-closeouts.json`
 
 ## Git / GitHub
 
-- Keep `.learnings/snapshots/*.bak` out of git. Backup snapshots of config/state can contain secrets even when the corresponding `.json` path is ignored.
-- If `scripts/git-auto-sync.sh` reports `push_failed`, inspect the emitted `detail=` text before assuming SSH/auth is broken; GitHub push protection may be rejecting a secret-bearing commit.
-
----
-
-Add whatever helps you do your job. This is your cheat sheet.
+- Keep `.learnings/snapshots/*.bak` out of git.
+- If `scripts/git-auto-sync.sh` reports `push_failed`, inspect `detail=` before assuming SSH/auth is broken.
