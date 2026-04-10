@@ -398,12 +398,12 @@
   {
     "id": "task-investigate-webchat-disappearing-messages",
     "title": "Investigate webchat unresponsiveness and disappearing messages",
-    "notes": "Triggered by the 2026-04-02 main control-ui incident where hazoc stopped responding for a while and new webchat messages appeared to disappear until haolun restarted the session. The prerequisite learning-storage cleanup and closeout-path repair are now complete, so this follow-up is ready for active investigation.",
-    "description": "Project memory\n\nGoal\n- Find the smallest durable fix for the main webchat/control-ui failure where hazoc became unresponsive and incoming messages appeared to disappear.\n\nWhat is known\n- The incident happened during the 2026-04-02 evening session while work was in progress on learning/error-layout cleanup and the Discord closeout path.\n- Haolun had to restart hazoc to recover.\n- The problem is already logged in `.learnings/errors/2026-04.md` as `ERR-20260402-001` and in `memory/2026-04-02.md`.\n\nNext step\n- After the current requested implementation is complete, inspect the restart window, session/transcript state, and webchat delivery behavior to isolate whether the failure lived in the UI, transcript/session store, or the agent runtime itself.",
+    "notes": "Triggered by the 2026-04-02 main control-ui incident where hazoc stopped responding for a while and new webchat messages appeared to disappear until haolun restarted the session. The prerequisite learning-storage cleanup and closeout-path repair are now complete, so this follow-up is ready for active investigation. Additional recurrence signal on 2026-04-09: haolun again lost the ability to communicate with hazoc through the Control UI/webchat path until restart. During that failure, the dashboard reportedly showed a warning roughly saying the request could not be sent because necessary permissions were missing/insufficient; exact wording is unknown.",
+    "description": "Project memory\n\nGoal\n- Find the smallest durable fix for the main webchat/control-ui failure where hazoc became unresponsive and incoming messages appeared to disappear.\n\nWhat is known\n- The incident happened during the 2026-04-02 evening session while work was in progress on learning/error-layout cleanup and the Discord closeout path.\n- Haolun had to restart hazoc to recover.\n- The problem is already logged in `.learnings/errors/2026-04.md` as `ERR-20260402-001` and in `memory/2026-04-02.md`.\n\nNext step\n- After the current requested implementation is complete, inspect the restart window, session/transcript state, and webchat delivery behavior to isolate whether the failure lived in the UI, transcript/session store, or the agent runtime itself. Include the new permission-warning symptom in that pass and check whether auth/session state or request authorization failed before delivery.",
     "lane": "workbench",
     "scheduledStart": "",
     "scheduledEnd": "",
     "createdAt": "2026-04-03T00:11:00Z",
-    "updatedAt": "2026-04-03T00:35:00Z"
+    "updatedAt": "2026-04-10T00:45:00Z"
   }
 ]

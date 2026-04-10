@@ -6,6 +6,7 @@
 - Packet-first disposable-helper scaffolding exists; waiting for haolun to choose concrete one-shot roles.
 - `task-investigate-webchat-disappearing-messages` remains open.
 - Another brief webchat/control-UI communication failure happened tonight; restart restored contact, so treat this as another recurrence signal for the outage task.
+- User-observed symptom to preserve: during the failure, the dashboard reportedly warned that the request could not be sent due to missing/insufficient permissions (exact wording unknown).
 - Market-moving digest now has a first script-first local v1 running on user cron: bounded feed collector/scorer, local-only digest outputs, source filters, and an installed low-cost weekday cadence (`*/20 6-18 ET`).
 - Multi-user digest direction is now explicit: send the shared global digest first, then the user-specific watchlist digest. `haolun` is registered as the first digest user and currently points at Discord channel `1486030559741349888`.
 
