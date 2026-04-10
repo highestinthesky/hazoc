@@ -1,28 +1,20 @@
 {
   "windowId": "morning",
   "label": "Morning setup",
-  "generatedAt": "2026-04-10T14:00:05+00:00",
+  "generatedAt": "2026-04-10T15:01:39+00:00",
   "timezone": "America/New_York",
-  "windowStart": "2026-04-09T22:00:05+00:00",
-  "windowEnd": "2026-04-10T14:00:05+00:00",
-  "totalItems": 10,
-  "totalScore": 130.85,
-  "highPriorityCount": 7,
+  "windowStart": "2026-04-10T14:56:07+00:00",
+  "windowEnd": "2026-04-10T15:01:39+00:00",
+  "totalItems": 4,
+  "totalScore": 44.8,
+  "highPriorityCount": 2,
   "topCategories": [
     {
-      "category": "rates",
-      "count": 3
+      "category": "ai-chips",
+      "count": 2
     },
     {
       "category": "inflation",
-      "count": 2
-    },
-    {
-      "category": "regulation",
-      "count": 2
-    },
-    {
-      "category": "banks",
       "count": 1
     },
     {
@@ -31,44 +23,14 @@
     }
   ],
   "unresolvedUncertainties": [
-    "Consumer Price Index News Release - 2026 M03 Results - Bureau of Labor Statistics (.gov)",
-    "Kevin Warsh Fed chair confirmation plan hits snag as nomination hearing is delayed",
-    "Sugar Prices Fall as Crude Oil Plunges",
-    "Daily Spotlight: Earnings Season Starts Next Week"
+    "Here's the inflation breakdown for March 2026 \u2014 in one chart",
+    "Why the Fed is likely to hold on rates despite soaring energy prices",
+    "Is Amazon The Best AI Cloud Stock in Billionaire Ken Fisher\u2019s Portfolio?",
+    "Vertiv Holdings Co (VRT) Surged Due to Robust Demand from Data Center Construction"
   ],
   "items": [
     {
-      "headline": "Minutes of the Federal Open Market Committee, March 17\u201318, 2026",
-      "whyItMatters": "Broad-market potential because it can shift expectations around rates, growth, inflation, or policy.",
-      "affectedSectors": [
-        "Financials",
-        "Rate-sensitive"
-      ],
-      "affectedNames": [],
-      "affectedEtfs": [
-        "IWM",
-        "QQQ",
-        "SPY",
-        "TLT",
-        "XLF"
-      ],
-      "scope": "broad",
-      "confidence": 0.68,
-      "confidenceLabel": "medium",
-      "direction": "unclear",
-      "score": 16.25,
-      "highPriority": true,
-      "themes": [
-        "rates"
-      ],
-      "category": "rates",
-      "source": "FRB: Press Release - All Releases",
-      "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260408a.htm",
-      "summary": "Minutes of the Federal Open Market Committee, March 17\u201318, 2026",
-      "eventTime": "2026-04-08T18:00:00+00:00"
-    },
-    {
-      "headline": "Consumer Price Index News Release - 2026 M03 Results - Bureau of Labor Statistics (.gov)",
+      "headline": "Here's the inflation breakdown for March 2026 \u2014 in one chart",
       "whyItMatters": "Broad-market potential because it can shift expectations around rates, growth, inflation, or policy.",
       "affectedSectors": [
         "Broad market",
@@ -87,178 +49,19 @@
       "confidence": 0.62,
       "confidenceLabel": "low",
       "direction": "unclear",
-      "score": 16.0,
+      "score": 14.0,
       "highPriority": true,
       "themes": [
         "inflation"
       ],
       "category": "inflation",
-      "source": "Bureau of Labor Statistics (.gov)",
-      "url": "https://news.google.com/rss/articles/CBMiakFVX3lxTFBzc2Q4ckMyYlJnWHNtdG5CSVJpR29zdGlScjdLUUFHdGNnNDhjR3FZdHd0ZXRGbGZkcmVsRHpzX05nMzZHUklmbzh0NUVOSjd6dTVGRXl5UllyQkpFYjZ5cGRiWno0ZGxXblE?oc=5",
-      "summary": "Consumer Price Index News Release - 2026 M03 Results Bureau of Labor Statistics (.gov)",
-      "eventTime": "2026-04-10T12:46:56+00:00"
-    },
-    {
-      "headline": "Consumer prices rose 3.3% in March, as energy prices spiked due to Iran conflict",
-      "whyItMatters": "Broad-market potential because it can shift expectations around rates, growth, inflation, or policy.",
-      "affectedSectors": [
-        "Broad market",
-        "Consumer",
-        "Energy",
-        "Financials"
-      ],
-      "affectedNames": [],
-      "affectedEtfs": [
-        "QQQ",
-        "SPY",
-        "TLT",
-        "USO",
-        "XLE",
-        "XLF",
-        "XLY"
-      ],
-      "scope": "broad",
-      "confidence": 0.68,
-      "confidenceLabel": "medium",
-      "direction": "positive",
-      "score": 15.25,
-      "highPriority": true,
-      "themes": [
-        "inflation",
-        "energy"
-      ],
-      "category": "inflation",
       "source": "US Top News and Analysis",
-      "url": "https://www.cnbc.com/2026/04/10/cpi-inflation-report-march-2026.html",
-      "summary": "The consumer price index was expected to show a 3.3% year-over-year gain in March, according to the Dow Jones consensus.",
-      "eventTime": "2026-04-10T13:37:13+00:00"
+      "url": "https://www.cnbc.com/2026/04/10/cpi-inflation-march-2026-breakdown.html",
+      "summary": "The Iran war has pushed up gasoline, airline fares and other prices for consumers.",
+      "eventTime": "2026-04-10T14:46:31+00:00"
     },
     {
-      "headline": "Powell, Bessent discussed Anthropic's Mythos AI cyber threat with major U.S. banks",
-      "whyItMatters": "Broad-market potential because it can shift expectations around rates, growth, inflation, or policy.",
-      "affectedSectors": [
-        "Financials",
-        "Rate-sensitive",
-        "Semiconductors",
-        "Technology"
-      ],
-      "affectedNames": [],
-      "affectedEtfs": [
-        "IWM",
-        "KBE",
-        "QQQ",
-        "SMH",
-        "SPY",
-        "TLT",
-        "XLF",
-        "XLK"
-      ],
-      "scope": "broad",
-      "confidence": 0.74,
-      "confidenceLabel": "medium",
-      "direction": "unclear",
-      "score": 14.0,
-      "highPriority": true,
-      "themes": [
-        "rates",
-        "ai-chips",
-        "banks"
-      ],
-      "category": "rates",
-      "source": "US Top News and Analysis",
-      "url": "https://www.cnbc.com/2026/04/10/powell-bessent-us-bank-ceos-anthropic-mythos-ai-cyber.html",
-      "summary": "Anthropic rolled out the new Mythos AI model to a select group of companies over concerns that hackers could exploit its capabilities.",
-      "eventTime": "2026-04-10T13:29:57+00:00"
-    },
-    {
-      "headline": "Kevin Warsh Fed chair confirmation plan hits snag as nomination hearing is delayed",
-      "whyItMatters": "Broad-market potential because it can shift expectations around rates, growth, inflation, or policy.",
-      "affectedSectors": [
-        "Financials",
-        "Rate-sensitive"
-      ],
-      "affectedNames": [],
-      "affectedEtfs": [
-        "IWM",
-        "QQQ",
-        "SPY",
-        "TLT",
-        "XLF"
-      ],
-      "scope": "broad",
-      "confidence": 0.62,
-      "confidenceLabel": "low",
-      "direction": "negative",
-      "score": 14.0,
-      "highPriority": true,
-      "themes": [
-        "rates"
-      ],
-      "category": "rates",
-      "source": "US Top News and Analysis",
-      "url": "https://www.cnbc.com/2026/04/10/warsh-fed-nomination-hearing-delayed.html",
-      "summary": "President Trump's nomination of Kevin Warsh as Federal Reserve chair already faced a hurdle by Sen. Thom Tillis over a probe of current Chair Jerome Powell.",
-      "eventTime": "2026-04-10T11:59:47+00:00"
-    },
-    {
-      "headline": "Federal Reserve Board announces termination of enforcement actions with Cr\u00e9dit Agricole S.A. and Cr\u00e9dit Agricole Corporate and Investment Bank, Mega International Commercial Bank Co., Ltd, and the Goldman Sachs Group, Inc.",
-      "whyItMatters": "Most relevant to Financials because it may change the near-term outlook for that slice of the market.",
-      "affectedSectors": [
-        "Financials"
-      ],
-      "affectedNames": [
-        "GS"
-      ],
-      "affectedEtfs": [
-        "KBE",
-        "XLF"
-      ],
-      "scope": "sector",
-      "confidence": 0.68,
-      "confidenceLabel": "medium",
-      "direction": "negative",
-      "score": 13.6,
-      "highPriority": true,
-      "themes": [
-        "banks"
-      ],
-      "category": "banks",
-      "source": "FRB: Press Release - All Releases",
-      "url": "https://www.federalreserve.gov/newsevents/pressreleases/enforcement20260409a.htm",
-      "summary": "Federal Reserve Board announces termination of enforcement actions with Cr\u00e9dit Agricole S.A. and Cr\u00e9dit Agricole Corporate and Investment Bank, Mega International Commercial Bank Co., Ltd, and the Goldman Sachs Group, Inc.",
-      "eventTime": "2026-04-09T15:00:00+00:00"
-    },
-    {
-      "headline": "SEC Announces Enforcement Results for Fiscal Year 2025",
-      "whyItMatters": "Regulatory/policy signal that could matter beyond one headline, especially for Financials, Industrials, Technology.",
-      "affectedSectors": [
-        "Financials",
-        "Industrials",
-        "Technology"
-      ],
-      "affectedNames": [],
-      "affectedEtfs": [
-        "XLF",
-        "XLI",
-        "XLK"
-      ],
-      "scope": "sector",
-      "confidence": 0.68,
-      "confidenceLabel": "medium",
-      "direction": "negative",
-      "score": 12.0,
-      "highPriority": true,
-      "themes": [
-        "regulation"
-      ],
-      "category": "regulation",
-      "source": "Press Releases",
-      "url": "https://www.sec.gov/newsroom/press-releases/2026-34",
-      "summary": "The Securities and Exchange Commission today announced enforcement results for the fiscal year that ended on September 30, 2025.Central to an effective enforcement program is determining which cases to bring and responsibly stewarding Commission\u2026",
-      "eventTime": "2026-04-07T19:48:30+00:00"
-    },
-    {
-      "headline": "Sugar Prices Fall as Crude Oil Plunges",
+      "headline": "Why the Fed is likely to hold on rates despite soaring energy prices",
       "whyItMatters": "Energy-supply or pricing signal that can spill into inflation expectations, energy equities, and broad risk sentiment.",
       "affectedSectors": [
         "Energy"
@@ -271,72 +74,77 @@
       "scope": "sector",
       "confidence": 0.62,
       "confidenceLabel": "low",
-      "direction": "negative",
-      "score": 10.5,
-      "highPriority": false,
+      "direction": "unclear",
+      "score": 12.0,
+      "highPriority": true,
       "themes": [
         "energy"
       ],
       "category": "energy",
-      "source": "Barchart",
-      "url": "https://finance.yahoo.com/markets/commodities/articles/sugar-prices-fall-crude-oil-162556480.html",
+      "source": "Yahoo Finance",
+      "url": "https://finance.yahoo.com/economy/article/why-the-fed-is-likely-to-hold-on-rates-despite-soaring-energy-prices-143755918.html",
       "summary": "",
-      "eventTime": "2026-04-08T16:25:56+00:00"
+      "eventTime": "2026-04-10T14:37:55+00:00"
     },
     {
-      "headline": "SEC Appoints David Woodcock as Director of the Division of Enforcement",
-      "whyItMatters": "Regulatory/policy signal that could matter beyond one headline, especially for Financials, Industrials, Technology.",
+      "headline": "Is Amazon The Best AI Cloud Stock in Billionaire Ken Fisher\u2019s Portfolio?",
+      "whyItMatters": "Tech/AI signal most relevant to AMZN and nearby semis/platform peers.",
       "affectedSectors": [
-        "Financials",
-        "Industrials",
+        "Consumer / Cloud",
+        "Semiconductors",
+        "Technology"
+      ],
+      "affectedNames": [
+        "AMZN"
+      ],
+      "affectedEtfs": [
+        "QQQ",
+        "SMH",
+        "XLK",
+        "XLY"
+      ],
+      "scope": "sector",
+      "confidence": 0.62,
+      "confidenceLabel": "low",
+      "direction": "unclear",
+      "score": 10.05,
+      "highPriority": false,
+      "themes": [
+        "ai-chips"
+      ],
+      "category": "ai-chips",
+      "source": "Insider Monkey",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/amazon-best-ai-cloud-stock-143421412.html",
+      "summary": "",
+      "eventTime": "2026-04-10T14:34:21+00:00"
+    },
+    {
+      "headline": "Vertiv Holdings Co (VRT) Surged Due to Robust Demand from Data Center Construction",
+      "whyItMatters": "Most relevant to Semiconductors, Technology because it may change the near-term outlook for that slice of the market.",
+      "affectedSectors": [
+        "Semiconductors",
         "Technology"
       ],
       "affectedNames": [],
       "affectedEtfs": [
-        "XLF",
-        "XLI",
+        "QQQ",
+        "SMH",
         "XLK"
       ],
       "scope": "sector",
-      "confidence": 0.68,
-      "confidenceLabel": "medium",
-      "direction": "negative",
-      "score": 9.75,
-      "highPriority": false,
-      "themes": [
-        "regulation"
-      ],
-      "category": "regulation",
-      "source": "Press Releases",
-      "url": "https://www.sec.gov/newsroom/press-releases/2026-35-sec-appoints-david-woodcock-director-division-enforcement",
-      "summary": "The Securities and Exchange Commission today announced that David Woodcock has been appointed Director of the Division of Enforcement, effective May 4, 2026. Mr. Woodcock is currently a partner in the Dallas and Washington, D.C. offices of Gibson, Dunn\u2026",
-      "eventTime": "2026-04-08T16:20:00+00:00"
-    },
-    {
-      "headline": "Daily Spotlight: Earnings Season Starts Next Week",
-      "whyItMatters": "Potentially relevant market signal; ranked here because it cleared the local significance threshold.",
-      "affectedSectors": [
-        "Single company / peers"
-      ],
-      "affectedNames": [],
-      "affectedEtfs": [
-        "QQQ",
-        "SPY"
-      ],
-      "scope": "single-name",
       "confidence": 0.62,
       "confidenceLabel": "low",
       "direction": "unclear",
-      "score": 9.5,
+      "score": 8.75,
       "highPriority": false,
       "themes": [
-        "earnings-guidance"
+        "ai-chips"
       ],
-      "category": "earnings-guidance",
-      "source": "Argus Research",
-      "url": "https://finance.yahoo.com/research/reports/ARGUS_46696_MarketOutlook_1775820682000?yptr=yahoo&ncid=yahooproperties_plusresear_nm5q6ze1cei",
+      "category": "ai-chips",
+      "source": "Insider Monkey",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/vertiv-holdings-co-vrt-surged-144211504.html",
       "summary": "",
-      "eventTime": "2026-04-10T11:31:22+00:00"
+      "eventTime": "2026-04-10T14:42:11+00:00"
     }
   ]
 }

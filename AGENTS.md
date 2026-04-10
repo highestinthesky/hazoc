@@ -40,6 +40,7 @@ If `BOOTSTRAP.md` exists, follow it once, then delete it.
 - Persistent actors use exact ids and local bundles; they do not search the workspace for identity.
 - Long-lived agents bootstrap from `agent-namecards/`; workers bootstrap from `workers/<worker-id>/`.
 - Main direct identity bundle: `agent-namecards/main-facility-manager/namecard.json`.
+- If haolun says "wrap up," finish the current mission, write back the result/handoff, and stop before the next mission.
 - Mirror important Discord/Telegram items back into main memory/task state.
 - Before installing a third-party skill, vet it and write a short report.
 - Platform note: Discord/WhatsApp replies should not use markdown tables.

@@ -32,5 +32,4 @@ Start narrow. Widen only when answer quality requires it.
 - Prefer routing over broad search.
 - Prefer curated memory and compact anchors before raw notes or long task prose.
 - Prefer exact snippets before whole-file reads.
-- Stop when confidence is good enough; escalate instead of bluffing.
-- For prior-work / people / dates / preferences / todos recall, use `memory_search` first when required.
+- Use `memory_search` first when required for prior-work / people / dates / preferences / todos recall.

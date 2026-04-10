@@ -479,10 +479,14 @@ def classify_digest_item_for_user(item: dict[str, Any], watch_items: list[dict[s
     if item.get("highPriority") and (matched_tickers or matched_sectors):
         relevance += 1.0
 
-    include = bool(matched_tickers) or (
+    scope = str(item.get("scope") or "").lower()
+    sector_only_include = (
         bool(matched_sectors)
+        and not matched_tickers
+        and scope not in {"", "broad"}
         and (bool(item.get("highPriority")) or float(item.get("score", 0.0)) >= 10.5)
     )
+    include = bool(matched_tickers) or sector_only_include
     return {
         "include": include,
         "matchedTickers": matched_tickers,

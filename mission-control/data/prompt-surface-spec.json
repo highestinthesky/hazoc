@@ -10,7 +10,7 @@
         "HEARTBEAT.md",
         "MEMORY.md"
       ],
-      "maxCharsTotal": 9000
+      "maxCharsTotal": 7000
     },
     "startup": {
       "files": [
@@ -18,23 +18,23 @@
         "RECALL_MAP.md",
         "memory/active-state.md"
       ],
-      "maxCharsTotal": 6000
+      "maxCharsTotal": 5000
     },
     "all": {
-      "maxCharsTotal": 14000
+      "maxCharsTotal": 11000
     }
   },
   "fileBudgets": {
-    "AGENTS.md": 2600,
-    "SOUL.md": 900,
-    "TOOLS.md": 900,
-    "IDENTITY.md": 220,
-    "USER.md": 1200,
+    "AGENTS.md": 2300,
+    "SOUL.md": 750,
+    "TOOLS.md": 700,
+    "IDENTITY.md": 180,
+    "USER.md": 1000,
     "HEARTBEAT.md": 20,
-    "MEMORY.md": 1800,
-    "PROTOCOL_SPINE.md": 2200,
-    "RECALL_MAP.md": 2000,
-    "memory/active-state.md": 1200
+    "MEMORY.md": 1200,
+    "PROTOCOL_SPINE.md": 2050,
+    "RECALL_MAP.md": 1800,
+    "memory/active-state.md": 1000
   },
   "checks": [
     {

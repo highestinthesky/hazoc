@@ -625,5 +625,65 @@
     "cronJobId": null,
     "enqueueResponse": null,
     "error": null
+  },
+  {
+    "id": "closeout-20260410-001",
+    "createdAt": "2026-04-10T10:41:03-04:00",
+    "status": "send-enqueued",
+    "result": "aggressive pruning done",
+    "analogy": "trimming a bonsai before the next season",
+    "notificationLine": "<@1049450008505757706> hazoc finished: aggressive pruning done. Like trimming a bonsai before the next season. Full report is in the control UI.",
+    "taskRef": "task-design-cheap-memory-recall-path",
+    "note": "Mission 2 complete; user plans fresh session for task 3.",
+    "sourceSession": "agent:main:main",
+    "delivery": {
+      "mode": "cron-announce",
+      "channel": "discord",
+      "to": "channel:1487645227421536327",
+      "desiredServer": "hzwp",
+      "desiredChannel": "#main_updates",
+      "fallbackTo": "channel:1485016833819021495",
+      "fallbackChannelLabel": "#control-center",
+      "fallbackPolicy": "manual-only",
+      "bestEffort": true
+    },
+    "policy": {
+      "bestEffort": true,
+      "blocksTaskClosure": false,
+      "missedPingTolerance": "acceptable"
+    },
+    "cronJobId": "f997f4a5-8f71-4608-842b-50dfe3255439",
+    "enqueueResponse": {
+      "id": "f997f4a5-8f71-4608-842b-50dfe3255439",
+      "name": "main-task-closeout-closeout-20260410-001",
+      "enabled": true,
+      "deleteAfterRun": true,
+      "createdAtMs": 1775832064531,
+      "updatedAtMs": 1775832064531,
+      "schedule": {
+        "kind": "at",
+        "at": "2026-04-10T14:41:09.480Z"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "Reply with EXACTLY the following one-line text and nothing else:\n<@1049450008505757706> hazoc finished: aggressive pruning done. Like trimming a bonsai before the next season. Full report is in the control UI.\nNo preface. No markdown fences. No extra text.",
+        "thinking": "minimal",
+        "timeoutSeconds": 20,
+        "lightContext": true
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "discord",
+        "to": "channel:1487645227421536327",
+        "bestEffort": true
+      },
+      "state": {
+        "nextRunAtMs": 1775832069480
+      }
+    },
+    "error": null,
+    "enqueueRequestedAt": "2026-04-10T10:41:04-04:00"
   }
 ]

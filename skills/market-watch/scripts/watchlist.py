@@ -111,36 +111,81 @@ def extract_prices_from_download(history: Any, tickers: list[str]) -> dict[str, 
 
 
 
+def fetch_price_from_yahoo_chart(ticker: str) -> float | None:
+    try:
+        import requests
+    except ImportError:
+        return None
+
+    url = f"https://query1.finance.yahoo.com/v8/finance/chart/{ticker}"
+    try:
+        response = requests.get(
+            url,
+            params={"range": "5d", "interval": "1d", "includePrePost": "false"},
+            headers={"User-Agent": "Mozilla/5.0"},
+            timeout=15,
+        )
+        response.raise_for_status()
+        payload = response.json()
+    except Exception:
+        return None
+
+    result = (((payload.get('chart') or {}).get('result') or [None])[0] or {})
+    meta = result.get('meta') or {}
+    for key in ('regularMarketPrice', 'previousClose', 'chartPreviousClose'):
+        value = meta.get(key)
+        if isinstance(value, (int, float)):
+            return round(float(value), 4)
+
+    closes = ((((result.get('indicators') or {}).get('quote') or [{}])[0]).get('close') or [])
+    numeric_closes = [value for value in closes if isinstance(value, (int, float))]
+    if numeric_closes:
+        return round(float(numeric_closes[-1]), 4)
+    return None
+
+
+
 def get_prices(tickers: list[str]) -> dict[str, float]:
     unique = sorted({ticker.upper() for ticker in tickers})
     if not unique:
         return {}
 
+    prices: dict[str, float] = {}
+    yf = None
     try:
         import yfinance as yf  # type: ignore
-    except ImportError as exc:  # pragma: no cover
-        raise SystemExit("Missing dependency for price checks: yfinance. Install with: pip install yfinance") from exc
+    except ImportError:
+        yf = None
 
-    prices: dict[str, float] = {}
-    try:
-        history = yf.download(
-            tickers=unique,
-            period='5d',
-            auto_adjust=False,
-            progress=False,
-            threads=True,
-            group_by='ticker',
-        )
-        prices.update(extract_prices_from_download(history, unique))
-    except Exception:
-        pass
+    if yf is not None:
+        try:
+            history = yf.download(
+                tickers=unique,
+                period='5d',
+                auto_adjust=False,
+                progress=False,
+                threads=True,
+                group_by='ticker',
+            )
+            prices.update(extract_prices_from_download(history, unique))
+        except Exception:
+            pass
+
+        missing = [ticker for ticker in unique if ticker not in prices]
+        for ticker in missing:
+            try:
+                hist = yf.Ticker(ticker).history(period='5d')
+                if hist.empty:
+                    continue
+                prices[ticker] = round(float(hist['Close'].dropna().tolist()[-1]), 4)
+            except Exception:
+                continue
 
     missing = [ticker for ticker in unique if ticker not in prices]
     for ticker in missing:
-        hist = yf.Ticker(ticker).history(period='5d')
-        if hist.empty:
-            continue
-        prices[ticker] = round(float(hist['Close'].dropna().tolist()[-1]), 4)
+        price = fetch_price_from_yahoo_chart(ticker)
+        if price is not None:
+            prices[ticker] = price
 
     return prices
 

@@ -2,57 +2,57 @@
   "fed-press-all": {
     "label": "Federal Reserve press releases",
     "status": 304,
-    "fetchedAt": "2026-04-10T14:00:03+00:00",
+    "fetchedAt": "2026-04-10T15:00:05+00:00",
     "fetchedItems": 0,
     "etag": "W/\"ddae119231c8dc1:0\"",
     "lastModified": "Thu, 09 Apr 2026 15:00:14 GMT",
     "error": null,
-    "durationMs": 1000
+    "durationMs": 0
   },
   "sec-press-releases": {
     "label": "SEC press releases",
     "status": 200,
-    "fetchedAt": "2026-04-10T14:00:03+00:00",
+    "fetchedAt": "2026-04-10T15:00:05+00:00",
     "fetchedItems": 25,
-    "etag": "\"1775829584\"",
-    "lastModified": "Fri, 10 Apr 2026 13:59:44 GMT",
+    "etag": "\"1775833175\"",
+    "lastModified": "Fri, 10 Apr 2026 14:59:35 GMT",
     "error": null,
     "durationMs": 0
   },
   "bls-macro-google-news": {
     "label": "Google News: BLS macro releases",
     "status": 200,
-    "fetchedAt": "2026-04-10T14:00:03+00:00",
-    "fetchedItems": 100,
-    "etag": null,
-    "lastModified": null,
-    "error": null,
-    "durationMs": 0
-  },
-  "treasury-press-google-news": {
-    "label": "Google News: Treasury press releases",
-    "status": 200,
-    "fetchedAt": "2026-04-10T14:00:04+00:00",
+    "fetchedAt": "2026-04-10T15:00:06+00:00",
     "fetchedItems": 100,
     "etag": null,
     "lastModified": null,
     "error": null,
     "durationMs": 1000
   },
+  "treasury-press-google-news": {
+    "label": "Google News: Treasury press releases",
+    "status": 200,
+    "fetchedAt": "2026-04-10T15:00:06+00:00",
+    "fetchedItems": 100,
+    "etag": null,
+    "lastModified": null,
+    "error": null,
+    "durationMs": 0
+  },
   "yahoo-finance-news": {
     "label": "Yahoo Finance news",
     "status": 200,
-    "fetchedAt": "2026-04-10T14:00:04+00:00",
+    "fetchedAt": "2026-04-10T15:00:06+00:00",
     "fetchedItems": 48,
-    "etag": "\"43b0218c6d412f39a5ec8a36970bddc8\"",
-    "lastModified": "Fri, 10 Apr 2026 13:51:02 GMT",
+    "etag": "\"8c45f895b3ccf495d5e420dec0147fa9\"",
+    "lastModified": "Fri, 10 Apr 2026 14:56:05 GMT",
     "error": null,
     "durationMs": 0
   },
   "cnbc-us-top-news": {
     "label": "CNBC US top news and analysis",
     "status": 200,
-    "fetchedAt": "2026-04-10T14:00:05+00:00",
+    "fetchedAt": "2026-04-10T15:00:07+00:00",
     "fetchedItems": 30,
     "etag": null,
     "lastModified": null,

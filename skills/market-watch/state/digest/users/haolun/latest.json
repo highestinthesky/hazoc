@@ -2,13 +2,13 @@
   "kind": "user-watchlist-digest",
   "userId": "haolun",
   "displayName": "haolun",
-  "generatedAt": "2026-04-10T14:00:05+00:00",
+  "generatedAt": "2026-04-10T15:01:40+00:00",
   "timezone": "America/Los_Angeles",
   "windowId": "morning",
   "label": "Morning setup",
-  "globalGeneratedAt": "2026-04-10T14:00:05+00:00",
-  "globalWindowStart": "2026-04-09T22:00:05+00:00",
-  "globalWindowEnd": "2026-04-10T14:00:05+00:00",
+  "globalGeneratedAt": "2026-04-10T15:01:39+00:00",
+  "globalWindowStart": "2026-04-10T14:56:07+00:00",
+  "globalWindowEnd": "2026-04-10T15:01:39+00:00",
   "globalDigestPathMd": "skills/market-watch/state/digest/digests/2026-04-10/morning.md",
   "globalDigestPathJson": "skills/market-watch/state/digest/digests/2026-04-10/morning.json",
   "deliveryOrder": [
@@ -24,287 +24,47 @@
   "watchlistStatus": [
     {
       "ticker": "AAPL",
-      "price": null,
+      "price": 261.52,
       "target": null,
       "stop": null,
       "note": "",
       "importance": "normal",
-      "flags": [
-        "price_unavailable"
-      ],
-      "checkedAt": "2026-04-10T14:00:05+00:00"
+      "flags": [],
+      "checkedAt": "2026-04-10T15:01:40+00:00"
     },
     {
       "ticker": "BAC",
-      "price": null,
+      "price": 52.55,
       "target": null,
       "stop": null,
       "note": "",
       "importance": "normal",
-      "flags": [
-        "price_unavailable"
-      ],
-      "checkedAt": "2026-04-10T14:00:05+00:00"
+      "flags": [],
+      "checkedAt": "2026-04-10T15:01:40+00:00"
     },
     {
       "ticker": "HD",
-      "price": null,
+      "price": 338.695,
       "target": null,
       "stop": null,
       "note": "",
       "importance": "normal",
-      "flags": [
-        "price_unavailable"
-      ],
-      "checkedAt": "2026-04-10T14:00:05+00:00"
+      "flags": [],
+      "checkedAt": "2026-04-10T15:01:40+00:00"
     },
     {
       "ticker": "NVDA",
-      "price": null,
+      "price": 188.715,
       "target": null,
       "stop": null,
       "note": "",
       "importance": "normal",
-      "flags": [
-        "price_unavailable"
-      ],
-      "checkedAt": "2026-04-10T14:00:05+00:00"
+      "flags": [],
+      "checkedAt": "2026-04-10T15:01:40+00:00"
     }
   ],
-  "watchFlags": 4,
-  "priceError": "Missing dependency for price checks: yfinance. Install with: pip install yfinance",
-  "matchedItems": [
-    {
-      "headline": "Powell, Bessent discussed Anthropic's Mythos AI cyber threat with major U.S. banks",
-      "whyItMatters": "Broad-market potential because it can shift expectations around rates, growth, inflation, or policy.",
-      "affectedSectors": [
-        "Financials",
-        "Rate-sensitive",
-        "Semiconductors",
-        "Technology"
-      ],
-      "affectedNames": [],
-      "affectedEtfs": [
-        "IWM",
-        "KBE",
-        "QQQ",
-        "SMH",
-        "SPY",
-        "TLT",
-        "XLF",
-        "XLK"
-      ],
-      "scope": "broad",
-      "confidence": 0.74,
-      "confidenceLabel": "medium",
-      "direction": "unclear",
-      "score": 14.0,
-      "highPriority": true,
-      "themes": [
-        "rates",
-        "ai-chips",
-        "banks"
-      ],
-      "category": "rates",
-      "source": "US Top News and Analysis",
-      "url": "https://www.cnbc.com/2026/04/10/powell-bessent-us-bank-ceos-anthropic-mythos-ai-cyber.html",
-      "summary": "Anthropic rolled out the new Mythos AI model to a select group of companies over concerns that hackers could exploit its capabilities.",
-      "eventTime": "2026-04-10T13:29:57+00:00",
-      "include": true,
-      "matchedTickers": [],
-      "matchedSectors": [
-        "Financials",
-        "Semiconductors",
-        "Technology"
-      ],
-      "userRelevance": 5.5
-    },
-    {
-      "headline": "SEC Announces Enforcement Results for Fiscal Year 2025",
-      "whyItMatters": "Regulatory/policy signal that could matter beyond one headline, especially for Financials, Industrials, Technology.",
-      "affectedSectors": [
-        "Financials",
-        "Industrials",
-        "Technology"
-      ],
-      "affectedNames": [],
-      "affectedEtfs": [
-        "XLF",
-        "XLI",
-        "XLK"
-      ],
-      "scope": "sector",
-      "confidence": 0.68,
-      "confidenceLabel": "medium",
-      "direction": "negative",
-      "score": 12.0,
-      "highPriority": true,
-      "themes": [
-        "regulation"
-      ],
-      "category": "regulation",
-      "source": "Press Releases",
-      "url": "https://www.sec.gov/newsroom/press-releases/2026-34",
-      "summary": "The Securities and Exchange Commission today announced enforcement results for the fiscal year that ended on September 30, 2025.Central to an effective enforcement program is determining which cases to bring and responsibly stewarding Commission\u2026",
-      "eventTime": "2026-04-07T19:48:30+00:00",
-      "include": true,
-      "matchedTickers": [],
-      "matchedSectors": [
-        "Financials",
-        "Technology"
-      ],
-      "userRelevance": 4.0
-    },
-    {
-      "headline": "Minutes of the Federal Open Market Committee, March 17\u201318, 2026",
-      "whyItMatters": "Broad-market potential because it can shift expectations around rates, growth, inflation, or policy.",
-      "affectedSectors": [
-        "Financials",
-        "Rate-sensitive"
-      ],
-      "affectedNames": [],
-      "affectedEtfs": [
-        "IWM",
-        "QQQ",
-        "SPY",
-        "TLT",
-        "XLF"
-      ],
-      "scope": "broad",
-      "confidence": 0.68,
-      "confidenceLabel": "medium",
-      "direction": "unclear",
-      "score": 16.25,
-      "highPriority": true,
-      "themes": [
-        "rates"
-      ],
-      "category": "rates",
-      "source": "FRB: Press Release - All Releases",
-      "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260408a.htm",
-      "summary": "Minutes of the Federal Open Market Committee, March 17\u201318, 2026",
-      "eventTime": "2026-04-08T18:00:00+00:00",
-      "include": true,
-      "matchedTickers": [],
-      "matchedSectors": [
-        "Financials"
-      ],
-      "userRelevance": 2.5
-    },
-    {
-      "headline": "Consumer Price Index News Release - 2026 M03 Results - Bureau of Labor Statistics (.gov)",
-      "whyItMatters": "Broad-market potential because it can shift expectations around rates, growth, inflation, or policy.",
-      "affectedSectors": [
-        "Broad market",
-        "Consumer",
-        "Financials"
-      ],
-      "affectedNames": [],
-      "affectedEtfs": [
-        "QQQ",
-        "SPY",
-        "TLT",
-        "XLF",
-        "XLY"
-      ],
-      "scope": "broad",
-      "confidence": 0.62,
-      "confidenceLabel": "low",
-      "direction": "unclear",
-      "score": 16.0,
-      "highPriority": true,
-      "themes": [
-        "inflation"
-      ],
-      "category": "inflation",
-      "source": "Bureau of Labor Statistics (.gov)",
-      "url": "https://news.google.com/rss/articles/CBMiakFVX3lxTFBzc2Q4ckMyYlJnWHNtdG5CSVJpR29zdGlScjdLUUFHdGNnNDhjR3FZdHd0ZXRGbGZkcmVsRHpzX05nMzZHUklmbzh0NUVOSjd6dTVGRXl5UllyQkpFYjZ5cGRiWno0ZGxXblE?oc=5",
-      "summary": "Consumer Price Index News Release - 2026 M03 Results Bureau of Labor Statistics (.gov)",
-      "eventTime": "2026-04-10T12:46:56+00:00",
-      "include": true,
-      "matchedTickers": [],
-      "matchedSectors": [
-        "Financials"
-      ],
-      "userRelevance": 2.5
-    },
-    {
-      "headline": "Consumer prices rose 3.3% in March, as energy prices spiked due to Iran conflict",
-      "whyItMatters": "Broad-market potential because it can shift expectations around rates, growth, inflation, or policy.",
-      "affectedSectors": [
-        "Broad market",
-        "Consumer",
-        "Energy",
-        "Financials"
-      ],
-      "affectedNames": [],
-      "affectedEtfs": [
-        "QQQ",
-        "SPY",
-        "TLT",
-        "USO",
-        "XLE",
-        "XLF",
-        "XLY"
-      ],
-      "scope": "broad",
-      "confidence": 0.68,
-      "confidenceLabel": "medium",
-      "direction": "positive",
-      "score": 15.25,
-      "highPriority": true,
-      "themes": [
-        "inflation",
-        "energy"
-      ],
-      "category": "inflation",
-      "source": "US Top News and Analysis",
-      "url": "https://www.cnbc.com/2026/04/10/cpi-inflation-report-march-2026.html",
-      "summary": "The consumer price index was expected to show a 3.3% year-over-year gain in March, according to the Dow Jones consensus.",
-      "eventTime": "2026-04-10T13:37:13+00:00",
-      "include": true,
-      "matchedTickers": [],
-      "matchedSectors": [
-        "Financials"
-      ],
-      "userRelevance": 2.5
-    },
-    {
-      "headline": "Kevin Warsh Fed chair confirmation plan hits snag as nomination hearing is delayed",
-      "whyItMatters": "Broad-market potential because it can shift expectations around rates, growth, inflation, or policy.",
-      "affectedSectors": [
-        "Financials",
-        "Rate-sensitive"
-      ],
-      "affectedNames": [],
-      "affectedEtfs": [
-        "IWM",
-        "QQQ",
-        "SPY",
-        "TLT",
-        "XLF"
-      ],
-      "scope": "broad",
-      "confidence": 0.62,
-      "confidenceLabel": "low",
-      "direction": "negative",
-      "score": 14.0,
-      "highPriority": true,
-      "themes": [
-        "rates"
-      ],
-      "category": "rates",
-      "source": "US Top News and Analysis",
-      "url": "https://www.cnbc.com/2026/04/10/warsh-fed-nomination-hearing-delayed.html",
-      "summary": "President Trump's nomination of Kevin Warsh as Federal Reserve chair already faced a hurdle by Sen. Thom Tillis over a probe of current Chair Jerome Powell.",
-      "eventTime": "2026-04-10T11:59:47+00:00",
-      "include": true,
-      "matchedTickers": [],
-      "matchedSectors": [
-        "Financials"
-      ],
-      "userRelevance": 2.5
-    }
-  ],
-  "matchedItemCount": 6
+  "watchFlags": 0,
+  "priceError": null,
+  "matchedItems": [],
+  "matchedItemCount": 0
 }

@@ -11,7 +11,7 @@ Keep this small. It is the always-loaded operating spine.
 
 ## Startup core
 
-Always load only:
+Load only the startup core from `AGENTS.md`:
 - `SOUL.md`
 - `USER.md`
 - `PROTOCOL_SPINE.md`
@@ -40,15 +40,12 @@ Do not load the full task board, old daily notes, branch state, or deep playbook
 
 - Triage each meaningful message into task, event, or memory updates.
 - Route time-bound asks into schedule/events.
-- Top of the hour: memory/task cleanup first, then GitHub sync if there are meaningful changes.
-- Keep the local mission-control site up while hazoc is actively running.
 - Mirror important Discord/Telegram items back into main state.
-- Use `grounded-evolver` for workflow improvements.
-- Use `youtube-watcher` + `video-frames` for video links.
 - When main finishes a direct task, send one brief best-effort ping via `scripts/main_task_closeout.py`.
+- Deeper operational rhythms live in `mission-control/data/protocol.json`.
 
 ## Subagent default
 
 - One-shot helpers are task-local and packet-first by default.
-- Prefer `minimal`; use `targeted` for selected excerpts; `extended` only with an explicit reason.
+- Prefer `minimal`; use `targeted` only for selected excerpts and `extended` only with an explicit reason.
 - Persistent actors use exact ids/local bundles; do not search the workspace for identity.

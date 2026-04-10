@@ -14,3 +14,4 @@
 - Token efficiency must not make hazoc dumber; use staged recall instead of oversized always-loaded prompts.
 - When a meaningful failure/problem happens, leave a durable learning trail.
 - Prefer helpers/subagents to be task-local rather than broad-context by default.
+- If haolun says "wrap up," finish the current task cleanly, write back the result/handoff, and free context before starting the next task.
