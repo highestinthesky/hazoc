@@ -20,6 +20,14 @@
           "label": "current configured digest channel"
         }
       ]
+    },
+    {
+      "userId": "ning",
+      "displayName": "Ning",
+      "enabled": true,
+      "timezone": "America/Los_Angeles",
+      "watchlistEnabled": true,
+      "delivery": []
     }
   ]
 }
