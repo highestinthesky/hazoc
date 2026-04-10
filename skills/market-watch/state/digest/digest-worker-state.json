@@ -1,63 +1,63 @@
 {
-  "lastCollectAt": "2026-04-10T00:04:55+00:00",
+  "lastCollectAt": "2026-04-10T14:00:02+00:00",
   "lastCollectSummary": {
-    "newObservations": 34,
-    "digestEligible": 15,
-    "highPriority": 9,
+    "newObservations": 28,
+    "digestEligible": 7,
+    "highPriority": 5,
     "sourcesChecked": 6,
     "sourceSummaries": [
       {
         "sourceId": "fed-press-all",
         "label": "Federal Reserve press releases",
-        "status": 200,
-        "fetchedAt": "2026-04-10T00:04:55+00:00",
-        "fetchedItems": 20,
-        "acceptedItems": 3,
+        "status": 304,
+        "fetchedAt": "2026-04-10T14:00:03+00:00",
+        "fetchedItems": 0,
+        "acceptedItems": 0,
         "error": null
       },
       {
         "sourceId": "sec-press-releases",
         "label": "SEC press releases",
         "status": 200,
-        "fetchedAt": "2026-04-10T00:04:55+00:00",
+        "fetchedAt": "2026-04-10T14:00:03+00:00",
         "fetchedItems": 25,
-        "acceptedItems": 2,
+        "acceptedItems": 0,
         "error": null
       },
       {
         "sourceId": "bls-macro-google-news",
         "label": "Google News: BLS macro releases",
         "status": 200,
-        "fetchedAt": "2026-04-10T00:04:56+00:00",
+        "fetchedAt": "2026-04-10T14:00:03+00:00",
         "fetchedItems": 100,
-        "acceptedItems": 0,
+        "acceptedItems": 1,
         "error": null
       },
       {
         "sourceId": "treasury-press-google-news",
         "label": "Google News: Treasury press releases",
         "status": 200,
-        "fetchedAt": "2026-04-10T00:04:57+00:00",
+        "fetchedAt": "2026-04-10T14:00:04+00:00",
         "fetchedItems": 100,
-        "acceptedItems": 0,
+        "acceptedItems": 1,
         "error": null
       },
       {
         "sourceId": "yahoo-finance-news",
         "label": "Yahoo Finance news",
         "status": 200,
-        "fetchedAt": "2026-04-10T00:04:57+00:00",
-        "fetchedItems": 45,
-        "acceptedItems": 14,
+        "fetchedAt": "2026-04-10T14:00:04+00:00",
+        "fetchedItems": 48,
+        "acceptedItems": 15,
         "error": null
       },
       {
         "sourceId": "cnbc-us-top-news",
         "label": "CNBC US top news and analysis",
         "status": 200,
-        "fetchedAt": "2026-04-10T00:04:57+00:00",
+        "fetchedAt": "2026-04-10T14:00:05+00:00",
         "fetchedItems": 30,
-        "acceptedItems": 15,
+        "acceptedItems": 11,
         "error": null
       }
     ]
@@ -66,14 +66,47 @@
     "close": {
       "windowId": "close",
       "label": "Closing wrap-up",
-      "generatedAt": "2026-04-10T00:05:07+00:00",
-      "totalItems": 8,
+      "generatedAt": "2026-04-10T03:03:57+00:00",
+      "totalItems": 0,
       "pathMd": "skills/market-watch/state/digest/digests/2026-04-10/close.md",
       "pathJson": "skills/market-watch/state/digest/digests/2026-04-10/close.json"
+    },
+    "morning": {
+      "windowId": "morning",
+      "label": "Morning setup",
+      "generatedAt": "2026-04-10T14:00:05+00:00",
+      "totalItems": 10,
+      "pathMd": "skills/market-watch/state/digest/digests/2026-04-10/morning.md",
+      "pathJson": "skills/market-watch/state/digest/digests/2026-04-10/morning.json"
     }
   },
   "installedCron": true,
-  "lastRunAt": "2026-04-10T00:05:07+00:00",
-  "lastRunMode": "install-crontab",
-  "observationCount": 34
+  "lastRunAt": "2026-04-10T14:00:05+00:00",
+  "lastRunMode": "digest:morning",
+  "observationCount": 62,
+  "lastUserDigests": {
+    "close": {
+      "haolun": {
+        "windowId": "close",
+        "userId": "haolun",
+        "generatedAt": "2026-04-10T03:03:57+00:00",
+        "matchedItemCount": 0,
+        "pathMd": "skills/market-watch/state/digest/digests/2026-04-10/close--user--haolun.md",
+        "pathJson": "skills/market-watch/state/digest/digests/2026-04-10/close--user--haolun.json",
+        "globalDigestPathMd": "skills/market-watch/state/digest/digests/2026-04-10/close.md"
+      }
+    },
+    "morning": {
+      "haolun": {
+        "windowId": "morning",
+        "userId": "haolun",
+        "generatedAt": "2026-04-10T14:00:05+00:00",
+        "matchedItemCount": 6,
+        "pathMd": "skills/market-watch/state/digest/digests/2026-04-10/morning--user--haolun.md",
+        "pathJson": "skills/market-watch/state/digest/digests/2026-04-10/morning--user--haolun.json",
+        "globalDigestPathMd": "skills/market-watch/state/digest/digests/2026-04-10/morning.md"
+      }
+    }
+  },
+  "lastFanoutAt": "2026-04-10T14:00:05+00:00"
 }

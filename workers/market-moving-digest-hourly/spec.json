@@ -11,11 +11,14 @@
   "inputs": {
     "sourcesConfig": "skills/market-watch/config/digest_sources.json",
     "settingsConfig": "skills/market-watch/config/digest_settings.json",
+    "usersConfig": "skills/market-watch/config/digest_users.json",
+    "watchlist": "skills/market-watch/state/watchlist.json",
     "observations": "skills/market-watch/state/digest/observations.jsonl",
     "lastSeen": "skills/market-watch/state/digest/last_seen.json",
     "sourceHealth": "skills/market-watch/state/digest/source-health.json",
     "workerState": "skills/market-watch/state/digest/digest-worker-state.json",
-    "digestsDir": "skills/market-watch/state/digest/digests"
+    "digestsDir": "skills/market-watch/state/digest/digests",
+    "userLatestDir": "skills/market-watch/state/digest/users"
   },
   "commands": {
     "scheduledRun": "python3 skills/market-watch/scripts/market_digest.py scheduled-run",

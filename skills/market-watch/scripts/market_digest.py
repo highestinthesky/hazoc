@@ -46,6 +46,9 @@ LATEST_MD_PATH = STATE_DIR / "latest.md"
 LATEST_JSON_PATH = STATE_DIR / "latest.json"
 SOURCES_PATH = CONFIG_DIR / "digest_sources.json"
 SETTINGS_PATH = CONFIG_DIR / "digest_settings.json"
+DIGEST_USERS_PATH = CONFIG_DIR / "digest_users.json"
+WATCHLIST_PATH = SKILL_ROOT / "state" / "watchlist.json"
+USER_LATEST_DIR = STATE_DIR / "users"
 WORKER_SPEC_PATH = WORKSPACE_ROOT / "workers" / "market-moving-digest-hourly" / "spec.json"
 MANAGED_WORKER_STATE_PATH = WORKSPACE_ROOT / "workers" / "market-moving-digest-hourly" / "state.json"
 CRON_LOG_PATH = STATE_DIR / "cron.log"
@@ -264,6 +267,16 @@ THEME_RULES = [
     },
 ]
 
+USER_IMPORTANCE_WEIGHTS = {
+    "low": 0.8,
+    "normal": 1.0,
+    "high": 1.2,
+    "core": 1.4,
+}
+
+NAME_RULES_BY_TICKER = {rule["ticker"]: rule for rule in NAME_RULES}
+TICKER_SECTOR_HINTS = {rule["ticker"]: rule["sector"] for rule in NAME_RULES}
+
 
 @dataclass
 class FeedEntry:
@@ -368,6 +381,328 @@ def load_settings() -> dict[str, Any]:
     if not payload:
         raise SystemExit(f"Missing settings file: {SETTINGS_PATH}")
     return payload
+
+
+def load_digest_users() -> list[dict[str, Any]]:
+    payload = read_json(DIGEST_USERS_PATH, {"users": []})
+    return [item for item in payload.get("users", []) if item.get("enabled", True)]
+
+
+def load_watchlist_items() -> list[dict[str, Any]]:
+    payload = read_json(WATCHLIST_PATH, [])
+    if not isinstance(payload, list):
+        return []
+    items: list[dict[str, Any]] = []
+    for item in payload:
+        if not isinstance(item, dict):
+            continue
+        ticker = str(item.get("ticker") or "").strip().upper()
+        user_id = str(item.get("userId") or "").strip()
+        if not ticker or not user_id:
+            continue
+        normalized = dict(item)
+        normalized["ticker"] = ticker
+        normalized["userId"] = user_id
+        normalized.setdefault("aliases", [])
+        normalized.setdefault("importance", "normal")
+        normalized.setdefault("note", "")
+        items.append(normalized)
+    return items
+
+
+def get_watchlist_prices(tickers: list[str]) -> tuple[dict[str, float], str | None]:
+    unique = sorted({ticker.strip().upper() for ticker in tickers if ticker and ticker.strip()})
+    if not unique:
+        return {}, None
+    script_dir = Path(__file__).resolve().parent
+    if str(script_dir) not in sys.path:
+        sys.path.insert(0, str(script_dir))
+    try:
+        import watchlist as watchlist_module  # type: ignore
+
+        return watchlist_module.get_prices(unique), None
+    except SystemExit as exc:
+        return {}, str(exc)
+    except Exception as exc:  # pragma: no cover - defensive fallback
+        return {}, str(exc)
+
+
+def watch_item_patterns(item: dict[str, Any]) -> list[str]:
+    ticker = str(item.get("ticker") or "").upper()
+    patterns: list[str] = []
+    rule = NAME_RULES_BY_TICKER.get(ticker)
+    if rule:
+        patterns.extend(rule.get("patterns", []))
+    if ticker:
+        patterns.append(rf"\b{re.escape(ticker)}\b")
+    for alias in item.get("aliases", []) or []:
+        alias = str(alias).strip()
+        if alias:
+            patterns.append(rf"\b{re.escape(alias)}\b")
+    return patterns
+
+
+def classify_digest_item_for_user(item: dict[str, Any], watch_items: list[dict[str, Any]]) -> dict[str, Any]:
+    text = "\n".join([str(item.get("headline") or ""), str(item.get("summary") or "")])
+    affected_names = {str(value) for value in item.get("affectedNames", [])}
+    affected_etfs = {str(value) for value in item.get("affectedEtfs", [])}
+    affected_sectors = {str(value) for value in item.get("affectedSectors", [])}
+    matched_tickers: list[str] = []
+    matched_sectors: list[str] = []
+    relevance = 0.0
+
+    for watch_item in watch_items:
+        ticker = str(watch_item.get("ticker") or "").upper()
+        if not ticker:
+            continue
+        weight = float(USER_IMPORTANCE_WEIGHTS.get(str(watch_item.get("importance") or "normal"), 1.0))
+        direct_match = ticker in affected_names or ticker in affected_etfs
+        if not direct_match:
+            for pattern in watch_item_patterns(watch_item):
+                try:
+                    if re.search(pattern, text, flags=re.IGNORECASE):
+                        direct_match = True
+                        break
+                except re.error:
+                    continue
+        if direct_match:
+            matched_tickers.append(ticker)
+            relevance += 5.0 * weight
+
+        sector = TICKER_SECTOR_HINTS.get(ticker)
+        if sector and sector in affected_sectors:
+            matched_sectors.append(sector)
+            relevance += 1.5 * weight
+
+    matched_tickers = sorted(set(matched_tickers))
+    matched_sectors = sorted(set(matched_sectors))
+    if item.get("highPriority") and (matched_tickers or matched_sectors):
+        relevance += 1.0
+
+    include = bool(matched_tickers) or (
+        bool(matched_sectors)
+        and (bool(item.get("highPriority")) or float(item.get("score", 0.0)) >= 10.5)
+    )
+    return {
+        "include": include,
+        "matchedTickers": matched_tickers,
+        "matchedSectors": matched_sectors,
+        "userRelevance": round(relevance, 2),
+    }
+
+
+def build_watchlist_status(items: list[dict[str, Any]], prices: dict[str, float], checked_at: str | None) -> list[dict[str, Any]]:
+    out: list[dict[str, Any]] = []
+    for item in sorted(items, key=lambda row: row.get("ticker") or ""):
+        ticker = str(item.get("ticker") or "").upper()
+        price = prices.get(ticker)
+        flags: list[str] = []
+        target = item.get("target")
+        stop = item.get("stop")
+        if price is None:
+            flags.append("price_unavailable")
+        else:
+            if target is not None and price >= float(target):
+                flags.append("target_hit")
+            if stop is not None and price <= float(stop):
+                flags.append("stop_hit")
+        out.append(
+            {
+                "ticker": ticker,
+                "price": price,
+                "target": target,
+                "stop": stop,
+                "note": item.get("note", ""),
+                "importance": item.get("importance", "normal"),
+                "flags": flags,
+                "checkedAt": checked_at,
+            }
+        )
+    return out
+
+
+def build_user_digest_payload(
+    global_payload: dict[str, Any],
+    global_result: dict[str, Any],
+    user: dict[str, Any],
+    watch_items: list[dict[str, Any]],
+    prices: dict[str, float],
+    price_error: str | None,
+    generated_at: str,
+) -> dict[str, Any] | None:
+    user_id = str(user.get("userId") or "").strip()
+    if not user_id:
+        return None
+    if not watch_items and not user.get("watchlistEnabled", True):
+        return None
+
+    watchlist_status = build_watchlist_status(watch_items, prices, generated_at)
+    matched_items: list[dict[str, Any]] = []
+    for item in global_payload.get("items", []):
+        if not isinstance(item, dict):
+            continue
+        match = classify_digest_item_for_user(item, watch_items)
+        if not match["include"]:
+            continue
+        merged = dict(item)
+        merged.update(match)
+        matched_items.append(merged)
+    matched_items.sort(key=lambda row: (float(row.get("userRelevance", 0.0)), float(row.get("score", 0.0))), reverse=True)
+    matched_items = matched_items[:6]
+
+    return {
+        "kind": "user-watchlist-digest",
+        "userId": user_id,
+        "displayName": user.get("displayName") or user_id,
+        "generatedAt": generated_at,
+        "timezone": user.get("timezone") or global_payload.get("timezone") or "America/New_York",
+        "windowId": global_payload.get("windowId"),
+        "label": global_payload.get("label"),
+        "globalGeneratedAt": global_payload.get("generatedAt"),
+        "globalWindowStart": global_payload.get("windowStart"),
+        "globalWindowEnd": global_payload.get("windowEnd"),
+        "globalDigestPathMd": global_result.get("pathMd"),
+        "globalDigestPathJson": global_result.get("pathJson"),
+        "deliveryOrder": ["global", "user"],
+        "watchlist": [item.get("ticker") for item in watch_items],
+        "watchlistStatus": watchlist_status,
+        "watchFlags": sum(1 for item in watchlist_status if item.get("flags")),
+        "priceError": price_error,
+        "matchedItems": matched_items,
+        "matchedItemCount": len(matched_items),
+    }
+
+
+def user_digest_output_paths(payload: dict[str, Any]) -> tuple[Path, Path]:
+    generated = parse_datetime_maybe(payload.get("generatedAt")) or utc_now()
+    day_dir = DIGESTS_DIR / generated.date().isoformat()
+    day_dir.mkdir(parents=True, exist_ok=True)
+    stem = f"{payload['windowId']}--user--{payload['userId']}"
+    return day_dir / f"{stem}.md", day_dir / f"{stem}.json"
+
+
+def render_user_digest_markdown(payload: dict[str, Any]) -> str:
+    lines: list[str] = []
+    lines.append(f"# Market digest — {payload['displayName']} watchlist — {payload['label']}")
+    lines.append("")
+    lines.append(f"- Generated: {payload['generatedAt']}")
+    lines.append(f"- Follows global digest: {payload.get('globalDigestPathMd')}")
+    lines.append(f"- Global window: {payload.get('globalWindowStart')} → {payload.get('globalWindowEnd')}")
+    lines.append(f"- Watched tickers: {', '.join(payload.get('watchlist', [])) or 'none'}")
+    if payload.get("priceError"):
+        lines.append(f"- Price status: unavailable ({payload['priceError']})")
+    lines.append("")
+
+    lines.append("## Watchlist status")
+    if not payload.get("watchlistStatus"):
+        lines.append("- No watchlist items configured.")
+    else:
+        for item in payload.get("watchlistStatus", []):
+            flags = ", ".join(item.get("flags", [])) if item.get("flags") else "none"
+            lines.append(
+                f"- {item['ticker']}: price={item.get('price')} | importance={item.get('importance')} | flags={flags}"
+            )
+    lines.append("")
+
+    lines.append("## Relevant items")
+    matched_items = payload.get("matchedItems", [])
+    if not matched_items:
+        lines.append("- No current global-digest items crossed the watchlist relevance threshold.")
+    else:
+        for idx, item in enumerate(matched_items, start=1):
+            lines.append(f"### {idx}. {item['headline']}")
+            match_bits: list[str] = []
+            if item.get("matchedTickers"):
+                match_bits.append(f"tickers={', '.join(item['matchedTickers'])}")
+            if item.get("matchedSectors"):
+                match_bits.append(f"sectors={', '.join(item['matchedSectors'])}")
+            lines.append(f"- Match basis: {' | '.join(match_bits) if match_bits else 'general overlap'}")
+            lines.append(f"- Why it matters: {item['whyItMatters']}")
+            lines.append(
+                f"- Scope: {item['scope']} | Confidence: {item['confidenceLabel']} ({item['confidence']}) | Direction: {item['direction']} | Score: {item['score']} | User relevance: {item['userRelevance']}"
+            )
+            lines.append(f"- Source: {item['source']} — {item['url']}")
+            if item.get("summary"):
+                lines.append(f"- Summary: {item['summary']}")
+            lines.append("")
+    return "\n".join(lines).strip() + "\n"
+
+
+def write_user_digest(payload: dict[str, Any], worker_state: dict[str, Any]) -> dict[str, Any]:
+    md_path, json_path = user_digest_output_paths(payload)
+    markdown = render_user_digest_markdown(payload)
+    ensure_parent(md_path)
+    md_path.write_text(markdown, encoding="utf-8")
+    write_json(json_path, payload)
+
+    latest_dir = USER_LATEST_DIR / str(payload["userId"])
+    latest_dir.mkdir(parents=True, exist_ok=True)
+    (latest_dir / "latest.md").write_text(markdown, encoding="utf-8")
+    write_json(latest_dir / "latest.json", payload)
+
+    worker_state.setdefault("lastUserDigests", {}).setdefault(payload["windowId"], {})[payload["userId"]] = {
+        "windowId": payload["windowId"],
+        "userId": payload["userId"],
+        "generatedAt": payload["generatedAt"],
+        "matchedItemCount": payload.get("matchedItemCount", 0),
+        "pathMd": str(md_path.relative_to(WORKSPACE_ROOT)),
+        "pathJson": str(json_path.relative_to(WORKSPACE_ROOT)),
+        "globalDigestPathMd": payload.get("globalDigestPathMd"),
+    }
+    return {
+        "userId": payload["userId"],
+        "generatedAt": payload["generatedAt"],
+        "matchedItems": payload.get("matchedItemCount", 0),
+        "pathMd": str(md_path.relative_to(WORKSPACE_ROOT)),
+        "pathJson": str(json_path.relative_to(WORKSPACE_ROOT)),
+    }
+
+
+def generate_user_digests_for_global(global_result: dict[str, Any]) -> list[dict[str, Any]]:
+    if not global_result.get("generated"):
+        return []
+    path_json = global_result.get("pathJson")
+    if not path_json:
+        return []
+    global_payload = read_json(WORKSPACE_ROOT / path_json, None)
+    if not isinstance(global_payload, dict):
+        return []
+
+    users = [user for user in load_digest_users() if user.get("watchlistEnabled", True)]
+    if not users:
+        return []
+    watch_items = load_watchlist_items()
+    watch_by_user: dict[str, list[dict[str, Any]]] = {}
+    for item in watch_items:
+        watch_by_user.setdefault(str(item.get("userId") or ""), []).append(item)
+    union_tickers = [item["ticker"] for item in watch_items if item.get("userId") in {user.get("userId") for user in users}]
+    prices, price_error = get_watchlist_prices(union_tickers)
+    generated_at = iso(utc_now()) or ""
+
+    worker_state = load_worker_state()
+    results: list[dict[str, Any]] = []
+    for user in users:
+        user_id = str(user.get("userId") or "").strip()
+        if not user_id:
+            continue
+        payload = build_user_digest_payload(
+            global_payload,
+            global_result,
+            user,
+            watch_by_user.get(user_id, []),
+            prices,
+            price_error,
+            generated_at,
+        )
+        if payload is None:
+            continue
+        results.append(write_user_digest(payload, worker_state))
+
+    if results:
+        worker_state["lastFanoutAt"] = generated_at
+        write_json(WORKER_STATE_PATH, worker_state)
+        sync_managed_worker_state(worker_state)
+    return results
 
 
 
@@ -1104,6 +1439,8 @@ def build_digest_payload(window: dict[str, Any], settings: dict[str, Any], worke
                 "confidenceLabel": confidence_label(float(row.get("confidence", 0.0))),
                 "direction": row.get("direction", "unclear"),
                 "score": row.get("score"),
+                "highPriority": row.get("highPriority", False),
+                "themes": row.get("themes", []),
                 "category": row.get("category"),
                 "source": row.get("source"),
                 "url": row.get("url"),
@@ -1243,11 +1580,18 @@ def command_collect(args: argparse.Namespace) -> int:
 
 def command_digest(args: argparse.Namespace) -> int:
     result = generate_digest(args.window_id, force=args.force)
+    user_results: list[dict[str, Any]] = []
+    if result.get("generated"):
+        user_results = generate_user_digests_for_global(result)
+        result["userDigestsGenerated"] = user_results
     if args.json:
         print(json.dumps(result, indent=2))
     else:
         if result.get("generated"):
             print(f"Wrote digest {args.window_id}: {result['pathMd']}")
+            if user_results:
+                for item in user_results:
+                    print(f"user digest {item['userId']} -> {item['pathMd']}")
         else:
             print(f"Skipped digest {args.window_id}: {result['reason']}")
     return 0
@@ -1277,6 +1621,12 @@ def command_status(args: argparse.Namespace) -> int:
             print(f"- {key}: {item.get('generatedAt')} ({item.get('totalItems')} items) -> {item.get('pathMd')}")
     else:
         print("Digests: none yet")
+    last_user_digests = worker_state.get("lastUserDigests", {}) or {}
+    if last_user_digests:
+        print("User digests:")
+        for window_id in sorted(last_user_digests):
+            for user_id, item in sorted((last_user_digests.get(window_id) or {}).items()):
+                print(f"- {window_id}/{user_id}: {item.get('generatedAt')} ({item.get('matchedItemCount')} matches) -> {item.get('pathMd')}")
     print("Sources:")
     for source_id, info in sorted(source_health.items()):
         print(f"- {source_id}: status={info.get('status')} fetchedAt={info.get('fetchedAt')} items={info.get('fetchedItems')} error={info.get('error')}")
@@ -1388,14 +1738,17 @@ def command_scheduled_run(args: argparse.Namespace) -> int:
     worker_state = load_worker_state()
     due = due_digest_windows(settings, worker_state, now_utc)
     generated: list[dict[str, Any]] = []
+    user_generated: list[dict[str, Any]] = []
     for window in due:
         result = generate_digest(window["id"], force=False)
         if result.get("generated"):
             generated.append(result)
+            user_generated.extend(generate_user_digests_for_global(result))
     payload = {
         "ranAt": iso(now_utc),
         "collect": collect_summary,
         "digestsGenerated": generated,
+        "userDigestsGenerated": user_generated,
         "dueWindows": [window["id"] for window in due],
     }
     if args.json:
@@ -1405,6 +1758,8 @@ def command_scheduled_run(args: argparse.Namespace) -> int:
         if generated:
             for item in generated:
                 print(f"digest {item['windowId']} -> {item['pathMd']}")
+            for item in user_generated:
+                print(f"user digest {item['userId']} -> {item['pathMd']}")
         else:
             print("no digest emitted")
     return 0

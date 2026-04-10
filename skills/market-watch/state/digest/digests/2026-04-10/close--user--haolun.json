@@ -1,0 +1,78 @@
+{
+  "kind": "user-watchlist-digest",
+  "userId": "haolun",
+  "displayName": "haolun",
+  "generatedAt": "2026-04-10T03:03:57+00:00",
+  "timezone": "America/Los_Angeles",
+  "windowId": "close",
+  "label": "Closing wrap-up",
+  "globalGeneratedAt": "2026-04-10T03:03:57+00:00",
+  "globalWindowStart": "2026-04-09T23:03:57+00:00",
+  "globalWindowEnd": "2026-04-10T03:03:57+00:00",
+  "globalDigestPathMd": "skills/market-watch/state/digest/digests/2026-04-10/close.md",
+  "globalDigestPathJson": "skills/market-watch/state/digest/digests/2026-04-10/close.json",
+  "deliveryOrder": [
+    "global",
+    "user"
+  ],
+  "watchlist": [
+    "AAPL",
+    "BAC",
+    "HD",
+    "NVDA"
+  ],
+  "watchlistStatus": [
+    {
+      "ticker": "AAPL",
+      "price": null,
+      "target": null,
+      "stop": null,
+      "note": "",
+      "importance": "normal",
+      "flags": [
+        "price_unavailable"
+      ],
+      "checkedAt": "2026-04-10T03:03:57+00:00"
+    },
+    {
+      "ticker": "BAC",
+      "price": null,
+      "target": null,
+      "stop": null,
+      "note": "",
+      "importance": "normal",
+      "flags": [
+        "price_unavailable"
+      ],
+      "checkedAt": "2026-04-10T03:03:57+00:00"
+    },
+    {
+      "ticker": "HD",
+      "price": null,
+      "target": null,
+      "stop": null,
+      "note": "",
+      "importance": "normal",
+      "flags": [
+        "price_unavailable"
+      ],
+      "checkedAt": "2026-04-10T03:03:57+00:00"
+    },
+    {
+      "ticker": "NVDA",
+      "price": null,
+      "target": null,
+      "stop": null,
+      "note": "",
+      "importance": "normal",
+      "flags": [
+        "price_unavailable"
+      ],
+      "checkedAt": "2026-04-10T03:03:57+00:00"
+    }
+  ],
+  "watchFlags": 4,
+  "priceError": "Missing dependency for price checks: yfinance. Install with: pip install yfinance",
+  "matchedItems": [],
+  "matchedItemCount": 0
+}
