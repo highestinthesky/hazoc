@@ -51,6 +51,7 @@
       "maxItems": 8,
       "lookbackHours": 96,
       "scoreBoost": 0.5,
+      "includePatterns": ["stablecoin", "sanction", "tariff", "auction", "debt", "bank", "capital", "yield", "liquidity", "funding", "tax", "digital asset"],
       "tags": ["treasury", "macro", "google-news"]
     },
     {
@@ -64,6 +65,7 @@
       "maxItems": 15,
       "lookbackHours": 48,
       "scoreBoost": 0.0,
+      "excludePatterns": ["/personal-finance/", "\\bheloc\\b", "home equity", "high-yield savings", "\\bapy\\b", "mortgage", "cd rates", "checking account", "savings account", "what to expect"],
       "tags": ["news", "markets"]
     },
     {

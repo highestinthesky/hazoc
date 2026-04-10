@@ -1,0 +1,42 @@
+[
+  {
+    "userId": "haolun",
+    "ticker": "AAPL",
+    "target": null,
+    "stop": null,
+    "note": "",
+    "aliases": [],
+    "importance": "normal",
+    "createdAt": "2026-04-10T00:28:26.392089+00:00"
+  },
+  {
+    "userId": "haolun",
+    "ticker": "BAC",
+    "target": null,
+    "stop": null,
+    "note": "",
+    "aliases": [],
+    "importance": "normal",
+    "createdAt": "2026-04-10T00:28:26.432545+00:00"
+  },
+  {
+    "userId": "haolun",
+    "ticker": "HD",
+    "target": null,
+    "stop": null,
+    "note": "",
+    "aliases": [],
+    "importance": "normal",
+    "createdAt": "2026-04-10T00:28:26.481064+00:00"
+  },
+  {
+    "userId": "haolun",
+    "ticker": "NVDA",
+    "target": null,
+    "stop": null,
+    "note": "",
+    "aliases": [],
+    "importance": "normal",
+    "createdAt": "2026-04-10T00:28:26.520107+00:00"
+  }
+]

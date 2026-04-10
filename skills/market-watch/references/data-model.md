@@ -1,22 +1,46 @@
 # Watchlist data model
 
-Path:
+Paths:
+- `config/digest_users.json`
 - `state/watchlist.json`
 
-Each item:
+Registered user example:
 
 ```json
 {
+  "userId": "haolun",
+  "displayName": "haolun",
+  "enabled": true,
+  "timezone": "America/Los_Angeles",
+  "watchlistEnabled": true,
+  "delivery": [
+    {
+      "kind": "discord",
+      "enabled": true,
+      "to": "channel:1486030559741349888"
+    }
+  ]
+}
+```
+
+Watch item example:
+
+```json
+{
+  "userId": "haolun",
   "ticker": "AAPL",
   "target": 220.0,
   "stop": 180.0,
   "note": "AI basket",
+  "aliases": ["Apple"],
+  "importance": "core",
   "createdAt": "2026-03-25T02:00:00+00:00"
 }
 ```
 
 Design notes:
 - workspace-local, not hidden in `~/.clawdbot`
+- user ownership is explicit per watch item
 - one flat list for easy grep/edit/recovery
 - no secrets stored here
 

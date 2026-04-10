@@ -37,10 +37,10 @@ python3 {baseDir}/scripts/market_snapshot.py BTC-USD ETH-USD --json
 ### 2. Maintain a local watchlist
 
 ```bash
-python3 {baseDir}/scripts/watchlist.py add AAPL --target 220 --note "AI basket"
-python3 {baseDir}/scripts/watchlist.py list
-python3 {baseDir}/scripts/watchlist.py check
-python3 {baseDir}/scripts/watchlist.py remove AAPL
+python3 {baseDir}/scripts/watchlist.py add AAPL --user haolun --target 220 --note "AI basket"
+python3 {baseDir}/scripts/watchlist.py list --user haolun
+python3 {baseDir}/scripts/watchlist.py check --user haolun
+python3 {baseDir}/scripts/watchlist.py remove AAPL --user haolun
 ```
 
 ### 3. Run the market-moving digest locally
@@ -81,6 +81,7 @@ Use the local watchlist when the user wants ongoing reference state like:
 - target price
 - stop level
 - note / thesis fragment
+- a user-owned watchlist that can later feed personalized digests
 
 State lives under the skill folder, not in a hidden home-directory tree.
 

@@ -657,6 +657,18 @@ def observation_id(source_id: str, title: str, url: str, published_at: datetime 
 
 
 
+def entry_allowed(source: dict[str, Any], entry: FeedEntry) -> bool:
+    haystack = "\n".join([entry.title or "", entry.summary or "", entry.link or "", entry.source_name or ""])
+    include_patterns = source.get("includePatterns", []) or []
+    exclude_patterns = source.get("excludePatterns", []) or []
+    if include_patterns and not any(re.search(pattern, haystack, flags=re.IGNORECASE) for pattern in include_patterns):
+        return False
+    if exclude_patterns and any(re.search(pattern, haystack, flags=re.IGNORECASE) for pattern in exclude_patterns):
+        return False
+    return True
+
+
+
 def build_observation(source: dict[str, Any], entry: FeedEntry, now_utc: datetime) -> dict[str, Any]:
     text = f"{entry.title}\n{entry.summary}"
     normalized = normalize_text(text)
@@ -907,6 +919,8 @@ def collect_observations(args: argparse.Namespace) -> dict[str, Any]:
             continue
         for entry in result.items[: int(source.get("maxItems") or collection_settings.get("maxItemsPerSourceDefault", 12))]:
             if not in_recent_window(entry.published_at, now_utc, int(source.get("lookbackHours", 48))):
+                continue
+            if not entry_allowed(source, entry):
                 continue
             dedupe_key = make_dedupe_key(source["id"], entry.title, entry.link)
             if dedupe_key in seen_keys:

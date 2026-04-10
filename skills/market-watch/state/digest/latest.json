@@ -1,20 +1,20 @@
 {
   "windowId": "close",
   "label": "Closing wrap-up",
-  "generatedAt": "2026-04-10T00:02:56+00:00",
+  "generatedAt": "2026-04-10T00:05:07+00:00",
   "timezone": "America/New_York",
-  "windowStart": "2026-04-09T20:02:56+00:00",
-  "windowEnd": "2026-04-10T00:02:56+00:00",
-  "totalItems": 10,
-  "totalScore": 119.35,
-  "highPriorityCount": 7,
+  "windowStart": "2026-04-09T20:05:07+00:00",
+  "windowEnd": "2026-04-10T00:05:07+00:00",
+  "totalItems": 8,
+  "totalScore": 99.35,
+  "highPriorityCount": 6,
   "topCategories": [
     {
       "category": "energy",
       "count": 3
     },
     {
-      "category": "rates",
+      "category": "banks",
       "count": 2
     },
     {
@@ -22,11 +22,7 @@
       "count": 2
     },
     {
-      "category": "earnings-guidance",
-      "count": 2
-    },
-    {
-      "category": "banks",
+      "category": "rates",
       "count": 1
     }
   ],
@@ -34,8 +30,7 @@
     "Trump says Iran 'better stop now' if it's charging oil tankers fees to go through Strait of Hormuz",
     "Iran attacks on crucial Saudi pipeline and production facilities slash kingdom's oil output",
     "Oil rally loses steam after Israel agrees to negotiate with Lebanon",
-    "Best high-yield savings interest rates today, April 8, 2026 (Earn up to 4% APY)",
-    "New Guidance Unlocks Economic Opportunity for Overlooked Communities - U.S. Department of the Treasury (.gov)"
+    "White House Study: Stablecoin Yield Ban Barely Boosts Bank Lending"
   ],
   "items": [
     {
@@ -155,32 +150,6 @@
       "eventTime": "2026-04-09T20:40:51+00:00"
     },
     {
-      "headline": "Best high-yield savings interest rates today, April 8, 2026 (Earn up to 4% APY)",
-      "whyItMatters": "Broad-market potential because it can shift expectations around rates, growth, inflation, or policy.",
-      "affectedSectors": [
-        "Financials",
-        "Rate-sensitive"
-      ],
-      "affectedNames": [],
-      "affectedEtfs": [
-        "IWM",
-        "QQQ",
-        "SPY",
-        "TLT",
-        "XLF"
-      ],
-      "scope": "broad",
-      "confidence": 0.62,
-      "confidenceLabel": "low",
-      "direction": "unclear",
-      "score": 12.5,
-      "category": "rates",
-      "source": "Yahoo Personal Finance",
-      "url": "https://finance.yahoo.com/personal-finance/banking/article/best-high-yield-savings-interest-rates-today-wednesday-april-8-2026-100000382.html",
-      "summary": "",
-      "eventTime": "2026-04-08T10:00:00+00:00"
-    },
-    {
       "headline": "SEC Announces Enforcement Results for Fiscal Year 2025",
       "whyItMatters": "Regulatory/policy signal that could matter beyond one headline, especially for Financials, Industrials, Technology.",
       "affectedSectors": [
@@ -231,48 +200,26 @@
       "eventTime": "2026-04-08T16:20:00+00:00"
     },
     {
-      "headline": "New Guidance Unlocks Economic Opportunity for Overlooked Communities - U.S. Department of the Treasury (.gov)",
-      "whyItMatters": "Potentially relevant market signal; ranked here because it cleared the local significance threshold.",
+      "headline": "White House Study: Stablecoin Yield Ban Barely Boosts Bank Lending",
+      "whyItMatters": "Most relevant to Financials because it may change the near-term outlook for that slice of the market.",
       "affectedSectors": [
-        "Single company / peers"
+        "Financials"
       ],
       "affectedNames": [],
       "affectedEtfs": [
-        "QQQ",
-        "SPY"
+        "KBE",
+        "XLF"
       ],
-      "scope": "single-name",
+      "scope": "sector",
       "confidence": 0.62,
       "confidenceLabel": "low",
       "direction": "unclear",
-      "score": 8.5,
-      "category": "earnings-guidance",
-      "source": "U.S. Department of the Treasury (.gov)",
-      "url": "https://news.google.com/rss/articles/CBMiYkFVX3lxTFBMajVld1Awa0RXczc0NG5RQmdJZktQU09jSFE5V1pHc01hUFFsVy1HSFNtZmFvbUtabzVWZ3cwRHEtS3FTc3JUOTk1bGczdEdxOU5ER2JHeUp3cllVcnV4cVBR?oc=5",
-      "summary": "New Guidance Unlocks Economic Opportunity for Overlooked Communities U.S. Department of the Treasury (.gov)",
-      "eventTime": "2026-04-08T17:59:11+00:00"
-    },
-    {
-      "headline": "HELOC and home equity loan rates today, April 8, 2026: See the home equity forecast",
-      "whyItMatters": "Potentially relevant market signal; ranked here because it cleared the local significance threshold.",
-      "affectedSectors": [
-        "Single company / peers"
-      ],
-      "affectedNames": [],
-      "affectedEtfs": [
-        "QQQ",
-        "SPY"
-      ],
-      "scope": "single-name",
-      "confidence": 0.62,
-      "confidenceLabel": "low",
-      "direction": "unclear",
-      "score": 8.0,
-      "category": "earnings-guidance",
-      "source": "Yahoo Personal Finance",
-      "url": "https://finance.yahoo.com/personal-finance/mortgages/article/heloc-home-equity-loan-interest-rates-today-wednesday-april-8-2025-100000761.html",
+      "score": 9.0,
+      "category": "banks",
+      "source": "CryptoProwl",
+      "url": "https://finance.yahoo.com/markets/crypto/articles/white-house-study-stablecoin-yield-164700797.html",
       "summary": "",
-      "eventTime": "2026-04-08T10:00:00+00:00"
+      "eventTime": "2026-04-08T16:47:00+00:00"
     }
   ]
 }

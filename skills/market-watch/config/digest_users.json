@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "deliveryPolicy": {
+    "order": ["global", "user"],
+    "userDigestFollowsGlobal": true,
+    "notes": "For each user route, send the shared global digest first, then the personalized watchlist digest."
+  },
+  "users": [
+    {
+      "userId": "haolun",
+      "displayName": "haolun",
+      "enabled": true,
+      "timezone": "America/Los_Angeles",
+      "watchlistEnabled": true,
+      "delivery": [
+        {
+          "kind": "discord",
+          "enabled": true,
+          "to": "channel:1486030559741349888",
+          "label": "current configured digest channel"
+        }
+      ]
+    }
+  ]
+}
