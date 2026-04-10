@@ -1,11 +1,11 @@
 {
   "workerId": "market-moving-digest-hourly",
   "status": "healthy",
-  "lastRunAt": "2026-04-10T16:00:04+00:00",
-  "lastCollectAt": "2026-04-10T16:00:04+00:00",
-  "lastDigestAt": "2026-04-10T15:01:39+00:00",
-  "lastDigestWindow": "morning",
-  "observationsStored": 113,
+  "lastRunAt": "2026-04-10T17:00:03+00:00",
+  "lastCollectAt": "2026-04-10T17:00:03+00:00",
+  "lastDigestAt": "2026-04-10T16:20:06+00:00",
+  "lastDigestWindow": "midday",
+  "observationsStored": 126,
   "installedCron": true,
   "lastError": null
 }

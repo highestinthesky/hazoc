@@ -13,3 +13,10 @@ scheduled-run @ 2026-04-10T15:40:05+00:00 | new=10 eligible=5 high=1
 no digest emitted
 scheduled-run @ 2026-04-10T16:00:04+00:00 | new=5 eligible=3 high=0
 no digest emitted
+scheduled-run @ 2026-04-10T16:20:04+00:00 | new=7 eligible=3 high=2
+digest midday -> skills/market-watch/state/digest/digests/2026-04-10/midday.md
+user digest haolun -> skills/market-watch/state/digest/digests/2026-04-10/midday--user--haolun.md
+scheduled-run @ 2026-04-10T16:40:04+00:00 | new=5 eligible=3 high=1
+no digest emitted
+scheduled-run @ 2026-04-10T17:00:03+00:00 | new=1 eligible=0 high=0
+no digest emitted
