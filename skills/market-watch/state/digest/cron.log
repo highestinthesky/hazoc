@@ -7,3 +7,9 @@ scheduled-run @ 2026-04-10T14:40:04+00:00 | new=9 eligible=5 high=2
 no digest emitted
 scheduled-run @ 2026-04-10T15:00:05+00:00 | new=9 eligible=5 high=2
 no digest emitted
+scheduled-run @ 2026-04-10T15:20:04+00:00 | new=6 eligible=1 high=0
+no digest emitted
+scheduled-run @ 2026-04-10T15:40:05+00:00 | new=10 eligible=5 high=1
+no digest emitted
+scheduled-run @ 2026-04-10T16:00:04+00:00 | new=5 eligible=3 high=0
+no digest emitted

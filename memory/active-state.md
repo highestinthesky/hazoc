@@ -2,15 +2,15 @@
 
 ## Current
 
-- Aggressive prompt-surface pruning is done for this mission: `MEMORY.md`, `PROTOCOL_SPINE.md`, and `RECALL_MAP.md` were trimmed, and validation still passes under tighter budgets.
 - Haolun wants one mission per session: an explicit "wrap up" means finish the current mission, write back the result/handoff, and stop before the next mission.
-- Next mission after reset: investigate `task-investigate-webchat-disappearing-messages`, especially the control-UI permissions-warning clue.
-- Market digest v1 is live on user cron, and per-user watchlist fanout exists for `haolun`.
+- Market digest v1 is live on user cron, and the per-user watchlist fanout for `haolun` has now been sanity-checked: broad sector-only false positives were tightened, price enrichment works again through a no-extra-package fallback, and a manual Discord digest send to the configured channel succeeded.
+- `task-investigate-webchat-disappearing-messages` is still pending, especially the control-UI permissions-warning clue, but it is no longer the next fresh-session mission.
 
 ## Next
 
-1. After reset, start the webchat/control-UI investigation from the recurrence notes + permission-warning symptom.
-2. Then return to digest fanout/relevance tuning if wanted.
+1. In the next fresh session, continue `task-market-moving-news-digest` from the new baseline: successful manual Discord send, cleaner personalized matching, and working watchlist prices.
+2. Decide whether to formalize recurring Discord delivery now or keep chat delivery manual/local-only for one more short quality pass.
+3. After that, return to the webchat/control-UI investigation.
 
 ## Caution
 
