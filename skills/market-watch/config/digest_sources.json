@@ -1,0 +1,83 @@
+{
+  "version": 1,
+  "sources": [
+    {
+      "id": "fed-press-all",
+      "label": "Federal Reserve press releases",
+      "enabled": true,
+      "type": "rss",
+      "url": "https://www.federalreserve.gov/feeds/press_all.xml",
+      "sourceTier": 1,
+      "defaultCategory": "macro",
+      "maxItems": 12,
+      "lookbackHours": 96,
+      "scoreBoost": 1.5,
+      "tags": ["fed", "macro", "official"]
+    },
+    {
+      "id": "sec-press-releases",
+      "label": "SEC press releases",
+      "enabled": true,
+      "type": "rss",
+      "url": "https://www.sec.gov/news/pressreleases.rss",
+      "sourceTier": 1,
+      "defaultCategory": "regulation",
+      "maxItems": 12,
+      "lookbackHours": 96,
+      "scoreBoost": 1.0,
+      "tags": ["sec", "regulation", "official"]
+    },
+    {
+      "id": "bls-macro-google-news",
+      "label": "Google News: BLS macro releases",
+      "enabled": true,
+      "type": "rss",
+      "url": "https://news.google.com/rss/search?q=site%3Abls.gov+%28%22Consumer+Price+Index%22+OR+%22Employment+Situation%22+OR+%22Producer+Price+Index%22+OR+%22Employment+Cost+Index%22%29&hl=en-US&gl=US&ceid=US%3Aen",
+      "sourceTier": 2,
+      "defaultCategory": "macro",
+      "maxItems": 8,
+      "lookbackHours": 96,
+      "scoreBoost": 0.75,
+      "tags": ["bls", "macro", "google-news"]
+    },
+    {
+      "id": "treasury-press-google-news",
+      "label": "Google News: Treasury press releases",
+      "enabled": true,
+      "type": "rss",
+      "url": "https://news.google.com/rss/search?q=site%3Ahome.treasury.gov+%22press+releases%22&hl=en-US&gl=US&ceid=US%3Aen",
+      "sourceTier": 2,
+      "defaultCategory": "macro",
+      "maxItems": 8,
+      "lookbackHours": 96,
+      "scoreBoost": 0.5,
+      "tags": ["treasury", "macro", "google-news"]
+    },
+    {
+      "id": "yahoo-finance-news",
+      "label": "Yahoo Finance news",
+      "enabled": true,
+      "type": "rss",
+      "url": "https://finance.yahoo.com/news/rss",
+      "sourceTier": 2,
+      "defaultCategory": "general-market",
+      "maxItems": 15,
+      "lookbackHours": 48,
+      "scoreBoost": 0.0,
+      "tags": ["news", "markets"]
+    },
+    {
+      "id": "cnbc-us-top-news",
+      "label": "CNBC US top news and analysis",
+      "enabled": true,
+      "type": "rss",
+      "url": "https://www.cnbc.com/id/100003114/device/rss/rss.html",
+      "sourceTier": 2,
+      "defaultCategory": "general-market",
+      "maxItems": 15,
+      "lookbackHours": 48,
+      "scoreBoost": 0.0,
+      "tags": ["news", "markets"]
+    }
+  ]
+}

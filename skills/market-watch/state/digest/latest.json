@@ -1,0 +1,278 @@
+{
+  "windowId": "close",
+  "label": "Closing wrap-up",
+  "generatedAt": "2026-04-10T00:02:56+00:00",
+  "timezone": "America/New_York",
+  "windowStart": "2026-04-09T20:02:56+00:00",
+  "windowEnd": "2026-04-10T00:02:56+00:00",
+  "totalItems": 10,
+  "totalScore": 119.35,
+  "highPriorityCount": 7,
+  "topCategories": [
+    {
+      "category": "energy",
+      "count": 3
+    },
+    {
+      "category": "rates",
+      "count": 2
+    },
+    {
+      "category": "regulation",
+      "count": 2
+    },
+    {
+      "category": "earnings-guidance",
+      "count": 2
+    },
+    {
+      "category": "banks",
+      "count": 1
+    }
+  ],
+  "unresolvedUncertainties": [
+    "Trump says Iran 'better stop now' if it's charging oil tankers fees to go through Strait of Hormuz",
+    "Iran attacks on crucial Saudi pipeline and production facilities slash kingdom's oil output",
+    "Oil rally loses steam after Israel agrees to negotiate with Lebanon",
+    "Best high-yield savings interest rates today, April 8, 2026 (Earn up to 4% APY)",
+    "New Guidance Unlocks Economic Opportunity for Overlooked Communities - U.S. Department of the Treasury (.gov)"
+  ],
+  "items": [
+    {
+      "headline": "Minutes of the Federal Open Market Committee, March 17\u201318, 2026",
+      "whyItMatters": "Broad-market potential because it can shift expectations around rates, growth, inflation, or policy.",
+      "affectedSectors": [
+        "Financials",
+        "Rate-sensitive"
+      ],
+      "affectedNames": [],
+      "affectedEtfs": [
+        "IWM",
+        "QQQ",
+        "SPY",
+        "TLT",
+        "XLF"
+      ],
+      "scope": "broad",
+      "confidence": 0.68,
+      "confidenceLabel": "medium",
+      "direction": "unclear",
+      "score": 16.25,
+      "category": "rates",
+      "source": "FRB: Press Release - All Releases",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260408a.htm",
+      "summary": "Minutes of the Federal Open Market Committee, March 17\u201318, 2026",
+      "eventTime": "2026-04-08T18:00:00+00:00"
+    },
+    {
+      "headline": "Federal Reserve Board announces termination of enforcement actions with Cr\u00e9dit Agricole S.A. and Cr\u00e9dit Agricole Corporate and Investment Bank, Mega International Commercial Bank Co., Ltd, and the Goldman Sachs Group, Inc.",
+      "whyItMatters": "Most relevant to Financials because it may change the near-term outlook for that slice of the market.",
+      "affectedSectors": [
+        "Financials"
+      ],
+      "affectedNames": [
+        "GS"
+      ],
+      "affectedEtfs": [
+        "KBE",
+        "XLF"
+      ],
+      "scope": "sector",
+      "confidence": 0.68,
+      "confidenceLabel": "medium",
+      "direction": "negative",
+      "score": 13.6,
+      "category": "banks",
+      "source": "FRB: Press Release - All Releases",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/enforcement20260409a.htm",
+      "summary": "Federal Reserve Board announces termination of enforcement actions with Cr\u00e9dit Agricole S.A. and Cr\u00e9dit Agricole Corporate and Investment Bank, Mega International Commercial Bank Co., Ltd, and the Goldman Sachs Group, Inc.",
+      "eventTime": "2026-04-09T15:00:00+00:00"
+    },
+    {
+      "headline": "Trump says Iran 'better stop now' if it's charging oil tankers fees to go through Strait of Hormuz",
+      "whyItMatters": "Energy-supply or pricing signal that can spill into inflation expectations, energy equities, and broad risk sentiment.",
+      "affectedSectors": [
+        "Energy"
+      ],
+      "affectedNames": [],
+      "affectedEtfs": [
+        "USO",
+        "XLE"
+      ],
+      "scope": "sector",
+      "confidence": 0.62,
+      "confidenceLabel": "low",
+      "direction": "unclear",
+      "score": 13.25,
+      "category": "energy",
+      "source": "US Top News and Analysis",
+      "url": "https://www.cnbc.com/2026/04/09/trump-iran-strait-of-hormuz-oil-toll.html",
+      "summary": "President Donald Trump said that Iran \"better stop now\" if it's charging fees to oil tankers passing through the Strait of Hormuz.",
+      "eventTime": "2026-04-09T22:41:02+00:00"
+    },
+    {
+      "headline": "Iran attacks on crucial Saudi pipeline and production facilities slash kingdom's oil output",
+      "whyItMatters": "Energy-supply or pricing signal that can spill into inflation expectations, energy equities, and broad risk sentiment.",
+      "affectedSectors": [
+        "Energy"
+      ],
+      "affectedNames": [],
+      "affectedEtfs": [
+        "USO",
+        "XLE"
+      ],
+      "scope": "sector",
+      "confidence": 0.62,
+      "confidenceLabel": "low",
+      "direction": "unclear",
+      "score": 12.75,
+      "category": "energy",
+      "source": "US Top News and Analysis",
+      "url": "https://www.cnbc.com/2026/04/09/iran-war-oil-saudi-arabia-east-west-pipeline.html",
+      "summary": "The damage to Saudi infrastructure will only compound the disruption to global oil supplies trigged by Iran's attacks on tankers in the Strait of Hormuz.",
+      "eventTime": "2026-04-09T20:44:10+00:00"
+    },
+    {
+      "headline": "Oil rally loses steam after Israel agrees to negotiate with Lebanon",
+      "whyItMatters": "Energy-supply or pricing signal that can spill into inflation expectations, energy equities, and broad risk sentiment.",
+      "affectedSectors": [
+        "Energy"
+      ],
+      "affectedNames": [],
+      "affectedEtfs": [
+        "USO",
+        "XLE"
+      ],
+      "scope": "sector",
+      "confidence": 0.62,
+      "confidenceLabel": "low",
+      "direction": "unclear",
+      "score": 12.75,
+      "category": "energy",
+      "source": "US Top News and Analysis",
+      "url": "https://www.cnbc.com/2026/04/09/oil-prices-today-wti-brent-iran-accuse-us-of-ceasefire-breach.html",
+      "summary": "Oil prices were volatile Thursday as the U.S.-Iran ceasefire agreement remained fragile.",
+      "eventTime": "2026-04-09T20:40:51+00:00"
+    },
+    {
+      "headline": "Best high-yield savings interest rates today, April 8, 2026 (Earn up to 4% APY)",
+      "whyItMatters": "Broad-market potential because it can shift expectations around rates, growth, inflation, or policy.",
+      "affectedSectors": [
+        "Financials",
+        "Rate-sensitive"
+      ],
+      "affectedNames": [],
+      "affectedEtfs": [
+        "IWM",
+        "QQQ",
+        "SPY",
+        "TLT",
+        "XLF"
+      ],
+      "scope": "broad",
+      "confidence": 0.62,
+      "confidenceLabel": "low",
+      "direction": "unclear",
+      "score": 12.5,
+      "category": "rates",
+      "source": "Yahoo Personal Finance",
+      "url": "https://finance.yahoo.com/personal-finance/banking/article/best-high-yield-savings-interest-rates-today-wednesday-april-8-2026-100000382.html",
+      "summary": "",
+      "eventTime": "2026-04-08T10:00:00+00:00"
+    },
+    {
+      "headline": "SEC Announces Enforcement Results for Fiscal Year 2025",
+      "whyItMatters": "Regulatory/policy signal that could matter beyond one headline, especially for Financials, Industrials, Technology.",
+      "affectedSectors": [
+        "Financials",
+        "Industrials",
+        "Technology"
+      ],
+      "affectedNames": [],
+      "affectedEtfs": [
+        "XLF",
+        "XLI",
+        "XLK"
+      ],
+      "scope": "sector",
+      "confidence": 0.68,
+      "confidenceLabel": "medium",
+      "direction": "negative",
+      "score": 12.0,
+      "category": "regulation",
+      "source": "Press Releases",
+      "url": "https://www.sec.gov/newsroom/press-releases/2026-34",
+      "summary": "The Securities and Exchange Commission today announced enforcement results for the fiscal year that ended on September 30, 2025.Central to an effective enforcement program is determining which cases to bring and responsibly stewarding Commission\u2026",
+      "eventTime": "2026-04-07T19:48:30+00:00"
+    },
+    {
+      "headline": "SEC Appoints David Woodcock as Director of the Division of Enforcement",
+      "whyItMatters": "Regulatory/policy signal that could matter beyond one headline, especially for Financials, Industrials, Technology.",
+      "affectedSectors": [
+        "Financials",
+        "Industrials",
+        "Technology"
+      ],
+      "affectedNames": [],
+      "affectedEtfs": [
+        "XLF",
+        "XLI",
+        "XLK"
+      ],
+      "scope": "sector",
+      "confidence": 0.68,
+      "confidenceLabel": "medium",
+      "direction": "negative",
+      "score": 9.75,
+      "category": "regulation",
+      "source": "Press Releases",
+      "url": "https://www.sec.gov/newsroom/press-releases/2026-35-sec-appoints-david-woodcock-director-division-enforcement",
+      "summary": "The Securities and Exchange Commission today announced that David Woodcock has been appointed Director of the Division of Enforcement, effective May 4, 2026. Mr. Woodcock is currently a partner in the Dallas and Washington, D.C. offices of Gibson, Dunn\u2026",
+      "eventTime": "2026-04-08T16:20:00+00:00"
+    },
+    {
+      "headline": "New Guidance Unlocks Economic Opportunity for Overlooked Communities - U.S. Department of the Treasury (.gov)",
+      "whyItMatters": "Potentially relevant market signal; ranked here because it cleared the local significance threshold.",
+      "affectedSectors": [
+        "Single company / peers"
+      ],
+      "affectedNames": [],
+      "affectedEtfs": [
+        "QQQ",
+        "SPY"
+      ],
+      "scope": "single-name",
+      "confidence": 0.62,
+      "confidenceLabel": "low",
+      "direction": "unclear",
+      "score": 8.5,
+      "category": "earnings-guidance",
+      "source": "U.S. Department of the Treasury (.gov)",
+      "url": "https://news.google.com/rss/articles/CBMiYkFVX3lxTFBMajVld1Awa0RXczc0NG5RQmdJZktQU09jSFE5V1pHc01hUFFsVy1HSFNtZmFvbUtabzVWZ3cwRHEtS3FTc3JUOTk1bGczdEdxOU5ER2JHeUp3cllVcnV4cVBR?oc=5",
+      "summary": "New Guidance Unlocks Economic Opportunity for Overlooked Communities U.S. Department of the Treasury (.gov)",
+      "eventTime": "2026-04-08T17:59:11+00:00"
+    },
+    {
+      "headline": "HELOC and home equity loan rates today, April 8, 2026: See the home equity forecast",
+      "whyItMatters": "Potentially relevant market signal; ranked here because it cleared the local significance threshold.",
+      "affectedSectors": [
+        "Single company / peers"
+      ],
+      "affectedNames": [],
+      "affectedEtfs": [
+        "QQQ",
+        "SPY"
+      ],
+      "scope": "single-name",
+      "confidence": 0.62,
+      "confidenceLabel": "low",
+      "direction": "unclear",
+      "score": 8.0,
+      "category": "earnings-guidance",
+      "source": "Yahoo Personal Finance",
+      "url": "https://finance.yahoo.com/personal-finance/mortgages/article/heloc-home-equity-loan-interest-rates-today-wednesday-april-8-2025-100000761.html",
+      "summary": "",
+      "eventTime": "2026-04-08T10:00:00+00:00"
+    }
+  ]
+}

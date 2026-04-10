@@ -1,6 +1,6 @@
 ---
 name: market-watch
-description: Safe, workspace-local stock and crypto research for quote snapshots, simple comparisons, and watchlist checks using public market data only. Use when someone asks for a ticker overview, a compact multi-ticker compare, or a local watchlist/price alert workflow without social scraping, browser cookies, or hidden state outside the workspace.
+description: Safe, workspace-local stock and crypto research for quote snapshots, simple comparisons, watchlist checks, and low-cost market-moving digests using public market data only. Use when someone asks for a ticker overview, a compact multi-ticker compare, a local watchlist/price alert workflow, or a bounded recurring market headline digest without social scraping, browser cookies, or hidden state outside the workspace.
 ---
 
 # Market Watch
@@ -16,6 +16,7 @@ Use this skill when the request is about:
 - comparing a small set of tickers
 - checking simple trend / moving-average / RSI context
 - maintaining a local watchlist with target / stop reminders
+- building or running a low-cost market-moving digest from bounded public feeds
 
 Do **not** use this skill for:
 - scraping private social feeds
@@ -40,6 +41,16 @@ python3 {baseDir}/scripts/watchlist.py add AAPL --target 220 --note "AI basket"
 python3 {baseDir}/scripts/watchlist.py list
 python3 {baseDir}/scripts/watchlist.py check
 python3 {baseDir}/scripts/watchlist.py remove AAPL
+```
+
+### 3. Run the market-moving digest locally
+
+```bash
+python3 {baseDir}/scripts/market_digest.py collect
+python3 {baseDir}/scripts/market_digest.py digest morning
+python3 {baseDir}/scripts/market_digest.py scheduled-run
+python3 {baseDir}/scripts/market_digest.py status
+python3 {baseDir}/scripts/market_digest.py print-crontab
 ```
 
 ## Workflow
@@ -73,13 +84,23 @@ Use the local watchlist when the user wants ongoing reference state like:
 
 State lives under the skill folder, not in a hidden home-directory tree.
 
+### D. Prefer script-first digest loops
+
+For recurring market digests, the efficient default is:
+- script-only collection and scoring on a bounded feed allowlist
+- local state for dedupe/freshness/source health
+- threshold-gated digest compilation
+- local-only output first
+
+Avoid turning the default recurring loop into a model wake. The digest worker is designed to stay cheap by doing the constant part in Python and only adding richer synthesis later if explicitly wanted.
+
 ## Safety posture
 
 - Public market data only.
 - No browser-cookie extraction.
 - No Twitter/X auth flows.
 - No rumor scanner.
-- No autonomous cron behavior unless explicitly asked later.
+- Recurring digest default is script-only + local-only; do not spend model tokens just to poll feeds.
 - Not investment advice; treat output as research context.
 
 ## Resources
@@ -87,7 +108,12 @@ State lives under the skill folder, not in a hidden home-directory tree.
 ### scripts/
 - `market_snapshot.py` — quote snapshot and compact analysis
 - `watchlist.py` — workspace-local watchlist CRUD + alert checks
+- `market_digest.py` — bounded feed collector + scorer + digest compiler + crontab helper
+
+### config/
+- `digest_sources.json` — market-digest source allowlist
+- `digest_settings.json` — cadence, thresholds, retention, digest windows
 
 ### references/
 - `vetting.md` — what I kept vs rejected from the upstream skill
-- `data-model.md` — watchlist/storage format
+- `data-model.md` — watchlist/storage format plus digest-state notes

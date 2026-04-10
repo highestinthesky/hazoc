@@ -1,0 +1,32 @@
+{
+  "workerId": "market-moving-digest-hourly",
+  "displayName": "Market-moving digest hourly",
+  "kind": "scripted-recurring-worker",
+  "purpose": "Run the low-cost market-moving digest pipeline: collect a bounded feed allowlist, normalize + dedupe + score observations, and emit local-only digest files on schedule without background model turns.",
+  "runtimeHints": {
+    "preferredThinking": "none",
+    "preferredReasoning": "off",
+    "budgetClass": "zero-token-script-worker"
+  },
+  "inputs": {
+    "sourcesConfig": "skills/market-watch/config/digest_sources.json",
+    "settingsConfig": "skills/market-watch/config/digest_settings.json",
+    "observations": "skills/market-watch/state/digest/observations.jsonl",
+    "lastSeen": "skills/market-watch/state/digest/last_seen.json",
+    "sourceHealth": "skills/market-watch/state/digest/source-health.json",
+    "workerState": "skills/market-watch/state/digest/digest-worker-state.json",
+    "digestsDir": "skills/market-watch/state/digest/digests"
+  },
+  "commands": {
+    "scheduledRun": "python3 skills/market-watch/scripts/market_digest.py scheduled-run",
+    "collect": "python3 skills/market-watch/scripts/market_digest.py collect",
+    "status": "python3 skills/market-watch/scripts/market_digest.py status",
+    "installCrontab": "python3 skills/market-watch/scripts/market_digest.py install-crontab",
+    "removeCrontab": "python3 skills/market-watch/scripts/market_digest.py remove-crontab"
+  },
+  "wakeContract": {
+    "executionModel": "OS cron should call the script directly; do not wake an OpenClaw model turn for the default recurring path.",
+    "successRule": "Keep it local-only in v1. No user-facing push path until digest quality is proven stable.",
+    "efficiencyRule": "Prefer HTTP conditional requests, deterministic scoring, and threshold-gated digest emission over any always-on model loop."
+  }
+}

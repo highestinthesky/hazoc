@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "timezone": "America/New_York",
+  "collection": {
+    "weekdays": [1, 2, 3, 4, 5],
+    "startHour": 6,
+    "endHour": 18,
+    "minuteStep": 20,
+    "httpTimeoutSeconds": 20,
+    "maxItemsPerSourceDefault": 12
+  },
+  "digestWindows": [
+    {
+      "id": "morning",
+      "label": "Morning setup",
+      "hour": 8,
+      "minute": 40,
+      "lookbackHours": 16,
+      "minimumItems": 1,
+      "minimumTotalScore": 8.0
+    },
+    {
+      "id": "midday",
+      "label": "Midday update",
+      "hour": 12,
+      "minute": 20,
+      "lookbackHours": 4,
+      "minimumItems": 1,
+      "minimumTotalScore": 8.0
+    },
+    {
+      "id": "close",
+      "label": "Closing wrap-up",
+      "hour": 16,
+      "minute": 20,
+      "lookbackHours": 4,
+      "minimumItems": 1,
+      "minimumTotalScore": 8.0
+    }
+  ],
+  "scoring": {
+    "minDigestEligibleScore": 8.0,
+    "highPriorityScore": 11.0,
+    "maxItemsPerDigest": 10,
+    "retentionDays": 14,
+    "dedupeTtlDays": 14,
+    "recentSimilarityHours": 18,
+    "maxStoredObservations": 3000
+  },
+  "delivery": {
+    "mode": "local-only",
+    "writeLatestCopies": true
+  }
+}

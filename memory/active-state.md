@@ -5,7 +5,7 @@
 - Root-prompt slimming pass is in progress: cut always-loaded/startup surface while preserving rule coverage.
 - Packet-first disposable-helper scaffolding exists; waiting for haolun to choose concrete one-shot roles.
 - `task-investigate-webchat-disappearing-messages` remains open.
-- Market digest worker-first design is drafted and parked.
+- Market-moving digest now has a first script-first local v1: bounded feed collector/scorer plus local-only digest outputs; recurring install is not enabled yet.
 
 ## Next
 

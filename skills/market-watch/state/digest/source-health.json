@@ -1,0 +1,62 @@
+{
+  "fed-press-all": {
+    "label": "Federal Reserve press releases",
+    "status": 200,
+    "fetchedAt": "2026-04-10T00:02:47+00:00",
+    "fetchedItems": 20,
+    "etag": "W/\"ddae119231c8dc1:0\"",
+    "lastModified": "Thu, 09 Apr 2026 15:00:14 GMT",
+    "error": null,
+    "durationMs": 0
+  },
+  "sec-press-releases": {
+    "label": "SEC press releases",
+    "status": 200,
+    "fetchedAt": "2026-04-10T00:02:47+00:00",
+    "fetchedItems": 25,
+    "etag": "\"1775778454\"",
+    "lastModified": "Thu, 09 Apr 2026 23:47:34 GMT",
+    "error": null,
+    "durationMs": 0
+  },
+  "bls-macro-google-news": {
+    "label": "Google News: BLS macro releases",
+    "status": 200,
+    "fetchedAt": "2026-04-10T00:02:48+00:00",
+    "fetchedItems": 100,
+    "etag": null,
+    "lastModified": null,
+    "error": null,
+    "durationMs": 1000
+  },
+  "treasury-press-google-news": {
+    "label": "Google News: Treasury press releases",
+    "status": 200,
+    "fetchedAt": "2026-04-10T00:02:48+00:00",
+    "fetchedItems": 100,
+    "etag": null,
+    "lastModified": null,
+    "error": null,
+    "durationMs": 0
+  },
+  "yahoo-finance-news": {
+    "label": "Yahoo Finance news",
+    "status": 200,
+    "fetchedAt": "2026-04-10T00:02:48+00:00",
+    "fetchedItems": 45,
+    "etag": "\"cd8fb0be2a9a014ebf0080ebf6252dd8\"",
+    "lastModified": "Fri, 10 Apr 2026 00:01:03 GMT",
+    "error": null,
+    "durationMs": 0
+  },
+  "cnbc-us-top-news": {
+    "label": "CNBC US top news and analysis",
+    "status": 200,
+    "fetchedAt": "2026-04-10T00:02:48+00:00",
+    "fetchedItems": 30,
+    "etag": null,
+    "lastModified": null,
+    "error": null,
+    "durationMs": 0
+  }
+}
