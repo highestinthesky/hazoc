@@ -8,6 +8,7 @@
   "totalItems": 4,
   "totalScore": 44.8,
   "highPriorityCount": 2,
+  "headlineSummary": "Main drivers this window: AI / semis + Inflation; the clearest single-name spillover is showing up in AMZN.",
   "topCategories": [
     {
       "category": "ai-chips",
@@ -22,47 +23,34 @@
       "count": 1
     }
   ],
-  "unresolvedUncertainties": [
-    "Here's the inflation breakdown for March 2026 \u2014 in one chart",
-    "Why the Fed is likely to hold on rates despite soaring energy prices",
-    "Is Amazon The Best AI Cloud Stock in Billionaire Ken Fisher\u2019s Portfolio?",
-    "Vertiv Holdings Co (VRT) Surged Due to Robust Demand from Data Center Construction"
-  ],
-  "items": [
+  "overviewBoard": [
     {
+      "theme": "inflation",
+      "label": "Inflation",
       "headline": "Here's the inflation breakdown for March 2026 \u2014 in one chart",
-      "whyItMatters": "Broad-market potential because it can shift expectations around rates, growth, inflation, or policy.",
+      "summary": "Inflation stayed on the tape across 1 headline; if it sticks, yields, duration-sensitive tech, consumers, and financials stay reactive.",
+      "impactRead": "Broad tape mover \u2014 first read needs confirmation; confirmation should show up in QQQ, SPY, TLT, XLF.",
+      "supportingCount": 1,
+      "supportingHeadlines": [
+        "Here's the inflation breakdown for March 2026 \u2014 in one chart"
+      ],
+      "score": 14.0,
+      "highPriority": true,
+      "scope": "broad",
+      "affectedNames": [],
       "affectedSectors": [
         "Broad market",
         "Consumer",
         "Financials"
-      ],
-      "affectedNames": [],
-      "affectedEtfs": [
-        "QQQ",
-        "SPY",
-        "TLT",
-        "XLF",
-        "XLY"
-      ],
-      "scope": "broad",
-      "confidence": 0.62,
-      "confidenceLabel": "low",
-      "direction": "unclear",
-      "score": 14.0,
-      "highPriority": true,
-      "themes": [
-        "inflation"
-      ],
-      "category": "inflation",
-      "source": "US Top News and Analysis",
-      "url": "https://www.cnbc.com/2026/04/10/cpi-inflation-march-2026-breakdown.html",
-      "summary": "The Iran war has pushed up gasoline, airline fares and other prices for consumers.",
-      "eventTime": "2026-04-10T14:46:31+00:00"
-    },
+      ]
+    }
+  ],
+  "stockImpactBoard": [
     {
       "headline": "Why the Fed is likely to hold on rates despite soaring energy prices",
       "whyItMatters": "Energy-supply or pricing signal that can spill into inflation expectations, energy equities, and broad risk sentiment.",
+      "impactRead": "Energy shock path needs confirmation; watch USO, XLE and any spillover into inflation expectations.",
+      "primaryTheme": "energy",
       "affectedSectors": [
         "Energy"
       ],
@@ -89,6 +77,8 @@
     {
       "headline": "Is Amazon The Best AI Cloud Stock in Billionaire Ken Fisher\u2019s Portfolio?",
       "whyItMatters": "Tech/AI signal most relevant to AMZN and nearby semis/platform peers.",
+      "impactRead": "AMZN has the clearest first-order exposure and the read needs confirmation; watch peer sympathy in QQQ, SMH, XLK.",
+      "primaryTheme": "ai-chips",
       "affectedSectors": [
         "Consumer / Cloud",
         "Semiconductors",
@@ -121,6 +111,164 @@
     {
       "headline": "Vertiv Holdings Co (VRT) Surged Due to Robust Demand from Data Center Construction",
       "whyItMatters": "Most relevant to Semiconductors, Technology because it may change the near-term outlook for that slice of the market.",
+      "impactRead": "Sector-level read needs confirmation; watch Semiconductors, Technology for confirmation instead of treating it as isolated.",
+      "primaryTheme": "ai-chips",
+      "affectedSectors": [
+        "Semiconductors",
+        "Technology"
+      ],
+      "affectedNames": [],
+      "affectedEtfs": [
+        "QQQ",
+        "SMH",
+        "XLK"
+      ],
+      "scope": "sector",
+      "confidence": 0.62,
+      "confidenceLabel": "low",
+      "direction": "unclear",
+      "score": 8.75,
+      "highPriority": false,
+      "themes": [
+        "ai-chips"
+      ],
+      "category": "ai-chips",
+      "source": "Insider Monkey",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/vertiv-holdings-co-vrt-surged-144211504.html",
+      "summary": "",
+      "eventTime": "2026-04-10T14:42:11+00:00"
+    }
+  ],
+  "watchNext": [
+    "Watch whether the move stays concentrated in the leaders or broadens into semis, suppliers, and QQQ/SMH.",
+    "Watch bond yields, duration-sensitive tech, and whether inflation pressure spreads beyond the headline.",
+    "Watch oil follow-through and whether energy pressure feeds back into inflation expectations and index sentiment."
+  ],
+  "deltaVsLastRun": {
+    "summary": "newly live: Inflation, AI / semis; still leading: Energy; cooled: Rates / Fed path, Banks / credit; 4 fresh headlines",
+    "previousGeneratedAt": "2026-04-10T03:03:57+00:00",
+    "previousLabel": "Closing wrap-up",
+    "newThemes": [
+      "Inflation",
+      "AI / semis"
+    ],
+    "stillLiveThemes": [
+      "Energy"
+    ],
+    "cooledThemes": [
+      "Rates / Fed path",
+      "Banks / credit",
+      "Policy / regulation"
+    ],
+    "freshHeadlineCount": 4
+  },
+  "unresolvedUncertainties": [
+    "Here's the inflation breakdown for March 2026 \u2014 in one chart",
+    "Why the Fed is likely to hold on rates despite soaring energy prices",
+    "Is Amazon The Best AI Cloud Stock in Billionaire Ken Fisher\u2019s Portfolio?",
+    "Vertiv Holdings Co (VRT) Surged Due to Robust Demand from Data Center Construction"
+  ],
+  "items": [
+    {
+      "headline": "Here's the inflation breakdown for March 2026 \u2014 in one chart",
+      "whyItMatters": "Broad-market potential because it can shift expectations around rates, growth, inflation, or policy.",
+      "impactRead": "Broad tape mover \u2014 first read needs confirmation; confirmation should show up in QQQ, SPY, TLT, XLF.",
+      "primaryTheme": "inflation",
+      "affectedSectors": [
+        "Broad market",
+        "Consumer",
+        "Financials"
+      ],
+      "affectedNames": [],
+      "affectedEtfs": [
+        "QQQ",
+        "SPY",
+        "TLT",
+        "XLF",
+        "XLY"
+      ],
+      "scope": "broad",
+      "confidence": 0.62,
+      "confidenceLabel": "low",
+      "direction": "unclear",
+      "score": 14.0,
+      "highPriority": true,
+      "themes": [
+        "inflation"
+      ],
+      "category": "inflation",
+      "source": "US Top News and Analysis",
+      "url": "https://www.cnbc.com/2026/04/10/cpi-inflation-march-2026-breakdown.html",
+      "summary": "The Iran war has pushed up gasoline, airline fares and other prices for consumers.",
+      "eventTime": "2026-04-10T14:46:31+00:00"
+    },
+    {
+      "headline": "Why the Fed is likely to hold on rates despite soaring energy prices",
+      "whyItMatters": "Energy-supply or pricing signal that can spill into inflation expectations, energy equities, and broad risk sentiment.",
+      "impactRead": "Energy shock path needs confirmation; watch USO, XLE and any spillover into inflation expectations.",
+      "primaryTheme": "energy",
+      "affectedSectors": [
+        "Energy"
+      ],
+      "affectedNames": [],
+      "affectedEtfs": [
+        "USO",
+        "XLE"
+      ],
+      "scope": "sector",
+      "confidence": 0.62,
+      "confidenceLabel": "low",
+      "direction": "unclear",
+      "score": 12.0,
+      "highPriority": true,
+      "themes": [
+        "energy"
+      ],
+      "category": "energy",
+      "source": "Yahoo Finance",
+      "url": "https://finance.yahoo.com/economy/article/why-the-fed-is-likely-to-hold-on-rates-despite-soaring-energy-prices-143755918.html",
+      "summary": "",
+      "eventTime": "2026-04-10T14:37:55+00:00"
+    },
+    {
+      "headline": "Is Amazon The Best AI Cloud Stock in Billionaire Ken Fisher\u2019s Portfolio?",
+      "whyItMatters": "Tech/AI signal most relevant to AMZN and nearby semis/platform peers.",
+      "impactRead": "AMZN has the clearest first-order exposure and the read needs confirmation; watch peer sympathy in QQQ, SMH, XLK.",
+      "primaryTheme": "ai-chips",
+      "affectedSectors": [
+        "Consumer / Cloud",
+        "Semiconductors",
+        "Technology"
+      ],
+      "affectedNames": [
+        "AMZN"
+      ],
+      "affectedEtfs": [
+        "QQQ",
+        "SMH",
+        "XLK",
+        "XLY"
+      ],
+      "scope": "sector",
+      "confidence": 0.62,
+      "confidenceLabel": "low",
+      "direction": "unclear",
+      "score": 10.05,
+      "highPriority": false,
+      "themes": [
+        "ai-chips"
+      ],
+      "category": "ai-chips",
+      "source": "Insider Monkey",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/amazon-best-ai-cloud-stock-143421412.html",
+      "summary": "",
+      "eventTime": "2026-04-10T14:34:21+00:00"
+    },
+    {
+      "headline": "Vertiv Holdings Co (VRT) Surged Due to Robust Demand from Data Center Construction",
+      "whyItMatters": "Most relevant to Semiconductors, Technology because it may change the near-term outlook for that slice of the market.",
+      "impactRead": "Sector-level read needs confirmation; watch Semiconductors, Technology for confirmation instead of treating it as isolated.",
+      "primaryTheme": "ai-chips",
       "affectedSectors": [
         "Semiconductors",
         "Technology"

@@ -1,0 +1,31 @@
+{
+  "kind": "user-watchlist-digest",
+  "userId": "ning",
+  "displayName": "Ning",
+  "generatedAt": "2026-04-10T03:03:57+00:00",
+  "timezone": "America/Los_Angeles",
+  "windowId": "close",
+  "label": "Closing wrap-up",
+  "globalGeneratedAt": "2026-04-10T03:03:57+00:00",
+  "globalWindowStart": "2026-04-09T23:03:57+00:00",
+  "globalWindowEnd": "2026-04-10T03:03:57+00:00",
+  "globalDigestPathMd": "skills/market-watch/state/digest/digests/2026-04-10/close.md",
+  "globalDigestPathJson": "skills/market-watch/state/digest/digests/2026-04-10/close.json",
+  "deliveryOrder": [
+    "global",
+    "user"
+  ],
+  "watchlist": [],
+  "watchlistStatus": [],
+  "watchFlags": 0,
+  "priceError": null,
+  "summaryLine": "No clean direct watchlist hit crossed the threshold in this window yet.",
+  "watchNext": [
+    "Watch oil follow-through and whether energy pressure feeds back into inflation expectations and index sentiment.",
+    "Watch credit conditions, capital/regulatory follow-through, and whether large banks or regional-bank ETFs confirm it.",
+    "Watch for enforcement detail, compliance timing, and which named companies or sector ETFs take the first real hit."
+  ],
+  "matchedItems": [],
+  "matchedItemCount": 0,
+  "matchedItemsShown": 0
+}

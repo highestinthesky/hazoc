@@ -8,6 +8,7 @@
   "totalItems": 7,
   "totalScore": 99.25,
   "highPriorityCount": 7,
+  "headlineSummary": "Main drivers this window: Inflation + Rates / Fed path; the clearest single-name spillover is showing up in NVDA, TSM.",
   "topCategories": [
     {
       "category": "inflation",
@@ -26,6 +27,183 @@
       "count": 1
     }
   ],
+  "overviewBoard": [
+    {
+      "theme": "inflation",
+      "label": "Inflation",
+      "headline": "Stock Market Today: Dow Wavers On Surprise CPI Inflation Data; Nvidia Chipmaker TSMC Jumps (Live Coverage)",
+      "summary": "Inflation stayed on the tape across 3 headlines; if it sticks, yields, duration-sensitive tech, consumers, and financials stay reactive.",
+      "impactRead": "Broad tape mover \u2014 first read needs confirmation; confirmation should show up in QQQ, SMH, SPY, TLT.",
+      "supportingCount": 3,
+      "supportingHeadlines": [
+        "Stock Market Today: Dow Wavers On Surprise CPI Inflation Data; Nvidia Chipmaker TSMC Jumps (Live Coverage)",
+        "Consumer Price Index News Release - 2026 M03 Results - Bureau of Labor Statistics (.gov)",
+        "Consumer prices rose 3.3% in March, as energy prices spiked due to Iran conflict"
+      ],
+      "score": 47.95,
+      "highPriority": true,
+      "scope": "broad",
+      "affectedNames": [
+        "NVDA",
+        "TSM"
+      ],
+      "affectedSectors": [
+        "Broad market",
+        "Consumer",
+        "Energy",
+        "Financials",
+        "Semiconductors",
+        "Technology"
+      ]
+    },
+    {
+      "theme": "rates",
+      "label": "Rates / Fed path",
+      "headline": "Powell, Bessent discussed Anthropic's Mythos AI cyber threat with major U.S. banks",
+      "summary": "Fed/rates expectations are still shaping the tape here; that matters because the first-order move usually runs through yields, big tech, small caps, and banks.",
+      "impactRead": "Broad tape mover \u2014 first read needs confirmation; confirmation should show up in IWM, KBE, QQQ, SMH.",
+      "supportingCount": 2,
+      "supportingHeadlines": [
+        "Powell, Bessent discussed Anthropic's Mythos AI cyber threat with major U.S. banks",
+        "Kevin Warsh Fed chair confirmation plan hits snag as nomination hearing is delayed"
+      ],
+      "score": 28.0,
+      "highPriority": true,
+      "scope": "broad",
+      "affectedNames": [],
+      "affectedSectors": [
+        "Financials",
+        "Rate-sensitive",
+        "Semiconductors",
+        "Technology"
+      ]
+    }
+  ],
+  "stockImpactBoard": [
+    {
+      "headline": "Stock Market Rally Revs Higher On Iran Ceasefire; Amazon, AI Names In Focus: Weekly Review",
+      "whyItMatters": "Tech/AI signal most relevant to AMZN and nearby semis/platform peers.",
+      "impactRead": "AMZN has the clearest first-order exposure and the read needs confirmation; watch peer sympathy in QQQ, SMH, XLK.",
+      "primaryTheme": "ai-chips",
+      "affectedSectors": [
+        "Consumer / Cloud",
+        "Semiconductors",
+        "Technology"
+      ],
+      "affectedNames": [
+        "AMZN"
+      ],
+      "affectedEtfs": [
+        "QQQ",
+        "SMH",
+        "XLK",
+        "XLY"
+      ],
+      "scope": "sector",
+      "confidence": 0.62,
+      "confidenceLabel": "low",
+      "direction": "unclear",
+      "score": 11.3,
+      "highPriority": true,
+      "themes": [
+        "ai-chips"
+      ],
+      "category": "ai-chips",
+      "source": "Investor's Business Daily",
+      "url": "https://www.investors.com/news/stock-market-rally-iran-ceasefire-amazon-ai-names/?src=A00220&yptr=yahoo",
+      "summary": "",
+      "eventTime": "2026-04-10T15:54:54+00:00"
+    },
+    {
+      "headline": "Why the Fed is likely to hold on rates despite soaring energy prices",
+      "whyItMatters": "Energy-supply or pricing signal that can spill into inflation expectations, energy equities, and broad risk sentiment.",
+      "impactRead": "Energy shock path needs confirmation; watch USO, XLE and any spillover into inflation expectations.",
+      "primaryTheme": "energy",
+      "affectedSectors": [
+        "Energy"
+      ],
+      "affectedNames": [],
+      "affectedEtfs": [
+        "USO",
+        "XLE"
+      ],
+      "scope": "sector",
+      "confidence": 0.62,
+      "confidenceLabel": "low",
+      "direction": "unclear",
+      "score": 12.0,
+      "highPriority": true,
+      "themes": [
+        "energy"
+      ],
+      "category": "energy",
+      "source": "Yahoo Finance",
+      "url": "https://finance.yahoo.com/economy/article/why-the-fed-is-likely-to-hold-on-rates-despite-soaring-energy-prices-143755918.html",
+      "summary": "",
+      "eventTime": "2026-04-10T14:37:55+00:00"
+    },
+    {
+      "headline": "Stock Market Today: Dow Wavers On Surprise CPI Inflation Data; Nvidia Chipmaker TSMC Jumps (Live Coverage)",
+      "whyItMatters": "Broad-market potential because it can shift expectations around rates, growth, inflation, or policy.",
+      "impactRead": "Broad tape mover \u2014 first read needs confirmation; confirmation should show up in QQQ, SMH, SPY, TLT.",
+      "primaryTheme": "inflation",
+      "affectedSectors": [
+        "Broad market",
+        "Consumer",
+        "Financials",
+        "Semiconductors",
+        "Technology"
+      ],
+      "affectedNames": [
+        "NVDA",
+        "TSM"
+      ],
+      "affectedEtfs": [
+        "QQQ",
+        "SMH",
+        "SPY",
+        "TLT",
+        "XLF",
+        "XLK",
+        "XLY"
+      ],
+      "scope": "broad",
+      "confidence": 0.68,
+      "confidenceLabel": "medium",
+      "direction": "unclear",
+      "score": 16.7,
+      "highPriority": true,
+      "themes": [
+        "inflation",
+        "ai-chips"
+      ],
+      "category": "inflation",
+      "source": "Investor's Business Daily",
+      "url": "https://www.investors.com/market-trend/stock-market-today/dow-jones-sp500-nasdaq-cpi-inflation-data-march-tsmc-stock/?src=A00220&yptr=yahoo",
+      "summary": "",
+      "eventTime": "2026-04-10T14:18:44+00:00"
+    }
+  ],
+  "watchNext": [
+    "Watch bond yields, duration-sensitive tech, and whether inflation pressure spreads beyond the headline.",
+    "Watch yields, Fed-path headlines, and whether rate-sensitive leadership absorbs or rejects the move.",
+    "Watch oil follow-through and whether energy pressure feeds back into inflation expectations and index sentiment."
+  ],
+  "deltaVsLastRun": {
+    "summary": "newly live: Rates / Fed path; still leading: Inflation, Energy; 6 fresh headlines",
+    "previousGeneratedAt": "2026-04-10T15:01:39+00:00",
+    "previousLabel": "Morning setup",
+    "newThemes": [
+      "Rates / Fed path"
+    ],
+    "stillLiveThemes": [
+      "Inflation",
+      "Energy",
+      "AI / semis"
+    ],
+    "cooledThemes": [],
+    "freshHeadlineCount": 6
+  },
   "unresolvedUncertainties": [
     "Consumer Price Index News Release - 2026 M03 Results - Bureau of Labor Statistics (.gov)",
     "Kevin Warsh Fed chair confirmation plan hits snag as nomination hearing is delayed",
@@ -36,6 +214,8 @@
     {
       "headline": "Stock Market Today: Dow Wavers On Surprise CPI Inflation Data; Nvidia Chipmaker TSMC Jumps (Live Coverage)",
       "whyItMatters": "Broad-market potential because it can shift expectations around rates, growth, inflation, or policy.",
+      "impactRead": "Broad tape mover \u2014 first read needs confirmation; confirmation should show up in QQQ, SMH, SPY, TLT.",
+      "primaryTheme": "inflation",
       "affectedSectors": [
         "Broad market",
         "Consumer",
@@ -75,6 +255,8 @@
     {
       "headline": "Consumer Price Index News Release - 2026 M03 Results - Bureau of Labor Statistics (.gov)",
       "whyItMatters": "Broad-market potential because it can shift expectations around rates, growth, inflation, or policy.",
+      "impactRead": "Broad tape mover \u2014 first read needs confirmation; confirmation should show up in QQQ, SPY, TLT, XLF.",
+      "primaryTheme": "inflation",
       "affectedSectors": [
         "Broad market",
         "Consumer",
@@ -106,6 +288,8 @@
     {
       "headline": "Consumer prices rose 3.3% in March, as energy prices spiked due to Iran conflict",
       "whyItMatters": "Broad-market potential because it can shift expectations around rates, growth, inflation, or policy.",
+      "impactRead": "Broad tape mover \u2014 first read leans bullish; confirmation should show up in QQQ, SPY, TLT, USO.",
+      "primaryTheme": "inflation",
       "affectedSectors": [
         "Broad market",
         "Consumer",
@@ -141,6 +325,8 @@
     {
       "headline": "Powell, Bessent discussed Anthropic's Mythos AI cyber threat with major U.S. banks",
       "whyItMatters": "Broad-market potential because it can shift expectations around rates, growth, inflation, or policy.",
+      "impactRead": "Broad tape mover \u2014 first read needs confirmation; confirmation should show up in IWM, KBE, QQQ, SMH.",
+      "primaryTheme": "rates",
       "affectedSectors": [
         "Financials",
         "Rate-sensitive",
@@ -178,6 +364,8 @@
     {
       "headline": "Kevin Warsh Fed chair confirmation plan hits snag as nomination hearing is delayed",
       "whyItMatters": "Broad-market potential because it can shift expectations around rates, growth, inflation, or policy.",
+      "impactRead": "Broad tape mover \u2014 first read leans bearish; confirmation should show up in IWM, QQQ, SPY, TLT.",
+      "primaryTheme": "rates",
       "affectedSectors": [
         "Financials",
         "Rate-sensitive"
@@ -208,6 +396,8 @@
     {
       "headline": "Why the Fed is likely to hold on rates despite soaring energy prices",
       "whyItMatters": "Energy-supply or pricing signal that can spill into inflation expectations, energy equities, and broad risk sentiment.",
+      "impactRead": "Energy shock path needs confirmation; watch USO, XLE and any spillover into inflation expectations.",
+      "primaryTheme": "energy",
       "affectedSectors": [
         "Energy"
       ],
@@ -234,6 +424,8 @@
     {
       "headline": "Stock Market Rally Revs Higher On Iran Ceasefire; Amazon, AI Names In Focus: Weekly Review",
       "whyItMatters": "Tech/AI signal most relevant to AMZN and nearby semis/platform peers.",
+      "impactRead": "AMZN has the clearest first-order exposure and the read needs confirmation; watch peer sympathy in QQQ, SMH, XLK.",
+      "primaryTheme": "ai-chips",
       "affectedSectors": [
         "Consumer / Cloud",
         "Semiconductors",

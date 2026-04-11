@@ -1400,20 +1400,52 @@ function MarketJournalView({
                       <p className="panel-kicker">shared overview</p>
                       <h3>Global market read</h3>
                     </div>
+                    {windowEntry.global.overview.headlineSummary ? <p>{windowEntry.global.overview.headlineSummary}</p> : null}
                     <div className="market-summary-grid">
                       <div className="schedule-preview-card">
                         <span className="schedule-preview-label">Top categories</span>
                         <strong>{windowEntry.global.overview.topCategories.length ? windowEntry.global.overview.topCategories.map((item) => `${item.category} (${item.count})`).join(' · ') : 'No category rollup'}</strong>
                       </div>
                       <div className="schedule-preview-card">
-                        <span className="schedule-preview-label">Unresolved / open questions</span>
-                        <strong>{windowEntry.global.overview.unresolvedUncertainties.length || 0}</strong>
+                        <span className="schedule-preview-label">Delta vs last run</span>
+                        <strong>{windowEntry.global.overview.deltaVsLastRun.summary || 'No prior digest comparison stored'}</strong>
                       </div>
                     </div>
+                    {windowEntry.global.overview.overviewBoard.length ? (
+                      <div className="market-impact-list">
+                        {windowEntry.global.overview.overviewBoard.map((item) => (
+                          <article key={item.id} className="upcoming-card market-impact-card">
+                            <div className="task-card-header">
+                              <strong>{item.label}</strong>
+                              <span>{item.supportingCount ? `${item.supportingCount} headlines` : item.scope || 'theme'}</span>
+                            </div>
+                            {item.headline ? <p><strong>{item.headline}</strong></p> : null}
+                            {item.summary ? <p>{item.summary}</p> : null}
+                            {item.impactRead ? <p>{item.impactRead}</p> : null}
+                            {item.supportingHeadlines.length ? (
+                              <div className="task-card-meta-row">
+                                {item.supportingHeadlines.slice(0, 3).map((headline) => <span key={headline} className="meta-chip">{headline}</span>)}
+                              </div>
+                            ) : null}
+                          </article>
+                        ))}
+                      </div>
+                    ) : <p className="market-muted-copy">No shared overview board was stored for this window.</p>}
+                    {windowEntry.global.overview.watchNext.length ? (
+                      <>
+                        <h4>Watch next</h4>
+                        <ul className="market-bullet-list">
+                          {windowEntry.global.overview.watchNext.map((item) => <li key={item}>{item}</li>)}
+                        </ul>
+                      </>
+                    ) : null}
                     {windowEntry.global.overview.unresolvedUncertainties.length ? (
-                      <ul className="market-bullet-list">
-                        {windowEntry.global.overview.unresolvedUncertainties.map((item) => <li key={item}>{item}</li>)}
-                      </ul>
+                      <>
+                        <h4>Open questions</h4>
+                        <ul className="market-bullet-list">
+                          {windowEntry.global.overview.unresolvedUncertainties.map((item) => <li key={item}>{item}</li>)}
+                        </ul>
+                      </>
                     ) : <p className="market-muted-copy">No unresolved uncertainty list was stored for this window.</p>}
                   </section>
 
@@ -1435,6 +1467,7 @@ function MarketJournalView({
                               {item.affectedSectors.length ? <span className="meta-chip">Sectors: {item.affectedSectors.slice(0, 2).join(', ')}</span> : null}
                               {item.themes.length ? <span className="meta-chip">Themes: {item.themes.join(', ')}</span> : null}
                             </div>
+                            {item.impactRead ? <p>{item.impactRead}</p> : null}
                             {item.whyItMatters ? <p>{item.whyItMatters}</p> : null}
                           </article>
                         ))}
@@ -1470,9 +1503,16 @@ function MarketJournalView({
                           <div className="task-card-meta-row">
                             <span className="meta-chip">Watchlist: {activeUser.watchlist.join(', ') || 'None stored'}</span>
                             <span className="meta-chip">Matches: {activeUser.matchedItemCount}</span>
+                            <span className="meta-chip">Shown: {activeUser.matchedItemsShown}</span>
                             <span className="meta-chip">Flags: {activeUser.watchFlags}</span>
                           </div>
+                          {activeUser.summaryLine ? <p>{activeUser.summaryLine}</p> : null}
                           {activeUser.priceError ? <p className="market-muted-copy">Price note: {activeUser.priceError}</p> : null}
+                          {activeUser.watchNext.length ? (
+                            <ul className="market-bullet-list">
+                              {activeUser.watchNext.map((item) => <li key={item}>{item}</li>)}
+                            </ul>
+                          ) : null}
                           <div className="market-watch-status-list">
                             {activeUser.watchlistStatus.map((item) => (
                               <article key={`${windowEntry.id}-${activeUser.userId}-${item.ticker}`} className="task-card market-watch-status-card">
@@ -1498,6 +1538,11 @@ function MarketJournalView({
                                       <strong>{item.headline}</strong>
                                       <span>{item.highPriority ? 'High priority' : item.scope}</span>
                                     </div>
+                                    <div className="task-card-meta-row">
+                                      {item.matchedTickers?.length ? <span className="meta-chip">Tickers: {item.matchedTickers.join(', ')}</span> : null}
+                                      {item.matchedSectors?.length ? <span className="meta-chip">Sectors: {item.matchedSectors.join(', ')}</span> : null}
+                                    </div>
+                                    {item.impactRead ? <p>{item.impactRead}</p> : null}
                                     {item.whyItMatters ? <p>{item.whyItMatters}</p> : null}
                                   </article>
                                 ))}
@@ -1527,6 +1572,7 @@ function MarketJournalView({
                             {item.themes.length ? <span className="meta-chip">Themes: {item.themes.join(', ')}</span> : null}
                           </div>
                           {item.summary ? <p>{item.summary}</p> : null}
+                          {item.impactRead ? <p>{item.impactRead}</p> : null}
                           {item.whyItMatters ? <p>{item.whyItMatters}</p> : null}
                           {item.url ? <a className="market-link" href={item.url} target="_blank" rel="noreferrer">Open source ↗</a> : null}
                         </article>

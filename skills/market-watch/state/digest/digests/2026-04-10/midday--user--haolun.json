@@ -2,7 +2,7 @@
   "kind": "user-watchlist-digest",
   "userId": "haolun",
   "displayName": "haolun",
-  "generatedAt": "2026-04-10T16:20:07+00:00",
+  "generatedAt": "2026-04-10T16:20:06+00:00",
   "timezone": "America/Los_Angeles",
   "windowId": "midday",
   "label": "Midday update",
@@ -30,7 +30,7 @@
       "note": "",
       "importance": "normal",
       "flags": [],
-      "checkedAt": "2026-04-10T16:20:07+00:00"
+      "checkedAt": "2026-04-10T16:20:06+00:00"
     },
     {
       "ticker": "BAC",
@@ -40,7 +40,7 @@
       "note": "",
       "importance": "normal",
       "flags": [],
-      "checkedAt": "2026-04-10T16:20:07+00:00"
+      "checkedAt": "2026-04-10T16:20:06+00:00"
     },
     {
       "ticker": "HD",
@@ -50,7 +50,7 @@
       "note": "",
       "importance": "normal",
       "flags": [],
-      "checkedAt": "2026-04-10T16:20:07+00:00"
+      "checkedAt": "2026-04-10T16:20:06+00:00"
     },
     {
       "ticker": "NVDA",
@@ -60,15 +60,69 @@
       "note": "",
       "importance": "normal",
       "flags": [],
-      "checkedAt": "2026-04-10T16:20:07+00:00"
+      "checkedAt": "2026-04-10T16:20:06+00:00"
     }
   ],
   "watchFlags": 0,
   "priceError": null,
+  "summaryLine": "Clearest direct watchlist hits: AAPL, NVDA; still quiet: BAC, HD.",
+  "watchNext": [
+    "Watch whether the move stays concentrated in the leaders or broadens into semis, suppliers, and QQQ/SMH.",
+    "Watch bond yields, duration-sensitive tech, and whether inflation pressure spreads beyond the headline.",
+    "Watch oil follow-through and whether energy pressure feeds back into inflation expectations and index sentiment."
+  ],
   "matchedItems": [
+    {
+      "headline": "TSMC posts 35% jump in revenue to new record high as AI chip demand stays strong",
+      "whyItMatters": "Tech/AI signal most relevant to AAPL, NVDA, TSM and nearby semis/platform peers.",
+      "impactRead": "AAPL, NVDA have the clearest direct watchlist exposure and the setup leans bullish; then watch peer sympathy in QQQ, SMH, SPY.",
+      "primaryTheme": "ai-chips",
+      "affectedSectors": [
+        "Semiconductors",
+        "Single company / peers",
+        "Technology"
+      ],
+      "affectedNames": [
+        "AAPL",
+        "NVDA",
+        "TSM"
+      ],
+      "affectedEtfs": [
+        "QQQ",
+        "SMH",
+        "SPY",
+        "XLK"
+      ],
+      "scope": "sector",
+      "confidence": 0.68,
+      "confidenceLabel": "medium",
+      "direction": "positive",
+      "score": 13.7,
+      "highPriority": true,
+      "themes": [
+        "ai-chips",
+        "earnings-guidance"
+      ],
+      "category": "ai-chips",
+      "source": "US Top News and Analysis",
+      "url": "https://www.cnbc.com/2026/04/10/tsmc-q1-record-revenue-ai-chip-demand-strong.html",
+      "summary": "TSMC is benefiting from sustained demand for advanced semiconductors from its key customers like Apple and Nvidia.",
+      "eventTime": "2026-04-10T13:53:44+00:00",
+      "matchedTickers": [
+        "AAPL",
+        "NVDA"
+      ],
+      "matchedSectors": [
+        "Semiconductors",
+        "Technology"
+      ],
+      "userRelevance": 14.0
+    },
     {
       "headline": "Stock Market Today: Dow Wavers On Surprise CPI Inflation Data; Nvidia Chipmaker TSMC Jumps (Live Coverage)",
       "whyItMatters": "Broad-market potential because it can shift expectations around rates, growth, inflation, or policy.",
+      "impactRead": "Broad tape mover \u2014 first read needs confirmation; confirmation should show up in QQQ, SMH, SPY, TLT.",
+      "primaryTheme": "inflation",
       "affectedSectors": [
         "Broad market",
         "Consumer",
@@ -104,7 +158,6 @@
       "url": "https://www.investors.com/market-trend/stock-market-today/dow-jones-sp500-nasdaq-cpi-inflation-data-march-tsmc-stock/?src=A00220&yptr=yahoo",
       "summary": "",
       "eventTime": "2026-04-10T14:18:44+00:00",
-      "include": true,
       "matchedTickers": [
         "NVDA"
       ],
@@ -118,6 +171,8 @@
     {
       "headline": "Stock Market Rally Revs Higher On Iran Ceasefire; Amazon, AI Names In Focus: Weekly Review",
       "whyItMatters": "Tech/AI signal most relevant to AMZN and nearby semis/platform peers.",
+      "impactRead": "AMZN has the clearest first-order exposure and the read needs confirmation; watch peer sympathy in QQQ, SMH, XLK.",
+      "primaryTheme": "ai-chips",
       "affectedSectors": [
         "Consumer / Cloud",
         "Semiconductors",
@@ -146,14 +201,47 @@
       "url": "https://www.investors.com/news/stock-market-rally-iran-ceasefire-amazon-ai-names/?src=A00220&yptr=yahoo",
       "summary": "",
       "eventTime": "2026-04-10T15:54:54+00:00",
-      "include": true,
       "matchedTickers": [],
       "matchedSectors": [
         "Semiconductors",
         "Technology"
       ],
       "userRelevance": 4.0
+    },
+    {
+      "headline": "Rogers Corp (ROG) Banks on Product Innovation to Fuel Growth",
+      "whyItMatters": "Most relevant to Financials because it may change the near-term outlook for that slice of the market.",
+      "impactRead": "Sector-level read leans bullish; watch Financials for confirmation instead of treating it as isolated.",
+      "primaryTheme": "banks",
+      "affectedSectors": [
+        "Financials"
+      ],
+      "affectedNames": [],
+      "affectedEtfs": [
+        "KBE",
+        "XLF"
+      ],
+      "scope": "sector",
+      "confidence": 0.62,
+      "confidenceLabel": "low",
+      "direction": "positive",
+      "score": 10.5,
+      "highPriority": false,
+      "themes": [
+        "banks"
+      ],
+      "category": "banks",
+      "source": "Insider Monkey",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/rogers-corp-rog-banks-product-152309799.html",
+      "summary": "",
+      "eventTime": "2026-04-10T15:23:09+00:00",
+      "matchedTickers": [],
+      "matchedSectors": [
+        "Financials"
+      ],
+      "userRelevance": 1.5
     }
   ],
-  "matchedItemCount": 2
+  "matchedItemCount": 4,
+  "matchedItemsShown": 4
 }

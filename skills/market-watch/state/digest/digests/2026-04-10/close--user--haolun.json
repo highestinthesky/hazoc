@@ -73,6 +73,86 @@
   ],
   "watchFlags": 4,
   "priceError": "Missing dependency for price checks: yfinance. Install with: pip install yfinance",
-  "matchedItems": [],
-  "matchedItemCount": 0
+  "summaryLine": "No direct ticker hit yet; the signal is still sector-level through Financials, Technology; price flags already tripped on AAPL, BAC; still quiet: AAPL, BAC, HD.",
+  "watchNext": [
+    "Watch the names already tripping price-level flags: AAPL (price_unavailable), BAC (price_unavailable).",
+    "Watch oil follow-through and whether energy pressure feeds back into inflation expectations and index sentiment.",
+    "Watch credit conditions, capital/regulatory follow-through, and whether large banks or regional-bank ETFs confirm it."
+  ],
+  "matchedItems": [
+    {
+      "headline": "SEC Announces Enforcement Results for Fiscal Year 2025",
+      "whyItMatters": "Regulatory/policy signal that could matter beyond one headline, especially for Financials, Industrials, Technology.",
+      "impactRead": "Sector-level read leans bearish; watch Financials, Industrials, Technology for confirmation instead of treating it as isolated.",
+      "primaryTheme": "regulation",
+      "affectedSectors": [
+        "Financials",
+        "Industrials",
+        "Technology"
+      ],
+      "affectedNames": [],
+      "affectedEtfs": [
+        "XLF",
+        "XLI",
+        "XLK"
+      ],
+      "scope": "sector",
+      "confidence": 0.68,
+      "confidenceLabel": "medium",
+      "direction": "negative",
+      "score": 12.0,
+      "highPriority": true,
+      "themes": [
+        "regulation"
+      ],
+      "category": "regulation",
+      "source": "Press Releases",
+      "url": "https://www.sec.gov/newsroom/press-releases/2026-34",
+      "summary": "The Securities and Exchange Commission today announced enforcement results for the fiscal year that ended on September 30, 2025.Central to an effective enforcement program is determining which cases to bring and responsibly stewarding Commission\u2026",
+      "eventTime": "2026-04-07T19:48:30+00:00",
+      "matchedTickers": [],
+      "matchedSectors": [
+        "Financials",
+        "Technology"
+      ],
+      "userRelevance": 4.0
+    },
+    {
+      "headline": "Federal Reserve Board announces termination of enforcement actions with Cr\u00e9dit Agricole S.A. and Cr\u00e9dit Agricole Corporate and Investment Bank, Mega International Commercial Bank Co., Ltd, and the Goldman Sachs Group, Inc.",
+      "whyItMatters": "Most relevant to Financials because it may change the near-term outlook for that slice of the market.",
+      "impactRead": "GS has the clearest first-order exposure and the read leans bearish; watch peer sympathy in KBE, XLF.",
+      "primaryTheme": "banks",
+      "affectedSectors": [
+        "Financials"
+      ],
+      "affectedNames": [
+        "GS"
+      ],
+      "affectedEtfs": [
+        "KBE",
+        "XLF"
+      ],
+      "scope": "sector",
+      "confidence": 0.68,
+      "confidenceLabel": "medium",
+      "direction": "negative",
+      "score": 13.6,
+      "highPriority": true,
+      "themes": [
+        "banks"
+      ],
+      "category": "banks",
+      "source": "FRB: Press Release - All Releases",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/enforcement20260409a.htm",
+      "summary": "Federal Reserve Board announces termination of enforcement actions with Cr\u00e9dit Agricole S.A. and Cr\u00e9dit Agricole Corporate and Investment Bank, Mega International Commercial Bank Co., Ltd, and the Goldman Sachs Group, Inc.",
+      "eventTime": "2026-04-09T15:00:00+00:00",
+      "matchedTickers": [],
+      "matchedSectors": [
+        "Financials"
+      ],
+      "userRelevance": 2.5
+    }
+  ],
+  "matchedItemCount": 2,
+  "matchedItemsShown": 2
 }

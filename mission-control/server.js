@@ -348,6 +348,8 @@ function normalizeJournalItem(item, index = 0) {
     headline: String(item?.headline || 'Untitled item').trim(),
     summary: String(item?.summary || '').trim(),
     whyItMatters: String(item?.whyItMatters || '').trim(),
+    impactRead: String(item?.impactRead || '').trim(),
+    primaryTheme: String(item?.primaryTheme || '').trim(),
     source: String(item?.source || '').trim(),
     url: String(item?.url || '').trim(),
     scope: String(item?.scope || 'unknown').trim(),
@@ -361,11 +363,57 @@ function normalizeJournalItem(item, index = 0) {
     affectedNames: Array.isArray(item?.affectedNames) ? item.affectedNames.map((value) => String(value || '').trim()).filter(Boolean) : [],
     affectedSectors: Array.isArray(item?.affectedSectors) ? item.affectedSectors.map((value) => String(value || '').trim()).filter(Boolean) : [],
     affectedEtfs: Array.isArray(item?.affectedEtfs) ? item.affectedEtfs.map((value) => String(value || '').trim()).filter(Boolean) : [],
+    matchedTickers: Array.isArray(item?.matchedTickers) ? item.matchedTickers.map((value) => String(value || '').trim()).filter(Boolean) : [],
+    matchedSectors: Array.isArray(item?.matchedSectors) ? item.matchedSectors.map((value) => String(value || '').trim()).filter(Boolean) : [],
+    userRelevance: typeof item?.userRelevance === 'number' ? item.userRelevance : 0,
     eventTime: String(item?.eventTime || '').trim(),
   }
 }
 
-function buildStockImpactBoard(items) {
+function normalizeDigestBoardEntry(item, index = 0) {
+  return {
+    id: String(item?.headline || item?.label || `board-${index}`),
+    label: String(item?.label || item?.theme || `Board ${index + 1}`).trim(),
+    headline: String(item?.headline || '').trim(),
+    summary: String(item?.summary || '').trim(),
+    impactRead: String(item?.impactRead || '').trim(),
+    score: typeof item?.score === 'number' ? item.score : 0,
+    supportingCount: typeof item?.supportingCount === 'number' ? item.supportingCount : 0,
+    supportingHeadlines: Array.isArray(item?.supportingHeadlines) ? item.supportingHeadlines.map((value) => String(value || '').trim()).filter(Boolean) : [],
+    highPriority: Boolean(item?.highPriority),
+    scope: String(item?.scope || '').trim(),
+    affectedNames: Array.isArray(item?.affectedNames) ? item.affectedNames.map((value) => String(value || '').trim()).filter(Boolean) : [],
+    affectedSectors: Array.isArray(item?.affectedSectors) ? item.affectedSectors.map((value) => String(value || '').trim()).filter(Boolean) : [],
+  }
+}
+
+function buildStockImpactBoard(digest, items) {
+  const storedBoard = Array.isArray(digest?.stockImpactBoard)
+    ? digest.stockImpactBoard.map((item, index) => normalizeJournalItem(item, index))
+    : []
+
+  if (storedBoard.length) {
+    return storedBoard
+      .slice(0, 8)
+      .map((item) => ({
+        id: item.id,
+        headline: item.headline,
+        whyItMatters: item.whyItMatters,
+        impactRead: item.impactRead,
+        affectedNames: item.affectedNames,
+        affectedSectors: item.affectedSectors,
+        affectedEtfs: item.affectedEtfs,
+        scope: item.scope,
+        score: item.score,
+        highPriority: item.highPriority,
+        direction: item.direction,
+        confidenceLabel: item.confidenceLabel,
+        themes: item.themes,
+        url: item.url,
+        source: item.source,
+      }))
+  }
+
   return items
     .filter((item) => item.affectedNames.length > 0 || (item.scope && item.scope !== 'broad'))
     .sort((a, b) => {
@@ -377,6 +425,7 @@ function buildStockImpactBoard(items) {
       id: item.id,
       headline: item.headline,
       whyItMatters: item.whyItMatters,
+      impactRead: item.impactRead,
       affectedNames: item.affectedNames,
       affectedSectors: item.affectedSectors,
       affectedEtfs: item.affectedEtfs,
@@ -396,8 +445,20 @@ function buildGlobalOverview(digest, items) {
     totalItems: typeof digest?.totalItems === 'number' ? digest.totalItems : items.length,
     highPriorityCount: typeof digest?.highPriorityCount === 'number' ? digest.highPriorityCount : items.filter((item) => item.highPriority).length,
     totalScore: typeof digest?.totalScore === 'number' ? digest.totalScore : items.reduce((sum, item) => sum + (item.score || 0), 0),
+    headlineSummary: String(digest?.headlineSummary || '').trim(),
     topCategories: Array.isArray(digest?.topCategories) ? digest.topCategories : [],
     unresolvedUncertainties: Array.isArray(digest?.unresolvedUncertainties) ? digest.unresolvedUncertainties.map((value) => String(value || '').trim()).filter(Boolean) : [],
+    overviewBoard: Array.isArray(digest?.overviewBoard) ? digest.overviewBoard.map((item, index) => normalizeDigestBoardEntry(item, index)) : [],
+    watchNext: Array.isArray(digest?.watchNext) ? digest.watchNext.map((value) => String(value || '').trim()).filter(Boolean) : [],
+    deltaVsLastRun: {
+      summary: String(digest?.deltaVsLastRun?.summary || '').trim(),
+      previousGeneratedAt: String(digest?.deltaVsLastRun?.previousGeneratedAt || '').trim(),
+      previousLabel: String(digest?.deltaVsLastRun?.previousLabel || '').trim(),
+      newThemes: Array.isArray(digest?.deltaVsLastRun?.newThemes) ? digest.deltaVsLastRun.newThemes.map((value) => String(value || '').trim()).filter(Boolean) : [],
+      stillLiveThemes: Array.isArray(digest?.deltaVsLastRun?.stillLiveThemes) ? digest.deltaVsLastRun.stillLiveThemes.map((value) => String(value || '').trim()).filter(Boolean) : [],
+      cooledThemes: Array.isArray(digest?.deltaVsLastRun?.cooledThemes) ? digest.deltaVsLastRun.cooledThemes.map((value) => String(value || '').trim()).filter(Boolean) : [],
+      freshHeadlineCount: typeof digest?.deltaVsLastRun?.freshHeadlineCount === 'number' ? digest.deltaVsLastRun.freshHeadlineCount : 0,
+    },
   }
 }
 
@@ -431,7 +492,10 @@ function normalizeUserDigest(userDigest, globalItems) {
     watchlistStatus,
     watchFlags: typeof userDigest?.watchFlags === 'number' ? userDigest.watchFlags : watchlistStatus.reduce((sum, item) => sum + item.flags.length, 0),
     priceError: String(userDigest?.priceError || '').trim(),
+    summaryLine: String(userDigest?.summaryLine || '').trim(),
+    watchNext: Array.isArray(userDigest?.watchNext) ? userDigest.watchNext.map((value) => String(value || '').trim()).filter(Boolean) : [],
     matchedItemCount: typeof userDigest?.matchedItemCount === 'number' ? userDigest.matchedItemCount : matchedItems.length,
+    matchedItemsShown: typeof userDigest?.matchedItemsShown === 'number' ? userDigest.matchedItemsShown : matchedItems.length,
     matchedItems,
     derivedMatches,
     raw: {
@@ -500,7 +564,7 @@ async function readMarketJournal() {
         windowEnd: String(globalDigest?.windowEnd || '').trim(),
         global: {
           overview: buildGlobalOverview(globalDigest, globalItems),
-          stockImpactBoard: buildStockImpactBoard(globalItems),
+          stockImpactBoard: buildStockImpactBoard(globalDigest, globalItems),
           items: globalItems,
           raw: {
             timezone: String(globalDigest?.timezone || '').trim(),

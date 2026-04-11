@@ -12,6 +12,10 @@
 - Keep `.learnings/snapshots/*.bak` out of git.
 - If `scripts/git-auto-sync.sh` reports `push_failed`, inspect `detail=` before assuming SSH/auth is broken.
 
+## OpenClaw runtime / status
+
+- `session_status` can misreport `thinking` / `reasoning` for sessions that rely on per-agent defaults (for example `main` with `thinkingDefault=xhigh` and `reasoningDefault=on`). The tool currently falls back to explicit session overrides or global defaults instead of resolving the agent-specific default path. If certainty matters, check the live runtime/config or set an explicit session override (`/think:...`, `/reasoning:...`).
+
 ## Mission control / LAN
 
 - If a Mac browser says a local mission-control URL is unreachable while `curl` to the same `http://<LAN-IP>:<port>/` works, check macOS **System Settings → Privacy & Security → Local Network** for that browser before changing the server or Windows/WSL bridge.

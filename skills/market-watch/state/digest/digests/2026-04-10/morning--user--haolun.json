@@ -2,7 +2,7 @@
   "kind": "user-watchlist-digest",
   "userId": "haolun",
   "displayName": "haolun",
-  "generatedAt": "2026-04-10T15:01:40+00:00",
+  "generatedAt": "2026-04-10T15:01:39+00:00",
   "timezone": "America/Los_Angeles",
   "windowId": "morning",
   "label": "Morning setup",
@@ -30,7 +30,7 @@
       "note": "",
       "importance": "normal",
       "flags": [],
-      "checkedAt": "2026-04-10T15:01:40+00:00"
+      "checkedAt": "2026-04-10T15:01:39+00:00"
     },
     {
       "ticker": "BAC",
@@ -40,7 +40,7 @@
       "note": "",
       "importance": "normal",
       "flags": [],
-      "checkedAt": "2026-04-10T15:01:40+00:00"
+      "checkedAt": "2026-04-10T15:01:39+00:00"
     },
     {
       "ticker": "HD",
@@ -50,7 +50,7 @@
       "note": "",
       "importance": "normal",
       "flags": [],
-      "checkedAt": "2026-04-10T15:01:40+00:00"
+      "checkedAt": "2026-04-10T15:01:39+00:00"
     },
     {
       "ticker": "NVDA",
@@ -60,11 +60,18 @@
       "note": "",
       "importance": "normal",
       "flags": [],
-      "checkedAt": "2026-04-10T15:01:40+00:00"
+      "checkedAt": "2026-04-10T15:01:39+00:00"
     }
   ],
   "watchFlags": 0,
   "priceError": null,
+  "summaryLine": "No clean direct watchlist hit crossed the threshold in this window yet; still quiet: AAPL, BAC, HD.",
+  "watchNext": [
+    "Watch whether the move stays concentrated in the leaders or broadens into semis, suppliers, and QQQ/SMH.",
+    "Watch bond yields, duration-sensitive tech, and whether inflation pressure spreads beyond the headline.",
+    "Watch oil follow-through and whether energy pressure feeds back into inflation expectations and index sentiment."
+  ],
   "matchedItems": [],
-  "matchedItemCount": 0
+  "matchedItemCount": 0,
+  "matchedItemsShown": 0
 }

@@ -1,17 +1,14 @@
-# Market digest — haolun watchlist — Morning setup
+# Market digest — Ning watchlist — Morning setup
 
 - Generated: 2026-04-10T15:01:39+00:00
 - Follows global digest: skills/market-watch/state/digest/digests/2026-04-10/morning.md
 - Global window: 2026-04-10T14:56:07+00:00 → 2026-04-10T15:01:39+00:00
-- Watched tickers: AAPL, BAC, HD, NVDA
+- Watched tickers: none
 
-> No clean direct watchlist hit crossed the threshold in this window yet; still quiet: AAPL, BAC, HD.
+> No clean direct watchlist hit crossed the threshold in this window yet.
 
 ## Watchlist status
-- AAPL: price=261.52 | importance=normal | flags=none
-- BAC: price=52.55 | importance=normal | flags=none
-- HD: price=338.695 | importance=normal | flags=none
-- NVDA: price=188.715 | importance=normal | flags=none
+- No watchlist items configured.
 
 ## Watch next
 - Watch whether the move stays concentrated in the leaders or broadens into semis, suppliers, and QQQ/SMH.

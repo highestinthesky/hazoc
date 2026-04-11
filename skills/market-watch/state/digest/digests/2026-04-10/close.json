@@ -5,10 +5,416 @@
   "timezone": "America/New_York",
   "windowStart": "2026-04-09T23:03:57+00:00",
   "windowEnd": "2026-04-10T03:03:57+00:00",
-  "totalItems": 0,
-  "totalScore": 0,
-  "highPriorityCount": 0,
-  "topCategories": [],
-  "unresolvedUncertainties": [],
-  "items": []
+  "totalItems": 8,
+  "totalScore": 99.35,
+  "highPriorityCount": 6,
+  "headlineSummary": "Main drivers this window: Energy + Banks / credit; the clearest single-name spillover is showing up in GS.",
+  "topCategories": [
+    {
+      "category": "energy",
+      "count": 3
+    },
+    {
+      "category": "banks",
+      "count": 2
+    },
+    {
+      "category": "regulation",
+      "count": 2
+    },
+    {
+      "category": "rates",
+      "count": 1
+    }
+  ],
+  "overviewBoard": [
+    {
+      "theme": "rates",
+      "label": "Rates / Fed path",
+      "headline": "Minutes of the Federal Open Market Committee, March 17\u201318, 2026",
+      "summary": "Fed/rates expectations are still shaping the tape here; that matters because the first-order move usually runs through yields, big tech, small caps, and banks.",
+      "impactRead": "Broad tape mover \u2014 first read needs confirmation; confirmation should show up in IWM, QQQ, SPY, TLT.",
+      "supportingCount": 1,
+      "supportingHeadlines": [
+        "Minutes of the Federal Open Market Committee, March 17\u201318, 2026"
+      ],
+      "score": 16.25,
+      "highPriority": true,
+      "scope": "broad",
+      "affectedNames": [],
+      "affectedSectors": [
+        "Financials",
+        "Rate-sensitive"
+      ]
+    }
+  ],
+  "stockImpactBoard": [
+    {
+      "headline": "Federal Reserve Board announces termination of enforcement actions with Cr\u00e9dit Agricole S.A. and Cr\u00e9dit Agricole Corporate and Investment Bank, Mega International Commercial Bank Co., Ltd, and the Goldman Sachs Group, Inc.",
+      "whyItMatters": "Most relevant to Financials because it may change the near-term outlook for that slice of the market.",
+      "impactRead": "GS has the clearest first-order exposure and the read leans bearish; watch peer sympathy in KBE, XLF.",
+      "primaryTheme": "banks",
+      "affectedSectors": [
+        "Financials"
+      ],
+      "affectedNames": [
+        "GS"
+      ],
+      "affectedEtfs": [
+        "KBE",
+        "XLF"
+      ],
+      "scope": "sector",
+      "confidence": 0.68,
+      "confidenceLabel": "medium",
+      "direction": "negative",
+      "score": 13.6,
+      "highPriority": true,
+      "themes": [
+        "banks"
+      ],
+      "category": "banks",
+      "source": "FRB: Press Release - All Releases",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/enforcement20260409a.htm",
+      "summary": "Federal Reserve Board announces termination of enforcement actions with Cr\u00e9dit Agricole S.A. and Cr\u00e9dit Agricole Corporate and Investment Bank, Mega International Commercial Bank Co., Ltd, and the Goldman Sachs Group, Inc.",
+      "eventTime": "2026-04-09T15:00:00+00:00"
+    },
+    {
+      "headline": "Trump says Iran 'better stop now' if it's charging oil tankers fees to go through Strait of Hormuz",
+      "whyItMatters": "Energy-supply or pricing signal that can spill into inflation expectations, energy equities, and broad risk sentiment.",
+      "impactRead": "Energy shock path needs confirmation; watch USO, XLE and any spillover into inflation expectations.",
+      "primaryTheme": "energy",
+      "affectedSectors": [
+        "Energy"
+      ],
+      "affectedNames": [],
+      "affectedEtfs": [
+        "USO",
+        "XLE"
+      ],
+      "scope": "sector",
+      "confidence": 0.62,
+      "confidenceLabel": "low",
+      "direction": "unclear",
+      "score": 13.25,
+      "highPriority": true,
+      "themes": [
+        "energy"
+      ],
+      "category": "energy",
+      "source": "US Top News and Analysis",
+      "url": "https://www.cnbc.com/2026/04/09/trump-iran-strait-of-hormuz-oil-toll.html",
+      "summary": "President Donald Trump said that Iran \"better stop now\" if it's charging fees to oil tankers passing through the Strait of Hormuz.",
+      "eventTime": "2026-04-09T22:41:02+00:00"
+    },
+    {
+      "headline": "SEC Announces Enforcement Results for Fiscal Year 2025",
+      "whyItMatters": "Regulatory/policy signal that could matter beyond one headline, especially for Financials, Industrials, Technology.",
+      "impactRead": "Sector-level read leans bearish; watch Financials, Industrials, Technology for confirmation instead of treating it as isolated.",
+      "primaryTheme": "regulation",
+      "affectedSectors": [
+        "Financials",
+        "Industrials",
+        "Technology"
+      ],
+      "affectedNames": [],
+      "affectedEtfs": [
+        "XLF",
+        "XLI",
+        "XLK"
+      ],
+      "scope": "sector",
+      "confidence": 0.68,
+      "confidenceLabel": "medium",
+      "direction": "negative",
+      "score": 12.0,
+      "highPriority": true,
+      "themes": [
+        "regulation"
+      ],
+      "category": "regulation",
+      "source": "Press Releases",
+      "url": "https://www.sec.gov/newsroom/press-releases/2026-34",
+      "summary": "The Securities and Exchange Commission today announced enforcement results for the fiscal year that ended on September 30, 2025.Central to an effective enforcement program is determining which cases to bring and responsibly stewarding Commission\u2026",
+      "eventTime": "2026-04-07T19:48:30+00:00"
+    },
+    {
+      "headline": "White House Study: Stablecoin Yield Ban Barely Boosts Bank Lending",
+      "whyItMatters": "Most relevant to Financials because it may change the near-term outlook for that slice of the market.",
+      "impactRead": "Sector-level read needs confirmation; watch Financials for confirmation instead of treating it as isolated.",
+      "primaryTheme": "banks",
+      "affectedSectors": [
+        "Financials"
+      ],
+      "affectedNames": [],
+      "affectedEtfs": [
+        "KBE",
+        "XLF"
+      ],
+      "scope": "sector",
+      "confidence": 0.62,
+      "confidenceLabel": "low",
+      "direction": "unclear",
+      "score": 9.0,
+      "highPriority": false,
+      "themes": [
+        "banks"
+      ],
+      "category": "banks",
+      "source": "CryptoProwl",
+      "url": "https://finance.yahoo.com/markets/crypto/articles/white-house-study-stablecoin-yield-164700797.html",
+      "summary": "",
+      "eventTime": "2026-04-08T16:47:00+00:00"
+    }
+  ],
+  "watchNext": [
+    "Watch oil follow-through and whether energy pressure feeds back into inflation expectations and index sentiment.",
+    "Watch credit conditions, capital/regulatory follow-through, and whether large banks or regional-bank ETFs confirm it.",
+    "Watch for enforcement detail, compliance timing, and which named companies or sector ETFs take the first real hit."
+  ],
+  "deltaVsLastRun": null,
+  "unresolvedUncertainties": [
+    "Trump says Iran 'better stop now' if it's charging oil tankers fees to go through Strait of Hormuz",
+    "Iran attacks on crucial Saudi pipeline and production facilities slash kingdom's oil output",
+    "Oil rally loses steam after Israel agrees to negotiate with Lebanon",
+    "White House Study: Stablecoin Yield Ban Barely Boosts Bank Lending"
+  ],
+  "items": [
+    {
+      "headline": "Minutes of the Federal Open Market Committee, March 17\u201318, 2026",
+      "whyItMatters": "Broad-market potential because it can shift expectations around rates, growth, inflation, or policy.",
+      "impactRead": "Broad tape mover \u2014 first read needs confirmation; confirmation should show up in IWM, QQQ, SPY, TLT.",
+      "primaryTheme": "rates",
+      "affectedSectors": [
+        "Financials",
+        "Rate-sensitive"
+      ],
+      "affectedNames": [],
+      "affectedEtfs": [
+        "IWM",
+        "QQQ",
+        "SPY",
+        "TLT",
+        "XLF"
+      ],
+      "scope": "broad",
+      "confidence": 0.68,
+      "confidenceLabel": "medium",
+      "direction": "unclear",
+      "score": 16.25,
+      "highPriority": true,
+      "themes": [
+        "rates"
+      ],
+      "category": "rates",
+      "source": "FRB: Press Release - All Releases",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260408a.htm",
+      "summary": "Minutes of the Federal Open Market Committee, March 17\u201318, 2026",
+      "eventTime": "2026-04-08T18:00:00+00:00"
+    },
+    {
+      "headline": "Federal Reserve Board announces termination of enforcement actions with Cr\u00e9dit Agricole S.A. and Cr\u00e9dit Agricole Corporate and Investment Bank, Mega International Commercial Bank Co., Ltd, and the Goldman Sachs Group, Inc.",
+      "whyItMatters": "Most relevant to Financials because it may change the near-term outlook for that slice of the market.",
+      "impactRead": "GS has the clearest first-order exposure and the read leans bearish; watch peer sympathy in KBE, XLF.",
+      "primaryTheme": "banks",
+      "affectedSectors": [
+        "Financials"
+      ],
+      "affectedNames": [
+        "GS"
+      ],
+      "affectedEtfs": [
+        "KBE",
+        "XLF"
+      ],
+      "scope": "sector",
+      "confidence": 0.68,
+      "confidenceLabel": "medium",
+      "direction": "negative",
+      "score": 13.6,
+      "highPriority": true,
+      "themes": [
+        "banks"
+      ],
+      "category": "banks",
+      "source": "FRB: Press Release - All Releases",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/enforcement20260409a.htm",
+      "summary": "Federal Reserve Board announces termination of enforcement actions with Cr\u00e9dit Agricole S.A. and Cr\u00e9dit Agricole Corporate and Investment Bank, Mega International Commercial Bank Co., Ltd, and the Goldman Sachs Group, Inc.",
+      "eventTime": "2026-04-09T15:00:00+00:00"
+    },
+    {
+      "headline": "Trump says Iran 'better stop now' if it's charging oil tankers fees to go through Strait of Hormuz",
+      "whyItMatters": "Energy-supply or pricing signal that can spill into inflation expectations, energy equities, and broad risk sentiment.",
+      "impactRead": "Energy shock path needs confirmation; watch USO, XLE and any spillover into inflation expectations.",
+      "primaryTheme": "energy",
+      "affectedSectors": [
+        "Energy"
+      ],
+      "affectedNames": [],
+      "affectedEtfs": [
+        "USO",
+        "XLE"
+      ],
+      "scope": "sector",
+      "confidence": 0.62,
+      "confidenceLabel": "low",
+      "direction": "unclear",
+      "score": 13.25,
+      "highPriority": true,
+      "themes": [
+        "energy"
+      ],
+      "category": "energy",
+      "source": "US Top News and Analysis",
+      "url": "https://www.cnbc.com/2026/04/09/trump-iran-strait-of-hormuz-oil-toll.html",
+      "summary": "President Donald Trump said that Iran \"better stop now\" if it's charging fees to oil tankers passing through the Strait of Hormuz.",
+      "eventTime": "2026-04-09T22:41:02+00:00"
+    },
+    {
+      "headline": "Iran attacks on crucial Saudi pipeline and production facilities slash kingdom's oil output",
+      "whyItMatters": "Energy-supply or pricing signal that can spill into inflation expectations, energy equities, and broad risk sentiment.",
+      "impactRead": "Energy shock path needs confirmation; watch USO, XLE and any spillover into inflation expectations.",
+      "primaryTheme": "energy",
+      "affectedSectors": [
+        "Energy"
+      ],
+      "affectedNames": [],
+      "affectedEtfs": [
+        "USO",
+        "XLE"
+      ],
+      "scope": "sector",
+      "confidence": 0.62,
+      "confidenceLabel": "low",
+      "direction": "unclear",
+      "score": 12.75,
+      "highPriority": true,
+      "themes": [
+        "energy"
+      ],
+      "category": "energy",
+      "source": "US Top News and Analysis",
+      "url": "https://www.cnbc.com/2026/04/09/iran-war-oil-saudi-arabia-east-west-pipeline.html",
+      "summary": "The damage to Saudi infrastructure will only compound the disruption to global oil supplies trigged by Iran's attacks on tankers in the Strait of Hormuz.",
+      "eventTime": "2026-04-09T20:44:10+00:00"
+    },
+    {
+      "headline": "Oil rally loses steam after Israel agrees to negotiate with Lebanon",
+      "whyItMatters": "Energy-supply or pricing signal that can spill into inflation expectations, energy equities, and broad risk sentiment.",
+      "impactRead": "Energy shock path needs confirmation; watch USO, XLE and any spillover into inflation expectations.",
+      "primaryTheme": "energy",
+      "affectedSectors": [
+        "Energy"
+      ],
+      "affectedNames": [],
+      "affectedEtfs": [
+        "USO",
+        "XLE"
+      ],
+      "scope": "sector",
+      "confidence": 0.62,
+      "confidenceLabel": "low",
+      "direction": "unclear",
+      "score": 12.75,
+      "highPriority": true,
+      "themes": [
+        "energy"
+      ],
+      "category": "energy",
+      "source": "US Top News and Analysis",
+      "url": "https://www.cnbc.com/2026/04/09/oil-prices-today-wti-brent-iran-accuse-us-of-ceasefire-breach.html",
+      "summary": "Oil prices were volatile Thursday as the U.S.-Iran ceasefire agreement remained fragile.",
+      "eventTime": "2026-04-09T20:40:51+00:00"
+    },
+    {
+      "headline": "SEC Announces Enforcement Results for Fiscal Year 2025",
+      "whyItMatters": "Regulatory/policy signal that could matter beyond one headline, especially for Financials, Industrials, Technology.",
+      "impactRead": "Sector-level read leans bearish; watch Financials, Industrials, Technology for confirmation instead of treating it as isolated.",
+      "primaryTheme": "regulation",
+      "affectedSectors": [
+        "Financials",
+        "Industrials",
+        "Technology"
+      ],
+      "affectedNames": [],
+      "affectedEtfs": [
+        "XLF",
+        "XLI",
+        "XLK"
+      ],
+      "scope": "sector",
+      "confidence": 0.68,
+      "confidenceLabel": "medium",
+      "direction": "negative",
+      "score": 12.0,
+      "highPriority": true,
+      "themes": [
+        "regulation"
+      ],
+      "category": "regulation",
+      "source": "Press Releases",
+      "url": "https://www.sec.gov/newsroom/press-releases/2026-34",
+      "summary": "The Securities and Exchange Commission today announced enforcement results for the fiscal year that ended on September 30, 2025.Central to an effective enforcement program is determining which cases to bring and responsibly stewarding Commission\u2026",
+      "eventTime": "2026-04-07T19:48:30+00:00"
+    },
+    {
+      "headline": "SEC Appoints David Woodcock as Director of the Division of Enforcement",
+      "whyItMatters": "Regulatory/policy signal that could matter beyond one headline, especially for Financials, Industrials, Technology.",
+      "impactRead": "Sector-level read leans bearish; watch Financials, Industrials, Technology for confirmation instead of treating it as isolated.",
+      "primaryTheme": "regulation",
+      "affectedSectors": [
+        "Financials",
+        "Industrials",
+        "Technology"
+      ],
+      "affectedNames": [],
+      "affectedEtfs": [
+        "XLF",
+        "XLI",
+        "XLK"
+      ],
+      "scope": "sector",
+      "confidence": 0.68,
+      "confidenceLabel": "medium",
+      "direction": "negative",
+      "score": 9.75,
+      "highPriority": false,
+      "themes": [
+        "regulation"
+      ],
+      "category": "regulation",
+      "source": "Press Releases",
+      "url": "https://www.sec.gov/newsroom/press-releases/2026-35-sec-appoints-david-woodcock-director-division-enforcement",
+      "summary": "The Securities and Exchange Commission today announced that David Woodcock has been appointed Director of the Division of Enforcement, effective May 4, 2026. Mr. Woodcock is currently a partner in the Dallas and Washington, D.C. offices of Gibson, Dunn\u2026",
+      "eventTime": "2026-04-08T16:20:00+00:00"
+    },
+    {
+      "headline": "White House Study: Stablecoin Yield Ban Barely Boosts Bank Lending",
+      "whyItMatters": "Most relevant to Financials because it may change the near-term outlook for that slice of the market.",
+      "impactRead": "Sector-level read needs confirmation; watch Financials for confirmation instead of treating it as isolated.",
+      "primaryTheme": "banks",
+      "affectedSectors": [
+        "Financials"
+      ],
+      "affectedNames": [],
+      "affectedEtfs": [
+        "KBE",
+        "XLF"
+      ],
+      "scope": "sector",
+      "confidence": 0.62,
+      "confidenceLabel": "low",
+      "direction": "unclear",
+      "score": 9.0,
+      "highPriority": false,
+      "themes": [
+        "banks"
+      ],
+      "category": "banks",
+      "source": "CryptoProwl",
+      "url": "https://finance.yahoo.com/markets/crypto/articles/white-house-study-stablecoin-yield-164700797.html",
+      "summary": "",
+      "eventTime": "2026-04-08T16:47:00+00:00"
+    }
+  ]
 }

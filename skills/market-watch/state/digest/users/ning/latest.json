@@ -1,0 +1,31 @@
+{
+  "kind": "user-watchlist-digest",
+  "userId": "ning",
+  "displayName": "Ning",
+  "generatedAt": "2026-04-10T16:20:06+00:00",
+  "timezone": "America/Los_Angeles",
+  "windowId": "midday",
+  "label": "Midday update",
+  "globalGeneratedAt": "2026-04-10T16:20:06+00:00",
+  "globalWindowStart": "2026-04-10T12:20:06+00:00",
+  "globalWindowEnd": "2026-04-10T16:20:06+00:00",
+  "globalDigestPathMd": "skills/market-watch/state/digest/digests/2026-04-10/midday.md",
+  "globalDigestPathJson": "skills/market-watch/state/digest/digests/2026-04-10/midday.json",
+  "deliveryOrder": [
+    "global",
+    "user"
+  ],
+  "watchlist": [],
+  "watchlistStatus": [],
+  "watchFlags": 0,
+  "priceError": null,
+  "summaryLine": "No clean direct watchlist hit crossed the threshold in this window yet.",
+  "watchNext": [
+    "Watch whether the move stays concentrated in the leaders or broadens into semis, suppliers, and QQQ/SMH.",
+    "Watch bond yields, duration-sensitive tech, and whether inflation pressure spreads beyond the headline.",
+    "Watch oil follow-through and whether energy pressure feeds back into inflation expectations and index sentiment."
+  ],
+  "matchedItems": [],
+  "matchedItemCount": 0,
+  "matchedItemsShown": 0
+}

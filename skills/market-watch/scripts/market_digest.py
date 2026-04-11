@@ -25,7 +25,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
-from collections import Counter
+from collections import Counter, defaultdict
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from email.utils import parsedate_to_datetime
@@ -276,6 +276,29 @@ USER_IMPORTANCE_WEIGHTS = {
 
 NAME_RULES_BY_TICKER = {rule["ticker"]: rule for rule in NAME_RULES}
 TICKER_SECTOR_HINTS = {rule["ticker"]: rule["sector"] for rule in NAME_RULES}
+THEME_LABELS = {
+    "rates": "Rates / Fed path",
+    "inflation": "Inflation",
+    "jobs": "Jobs / labor",
+    "regulation": "Policy / regulation",
+    "ai-chips": "AI / semis",
+    "energy": "Energy",
+    "banks": "Banks / credit",
+    "earnings-guidance": "Earnings / guidance",
+    "m-and-a": "M&A / deal flow",
+    "general-market": "General market",
+}
+WATCH_NEXT_RULES = {
+    "rates": "Watch yields, Fed-path headlines, and whether rate-sensitive leadership absorbs or rejects the move.",
+    "inflation": "Watch bond yields, duration-sensitive tech, and whether inflation pressure spreads beyond the headline.",
+    "jobs": "Watch whether labor-market headlines change the growth/rates balance rather than staying a one-cycle blip.",
+    "regulation": "Watch for enforcement detail, compliance timing, and which named companies or sector ETFs take the first real hit.",
+    "ai-chips": "Watch whether the move stays concentrated in the leaders or broadens into semis, suppliers, and QQQ/SMH.",
+    "energy": "Watch oil follow-through and whether energy pressure feeds back into inflation expectations and index sentiment.",
+    "banks": "Watch credit conditions, capital/regulatory follow-through, and whether large banks or regional-bank ETFs confirm it.",
+    "earnings-guidance": "Watch whether guidance revisions stay isolated to the company or reprice the peer group.",
+    "m-and-a": "Watch deal certainty, financing conditions, and whether peers rerate on sympathy.",
+}
 
 
 @dataclass
@@ -525,6 +548,357 @@ def build_watchlist_status(items: list[dict[str, Any]], prices: dict[str, float]
     return out
 
 
+def clean_join(values: Iterable[str], limit: int = 3) -> str:
+    seen: list[str] = []
+    for value in values:
+        text = str(value or "").strip()
+        if not text or text in seen:
+            continue
+        seen.append(text)
+        if len(seen) >= limit:
+            break
+    return ", ".join(seen)
+
+
+def primary_theme(observation: dict[str, Any]) -> str:
+    themes = [str(value).strip() for value in observation.get("themes", []) if str(value).strip()]
+    if themes:
+        for preferred in [
+            "inflation",
+            "rates",
+            "jobs",
+            "energy",
+            "banks",
+            "regulation",
+            "ai-chips",
+            "earnings-guidance",
+            "m-and-a",
+        ]:
+            if preferred in themes:
+                return preferred
+        return themes[0]
+    category = str(observation.get("category") or "").strip()
+    return category or "general-market"
+
+
+def theme_label(theme: str) -> str:
+    return THEME_LABELS.get(theme, theme.replace("-", " ").title() if theme else "General market")
+
+
+def direction_phrase(direction: str) -> str:
+    direction = str(direction or "unclear").strip().lower()
+    if direction == "positive":
+        return "leans bullish"
+    if direction == "negative":
+        return "leans bearish"
+    if direction == "mixed":
+        return "is mixed"
+    return "needs confirmation"
+
+
+def impact_read(observation: dict[str, Any], focus_tickers: Iterable[str] | None = None) -> str:
+    names = [str(value).strip() for value in observation.get("affectedNames", []) if str(value).strip()]
+    sectors = [str(value).strip() for value in observation.get("affectedSectors", []) if str(value).strip()]
+    etfs = [str(value).strip() for value in observation.get("affectedEtfs", []) if str(value).strip()]
+    theme = primary_theme(observation)
+    scope = str(observation.get("scope") or "single-name").strip().lower()
+    phrase = direction_phrase(observation.get("direction") or "unclear")
+    focus = {str(value or "").strip().upper() for value in (focus_tickers or []) if str(value or "").strip()}
+    matched_focus = [name for name in names if name.upper() in focus]
+
+    if theme in {"inflation", "rates", "jobs"}:
+        vehicles = clean_join(etfs or ["SPY", "QQQ", "TLT", "XLF"], limit=4)
+        return f"Broad tape mover — first read {phrase}; confirmation should show up in {vehicles}."
+    if theme == "energy":
+        vehicles = clean_join(etfs or ["XLE", "USO", "SPY"], limit=3)
+        return f"Energy shock path {phrase}; watch {vehicles} and any spillover into inflation expectations."
+    if matched_focus:
+        subject = clean_join(matched_focus, limit=2)
+        verb = "has" if len(matched_focus[:2]) == 1 else "have"
+        peers = clean_join(etfs or sectors, limit=3)
+        tail = f"; then watch peer sympathy in {peers}" if peers else ""
+        return f"{subject} {verb} the clearest direct watchlist exposure and the setup {phrase}{tail}."
+    if names:
+        subject = clean_join(names, limit=2)
+        verb = "has" if len(names[:2]) == 1 else "have"
+        peers = clean_join(etfs or sectors, limit=3)
+        tail = f"; watch peer sympathy in {peers}" if peers else ""
+        return f"{subject} {verb} the clearest first-order exposure and the read {phrase}{tail}."
+    if sectors or scope == "sector":
+        targets = clean_join(sectors or etfs, limit=3) or "the relevant sector sleeve"
+        return f"Sector-level read {phrase}; watch {targets} for confirmation instead of treating it as isolated."
+    return f"Market read {phrase}; treat it as provisional until follow-through confirms it."
+
+
+def theme_group_summary(theme: str, rows: list[dict[str, Any]]) -> str:
+    names = clean_join([name for row in rows for name in row.get("affectedNames", [])], limit=3)
+    sectors = clean_join([sector for row in rows for sector in row.get("affectedSectors", [])], limit=3)
+    count = len(rows)
+    if theme == "inflation":
+        return f"Inflation stayed on the tape across {count} headline{'s' if count != 1 else ''}; if it sticks, yields, duration-sensitive tech, consumers, and financials stay reactive."
+    if theme == "rates":
+        return f"Fed/rates expectations are still shaping the tape here; that matters because the first-order move usually runs through yields, big tech, small caps, and banks."
+    if theme == "jobs":
+        return f"Labor-market data is acting like a macro steering wheel here; the real question is whether it shifts the growth-vs-rates balance or fades quickly."
+    if theme == "energy":
+        return f"Energy is not just an isolated commodity story here — it can push XLE directly and also leak into inflation expectations and broad sentiment."
+    if theme == "banks":
+        return f"Banking/credit headlines matter because they can change both financials directly and the market's confidence in the broader funding backdrop."
+    if theme == "regulation":
+        target = names or sectors or "the exposed slice of the market"
+        return f"Policy/regulatory risk is active here; if the detail has teeth, the first clean repricing should land in {target}."
+    if theme == "ai-chips":
+        target = names or sectors or "semis"
+        return f"AI/semi leadership remains a high-beta leadership pocket; the key read is whether {target} keeps the move concentrated or starts broadening it."
+    if theme == "earnings-guidance":
+        target = names or sectors or "the peer group"
+        return f"Guidance-sensitive flow is active; the useful read is whether the move stays company-specific or starts repricing {target}."
+    if theme == "m-and-a":
+        target = names or sectors or "related names"
+        return f"Deal flow can move more than the headline name if financing and certainty hold; watch how fast {target} follows."
+    if names:
+        return f"{theme_label(theme)} is active, with the clearest direct first-order exposure in {names}."
+    if sectors:
+        return f"{theme_label(theme)} is active and most likely to transmit through {sectors}."
+    return f"{theme_label(theme)} stayed live across {count} headline{'s' if count != 1 else ''} in this window."
+
+
+def digest_item_from_observation(row: dict[str, Any], focus_tickers: Iterable[str] | None = None) -> dict[str, Any]:
+    confidence = float(row.get("confidence", 0.0) or 0.0)
+    return {
+        "headline": row.get("headline"),
+        "whyItMatters": why_it_matters(row),
+        "impactRead": impact_read(row, focus_tickers=focus_tickers),
+        "primaryTheme": primary_theme(row),
+        "affectedSectors": row.get("affectedSectors", []),
+        "affectedNames": row.get("affectedNames", []),
+        "affectedEtfs": row.get("affectedEtfs", []),
+        "scope": row.get("scope", "single-name"),
+        "confidence": row.get("confidence"),
+        "confidenceLabel": confidence_label(confidence),
+        "direction": row.get("direction", "unclear"),
+        "score": row.get("score"),
+        "highPriority": row.get("highPriority", False),
+        "themes": row.get("themes", []),
+        "category": row.get("category"),
+        "source": row.get("source"),
+        "url": row.get("url"),
+        "summary": row.get("summary"),
+        "eventTime": row.get("eventTime"),
+    }
+
+
+def build_headline_summary(rows: list[dict[str, Any]]) -> str:
+    if not rows:
+        return "No digest items met the threshold in this window."
+    theme_scores: Counter[str] = Counter()
+    name_scores: Counter[str] = Counter()
+    for row in rows:
+        theme_scores[primary_theme(row)] += float(row.get("score", 0.0))
+        for name in row.get("affectedNames", []):
+            name_scores[str(name)] += float(row.get("score", 0.0))
+    top_themes = [theme_label(theme) for theme, _ in theme_scores.most_common(2)]
+    top_names = [name for name, _ in name_scores.most_common(2)]
+    if top_themes and top_names:
+        return f"Main drivers this window: {' + '.join(top_themes)}; the clearest single-name spillover is showing up in {', '.join(top_names)}."
+    if top_themes:
+        return f"Main drivers this window: {' + '.join(top_themes)}."
+    return f"Most important item this window: {rows[0].get('headline', 'Untitled headline')}"
+
+
+def build_overview_board(rows: list[dict[str, Any]], limit: int = 3) -> list[dict[str, Any]]:
+    groups: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for row in rows:
+        groups[primary_theme(row)].append(row)
+
+    board: list[dict[str, Any]] = []
+    for theme, grouped_rows in groups.items():
+        grouped_rows.sort(
+            key=lambda row: (
+                bool(row.get("highPriority")),
+                float(row.get("score", 0.0)),
+                row.get("eventTime") or row.get("seenAt") or "",
+            ),
+            reverse=True,
+        )
+        lead = grouped_rows[0]
+        board.append(
+            {
+                "theme": theme,
+                "label": theme_label(theme),
+                "headline": lead.get("headline"),
+                "summary": theme_group_summary(theme, grouped_rows),
+                "impactRead": impact_read(lead),
+                "supportingCount": len(grouped_rows),
+                "supportingHeadlines": [row.get("headline") for row in grouped_rows[:3] if row.get("headline")],
+                "score": round(sum(float(row.get("score", 0.0)) for row in grouped_rows), 2),
+                "highPriority": any(bool(row.get("highPriority")) for row in grouped_rows),
+                "scope": lead.get("scope", "single-name"),
+                "affectedNames": sorted({str(name) for row in grouped_rows for name in row.get("affectedNames", []) if str(name).strip()}),
+                "affectedSectors": sorted({str(sector) for row in grouped_rows for sector in row.get("affectedSectors", []) if str(sector).strip()}),
+            }
+        )
+
+    board.sort(key=lambda item: (bool(item.get("highPriority")), float(item.get("score", 0.0))), reverse=True)
+    return board[:limit]
+
+
+def build_stock_impact_board(rows: list[dict[str, Any]], limit: int = 6, focus_tickers: Iterable[str] | None = None) -> list[dict[str, Any]]:
+    focus = {str(value or "").strip().upper() for value in (focus_tickers or []) if str(value or "").strip()}
+    filtered = [
+        row
+        for row in rows
+        if row.get("affectedNames") or str(row.get("scope") or "").strip().lower() not in {"", "broad"}
+    ]
+    filtered.sort(
+        key=lambda row: (
+            len({str(name).upper() for name in row.get("affectedNames", [])} & focus),
+            2 if str(row.get("scope") or "").strip().lower() == "single-name" else 1 if str(row.get("scope") or "").strip().lower() == "sector" else 0,
+            bool(row.get("highPriority")),
+            len(row.get("affectedNames", [])),
+            float(row.get("score", 0.0)),
+            row.get("eventTime") or row.get("seenAt") or "",
+        ),
+        reverse=True,
+    )
+
+    selected: list[dict[str, Any]] = []
+    seen_keys: set[tuple[str, tuple[str, ...], tuple[str, ...]]] = set()
+    for row in filtered:
+        key = (
+            primary_theme(row),
+            tuple(sorted(str(name) for name in row.get("affectedNames", []) if str(name).strip())[:2]),
+            tuple(sorted(str(sector) for sector in row.get("affectedSectors", []) if str(sector).strip())[:2]),
+        )
+        if key in seen_keys:
+            continue
+        seen_keys.add(key)
+        selected.append(digest_item_from_observation(row, focus_tickers=focus_tickers))
+        if len(selected) >= limit:
+            break
+    return selected
+
+
+def build_watch_next(rows: list[dict[str, Any]], *, limit: int = 3, focus_tickers: Iterable[str] | None = None, watchlist_status: list[dict[str, Any]] | None = None) -> list[str]:
+    bullets: list[str] = []
+    flagged = [item for item in (watchlist_status or []) if item.get("flags")]
+    if flagged:
+        preview = ", ".join(f"{item['ticker']} ({', '.join(item.get('flags', []))})" for item in flagged[:2])
+        bullets.append(f"Watch the names already tripping price-level flags: {preview}.")
+
+    theme_scores: Counter[str] = Counter()
+    for row in rows:
+        theme_scores[primary_theme(row)] += float(row.get("score", 0.0)) + (1.0 if row.get("highPriority") else 0.0)
+    for theme, _ in theme_scores.most_common():
+        note = WATCH_NEXT_RULES.get(theme)
+        if not note or note in bullets:
+            continue
+        bullets.append(note)
+        if len(bullets) >= limit:
+            return bullets[:limit]
+
+    focus = [str(value or "").strip().upper() for value in (focus_tickers or []) if str(value or "").strip()]
+    if focus and len(bullets) < limit:
+        bullets.append(f"Watch whether any late-session peer sympathy or follow-through finally reaches {', '.join(focus[:3])} directly.")
+    return bullets[:limit]
+
+
+def latest_previous_digest_payload(worker_state: dict[str, Any]) -> dict[str, Any] | None:
+    candidates: list[tuple[datetime, dict[str, Any]]] = []
+    for info in (worker_state.get("lastDigests", {}) or {}).values():
+        if not isinstance(info, dict):
+            continue
+        generated_at = parse_datetime_maybe(info.get("generatedAt"))
+        path_json = info.get("pathJson")
+        if generated_at is None or not path_json:
+            continue
+        payload = read_json(WORKSPACE_ROOT / str(path_json), None)
+        if isinstance(payload, dict):
+            candidates.append((generated_at, payload))
+    if not candidates:
+        return None
+    candidates.sort(key=lambda item: item[0], reverse=True)
+    return candidates[0][1]
+
+
+def build_delta_vs_last_run(rows: list[dict[str, Any]], previous_payload: dict[str, Any] | None) -> dict[str, Any] | None:
+    if not previous_payload or not previous_payload.get("items"):
+        return None
+    current_themes = Counter(primary_theme(row) for row in rows if primary_theme(row))
+    previous_themes = Counter(
+        primary_theme(item)
+        for item in previous_payload.get("items", [])
+        if isinstance(item, dict) and primary_theme(item)
+    )
+    current_titles = {normalize_text(str(row.get("headline") or "")) for row in rows if row.get("headline")}
+    previous_titles = {
+        normalize_text(str(item.get("headline") or ""))
+        for item in previous_payload.get("items", [])
+        if isinstance(item, dict) and item.get("headline")
+    }
+
+    new_themes = [theme for theme in current_themes if theme not in previous_themes]
+    still_live = [theme for theme in current_themes if theme in previous_themes]
+    cooled = [theme for theme in previous_themes if theme not in current_themes]
+    fresh_headlines = len(current_titles - previous_titles)
+
+    bits: list[str] = []
+    if new_themes:
+        bits.append(f"newly live: {', '.join(theme_label(theme) for theme in new_themes[:2])}")
+    if still_live:
+        bits.append(f"still leading: {', '.join(theme_label(theme) for theme in still_live[:2])}")
+    if cooled:
+        bits.append(f"cooled: {', '.join(theme_label(theme) for theme in cooled[:2])}")
+    if fresh_headlines:
+        bits.append(f"{fresh_headlines} fresh headline{'s' if fresh_headlines != 1 else ''}")
+    summary = "; ".join(bits) if bits else "No clean change signal versus the last stored digest."
+    return {
+        "summary": summary,
+        "previousGeneratedAt": previous_payload.get("generatedAt"),
+        "previousLabel": previous_payload.get("label"),
+        "newThemes": [theme_label(theme) for theme in new_themes[:3]],
+        "stillLiveThemes": [theme_label(theme) for theme in still_live[:3]],
+        "cooledThemes": [theme_label(theme) for theme in cooled[:3]],
+        "freshHeadlineCount": fresh_headlines,
+    }
+
+
+def observations_between(window_start: datetime, window_end: datetime) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for row in read_jsonl(OBSERVATIONS_PATH):
+        seen_at = parse_datetime_maybe(row.get("seenAt") or row.get("eventTime"))
+        if seen_at is None:
+            continue
+        if seen_at <= window_start or seen_at > window_end:
+            continue
+        if not row.get("digestEligible"):
+            continue
+        rows.append(row)
+    return rows
+
+
+def build_user_watchlist_summary(watchlist_status: list[dict[str, Any]], matched_items: list[dict[str, Any]], watchlist: list[str]) -> str:
+    direct = sorted({ticker for item in matched_items for ticker in item.get("matchedTickers", [])})
+    sectors = sorted({sector for item in matched_items for sector in item.get("matchedSectors", [])})
+    flagged = [item["ticker"] for item in watchlist_status if item.get("flags")]
+    covered = set(direct)
+    quiet = [ticker for ticker in watchlist if ticker and ticker not in covered]
+
+    bits: list[str] = []
+    if direct:
+        bits.append(f"Clearest direct watchlist hit{'s' if len(direct) != 1 else ''}: {', '.join(direct[:3])}")
+    elif sectors:
+        bits.append(f"No direct ticker hit yet; the signal is still sector-level through {', '.join(sectors[:2])}")
+    else:
+        bits.append("No clean direct watchlist hit crossed the threshold in this window yet")
+    if flagged:
+        bits.append(f"price flags already tripped on {', '.join(flagged[:2])}")
+    if quiet:
+        bits.append(f"still quiet: {', '.join(quiet[:3])}")
+    sentence = "; ".join(bits).strip()
+    return sentence + ("." if sentence and not sentence.endswith(".") else "")
+
+
 def build_user_digest_payload(
     global_payload: dict[str, Any],
     global_result: dict[str, Any],
@@ -541,18 +915,48 @@ def build_user_digest_payload(
         return None
 
     watchlist_status = build_watchlist_status(watch_items, prices, generated_at)
-    matched_items: list[dict[str, Any]] = []
-    for item in global_payload.get("items", []):
-        if not isinstance(item, dict):
-            continue
+    window_start = parse_datetime_maybe(global_payload.get("windowStart"))
+    window_end = parse_datetime_maybe(global_payload.get("windowEnd"))
+    focus_tickers = [item.get("ticker") for item in watch_items if item.get("ticker")]
+    candidate_rows = observations_between(window_start, window_end) if window_start and window_end else []
+    matched_rows: list[dict[str, Any]] = []
+    for row in candidate_rows:
+        item = digest_item_from_observation(row, focus_tickers=focus_tickers)
         match = classify_digest_item_for_user(item, watch_items)
         if not match["include"]:
             continue
-        merged = dict(item)
+        merged = dict(row)
         merged.update(match)
+        matched_rows.append(merged)
+    matched_rows.sort(
+        key=lambda row: (
+            float(row.get("userRelevance", 0.0)),
+            bool(row.get("highPriority")),
+            float(row.get("score", 0.0)),
+            row.get("eventTime") or row.get("seenAt") or "",
+        ),
+        reverse=True,
+    )
+    matched_rows = dedupe_digest_rows(matched_rows, max_items=8)
+
+    matched_items: list[dict[str, Any]] = []
+    for row in matched_rows[:8]:
+        merged = digest_item_from_observation(row, focus_tickers=focus_tickers)
+        merged.update(
+            {
+                "matchedTickers": row.get("matchedTickers", []),
+                "matchedSectors": row.get("matchedSectors", []),
+                "userRelevance": row.get("userRelevance", 0.0),
+            }
+        )
         matched_items.append(merged)
-    matched_items.sort(key=lambda row: (float(row.get("userRelevance", 0.0)), float(row.get("score", 0.0))), reverse=True)
-    matched_items = matched_items[:6]
+
+    summary_line = build_user_watchlist_summary(
+        watchlist_status,
+        matched_items,
+        [item.get("ticker") for item in watch_items if item.get("ticker")],
+    )
+    watch_next = build_watch_next(candidate_rows or matched_rows, limit=3, focus_tickers=focus_tickers, watchlist_status=watchlist_status)
 
     return {
         "kind": "user-watchlist-digest",
@@ -572,8 +976,11 @@ def build_user_digest_payload(
         "watchlistStatus": watchlist_status,
         "watchFlags": sum(1 for item in watchlist_status if item.get("flags")),
         "priceError": price_error,
+        "summaryLine": summary_line,
+        "watchNext": watch_next,
         "matchedItems": matched_items,
-        "matchedItemCount": len(matched_items),
+        "matchedItemCount": len(matched_rows),
+        "matchedItemsShown": len(matched_items),
     }
 
 
@@ -597,6 +1004,10 @@ def render_user_digest_markdown(payload: dict[str, Any]) -> str:
         lines.append(f"- Price status: unavailable ({payload['priceError']})")
     lines.append("")
 
+    if payload.get("summaryLine"):
+        lines.append(f"> {payload['summaryLine']}")
+        lines.append("")
+
     lines.append("## Watchlist status")
     if not payload.get("watchlistStatus"):
         lines.append("- No watchlist items configured.")
@@ -608,10 +1019,16 @@ def render_user_digest_markdown(payload: dict[str, Any]) -> str:
             )
     lines.append("")
 
+    if payload.get("watchNext"):
+        lines.append("## Watch next")
+        for item in payload.get("watchNext", []):
+            lines.append(f"- {item}")
+        lines.append("")
+
     lines.append("## Relevant items")
     matched_items = payload.get("matchedItems", [])
     if not matched_items:
-        lines.append("- No current global-digest items crossed the watchlist relevance threshold.")
+        lines.append("- No watchlist-relevant items crossed the threshold in this window.")
     else:
         for idx, item in enumerate(matched_items, start=1):
             lines.append(f"### {idx}. {item['headline']}")
@@ -622,6 +1039,8 @@ def render_user_digest_markdown(payload: dict[str, Any]) -> str:
                 match_bits.append(f"sectors={', '.join(item['matchedSectors'])}")
             lines.append(f"- Match basis: {' | '.join(match_bits) if match_bits else 'general overlap'}")
             lines.append(f"- Why it matters: {item['whyItMatters']}")
+            if item.get("impactRead"):
+                lines.append(f"- Likely read: {item['impactRead']}")
             lines.append(
                 f"- Scope: {item['scope']} | Confidence: {item['confidenceLabel']} ({item['confidence']}) | Direction: {item['direction']} | Score: {item['score']} | User relevance: {item['userRelevance']}"
             )
@@ -1416,6 +1835,9 @@ def build_digest_payload(window: dict[str, Any], settings: dict[str, Any], worke
 
     top_categories = Counter(row.get("category", "unknown") for row in rows).most_common(5)
     low_confidence = [row for row in rows if float(row.get("confidence", 0.0)) < 0.68]
+    broad_rows = [row for row in rows if str(row.get("scope") or "").strip().lower() == "broad"]
+    overview_rows = broad_rows or rows
+    previous_payload = latest_previous_digest_payload(worker_state)
     payload = {
         "windowId": window["id"],
         "label": window["label"],
@@ -1426,32 +1848,17 @@ def build_digest_payload(window: dict[str, Any], settings: dict[str, Any], worke
         "totalItems": len(rows),
         "totalScore": total_score,
         "highPriorityCount": high_priority_count,
+        "headlineSummary": build_headline_summary(rows),
         "topCategories": [{"category": category, "count": count} for category, count in top_categories],
+        "overviewBoard": build_overview_board(overview_rows, limit=3),
+        "stockImpactBoard": build_stock_impact_board(rows, limit=6),
+        "watchNext": build_watch_next(rows, limit=3),
+        "deltaVsLastRun": build_delta_vs_last_run(rows, previous_payload),
         "unresolvedUncertainties": [row["headline"] for row in low_confidence[:5]],
         "items": [],
     }
     for row in rows:
-        payload["items"].append(
-            {
-                "headline": row["headline"],
-                "whyItMatters": why_it_matters(row),
-                "affectedSectors": row.get("affectedSectors", []),
-                "affectedNames": row.get("affectedNames", []),
-                "affectedEtfs": row.get("affectedEtfs", []),
-                "scope": row.get("scope", "single-name"),
-                "confidence": row.get("confidence"),
-                "confidenceLabel": confidence_label(float(row.get("confidence", 0.0))),
-                "direction": row.get("direction", "unclear"),
-                "score": row.get("score"),
-                "highPriority": row.get("highPriority", False),
-                "themes": row.get("themes", []),
-                "category": row.get("category"),
-                "source": row.get("source"),
-                "url": row.get("url"),
-                "summary": row.get("summary"),
-                "eventTime": row.get("eventTime"),
-            }
-        )
+        payload["items"].append(digest_item_from_observation(row))
     return payload
 
 
@@ -1467,7 +1874,49 @@ def render_digest_markdown(payload: dict[str, Any]) -> str:
     if payload.get("topCategories"):
         top_categories = ", ".join(f"{item['category']} ({item['count']})" for item in payload["topCategories"])
         lines.append(f"- Top categories: {top_categories}")
+    delta_summary = (payload.get("deltaVsLastRun") or {}).get("summary")
+    if delta_summary:
+        lines.append(f"- Delta vs last run: {delta_summary}")
     lines.append("")
+    if payload.get("headlineSummary"):
+        lines.append(f"> {payload['headlineSummary']}")
+        lines.append("")
+    if payload.get("overviewBoard"):
+        lines.append("## Shared market read")
+        lines.append("")
+        for idx, item in enumerate(payload.get("overviewBoard", []), start=1):
+            lines.append(f"### {idx}. {item['label']}")
+            lines.append(f"- Lead headline: {item['headline']}")
+            lines.append(f"- Market read: {item['summary']}")
+            if item.get("impactRead"):
+                lines.append(f"- First read: {item['impactRead']}")
+            if item.get("supportingHeadlines"):
+                lines.append(f"- Supporting headlines ({item['supportingCount']}): {' | '.join(item['supportingHeadlines'])}")
+            lines.append("")
+    if payload.get("stockImpactBoard"):
+        lines.append("## Specific stock-impact reads")
+        lines.append("")
+        for idx, item in enumerate(payload.get("stockImpactBoard", []), start=1):
+            lines.append(f"### {idx}. {item['headline']}")
+            lines.append(f"- Why it matters: {item['whyItMatters']}")
+            if item.get("impactRead"):
+                lines.append(f"- Likely read: {item['impactRead']}")
+            affected = []
+            if item.get("affectedSectors"):
+                affected.append(f"sectors={', '.join(item['affectedSectors'])}")
+            if item.get("affectedNames"):
+                affected.append(f"names={', '.join(item['affectedNames'])}")
+            if item.get("affectedEtfs"):
+                affected.append(f"ETFs={', '.join(item['affectedEtfs'])}")
+            if affected:
+                lines.append(f"- Likely affected: {' | '.join(affected)}")
+            lines.append(f"- Scope: {item['scope']} | Confidence: {item['confidenceLabel']} ({item['confidence']}) | Direction: {item['direction']} | Score: {item['score']}")
+            lines.append("")
+    if payload.get("watchNext"):
+        lines.append("## Watch next")
+        for item in payload.get("watchNext", []):
+            lines.append(f"- {item}")
+        lines.append("")
     if payload.get("unresolvedUncertainties"):
         lines.append("## Unresolved uncertainties")
         for item in payload["unresolvedUncertainties"]:
@@ -1487,6 +1936,8 @@ def render_digest_markdown(payload: dict[str, Any]) -> str:
             affected.append(f"ETFs={', '.join(item['affectedEtfs'])}")
         if affected:
             lines.append(f"- Likely affected: {' | '.join(affected)}")
+        if item.get("impactRead"):
+            lines.append(f"- Likely read: {item['impactRead']}")
         lines.append(f"- Scope: {item['scope']} | Confidence: {item['confidenceLabel']} ({item['confidence']}) | Direction: {item['direction']} | Score: {item['score']}")
         lines.append(f"- Source: {item['source']} — {item['url']}")
         if item.get("summary"):
@@ -1557,7 +2008,12 @@ def generate_digest(window_id: str, *, force: bool = False) -> dict[str, Any]:
             "totalItems": 0,
             "totalScore": 0,
             "highPriorityCount": 0,
+            "headlineSummary": "No digest items met the threshold in this window.",
             "topCategories": [],
+            "overviewBoard": [],
+            "stockImpactBoard": [],
+            "watchNext": [],
+            "deltaVsLastRun": None,
             "unresolvedUncertainties": [],
             "items": [],
         }
