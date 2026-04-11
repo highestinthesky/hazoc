@@ -19,6 +19,8 @@ const TASKS_PATH = path.join(WORKSPACE, 'mission-control/data/tasks.json')
 const EVENTS_PATH = path.join(WORKSPACE, 'mission-control/data/events.json')
 const RECURRING_PATH = path.join(WORKSPACE, 'mission-control/data/recurring.json')
 const PROTOCOL_PATH = path.join(WORKSPACE, 'mission-control/data/protocol.json')
+const DIGEST_USERS_PATH = path.join(WORKSPACE, 'skills/market-watch/config/digest_users.json')
+const DIGESTS_DIR = path.join(WORKSPACE, 'skills/market-watch/state/digest/digests')
 const MEMORY_DIR = path.join(WORKSPACE, 'memory')
 const LOCAL_SKILLS_DIR = path.join(WORKSPACE, 'skills')
 const GLOBAL_SKILLS_DIR = path.join(os.homedir(), '.npm-global/lib/node_modules/openclaw/skills')
@@ -340,6 +342,186 @@ async function readMemoryEntries() {
   return entries
 }
 
+function normalizeJournalItem(item, index = 0) {
+  return {
+    id: String(item?.url || item?.headline || `item-${index}`),
+    headline: String(item?.headline || 'Untitled item').trim(),
+    summary: String(item?.summary || '').trim(),
+    whyItMatters: String(item?.whyItMatters || '').trim(),
+    source: String(item?.source || '').trim(),
+    url: String(item?.url || '').trim(),
+    scope: String(item?.scope || 'unknown').trim(),
+    direction: String(item?.direction || 'unclear').trim(),
+    confidence: typeof item?.confidence === 'number' ? item.confidence : null,
+    confidenceLabel: String(item?.confidenceLabel || '').trim(),
+    score: typeof item?.score === 'number' ? item.score : 0,
+    highPriority: Boolean(item?.highPriority),
+    category: String(item?.category || '').trim(),
+    themes: Array.isArray(item?.themes) ? item.themes.map((value) => String(value || '').trim()).filter(Boolean) : [],
+    affectedNames: Array.isArray(item?.affectedNames) ? item.affectedNames.map((value) => String(value || '').trim()).filter(Boolean) : [],
+    affectedSectors: Array.isArray(item?.affectedSectors) ? item.affectedSectors.map((value) => String(value || '').trim()).filter(Boolean) : [],
+    affectedEtfs: Array.isArray(item?.affectedEtfs) ? item.affectedEtfs.map((value) => String(value || '').trim()).filter(Boolean) : [],
+    eventTime: String(item?.eventTime || '').trim(),
+  }
+}
+
+function buildStockImpactBoard(items) {
+  return items
+    .filter((item) => item.affectedNames.length > 0 || (item.scope && item.scope !== 'broad'))
+    .sort((a, b) => {
+      if (b.highPriority !== a.highPriority) return Number(b.highPriority) - Number(a.highPriority)
+      return (b.score || 0) - (a.score || 0)
+    })
+    .slice(0, 8)
+    .map((item) => ({
+      id: item.id,
+      headline: item.headline,
+      whyItMatters: item.whyItMatters,
+      affectedNames: item.affectedNames,
+      affectedSectors: item.affectedSectors,
+      affectedEtfs: item.affectedEtfs,
+      scope: item.scope,
+      score: item.score,
+      highPriority: item.highPriority,
+      direction: item.direction,
+      confidenceLabel: item.confidenceLabel,
+      themes: item.themes,
+      url: item.url,
+      source: item.source,
+    }))
+}
+
+function buildGlobalOverview(digest, items) {
+  return {
+    totalItems: typeof digest?.totalItems === 'number' ? digest.totalItems : items.length,
+    highPriorityCount: typeof digest?.highPriorityCount === 'number' ? digest.highPriorityCount : items.filter((item) => item.highPriority).length,
+    totalScore: typeof digest?.totalScore === 'number' ? digest.totalScore : items.reduce((sum, item) => sum + (item.score || 0), 0),
+    topCategories: Array.isArray(digest?.topCategories) ? digest.topCategories : [],
+    unresolvedUncertainties: Array.isArray(digest?.unresolvedUncertainties) ? digest.unresolvedUncertainties.map((value) => String(value || '').trim()).filter(Boolean) : [],
+  }
+}
+
+function normalizeUserDigest(userDigest, globalItems) {
+  if (!userDigest) return null
+
+  const matchedItems = Array.isArray(userDigest?.matchedItems)
+    ? userDigest.matchedItems.map((item, index) => normalizeJournalItem(item, index))
+    : []
+
+  const watchlistStatus = Array.isArray(userDigest?.watchlistStatus)
+    ? userDigest.watchlistStatus.map((item) => ({
+      ticker: String(item?.ticker || '').trim(),
+      price: typeof item?.price === 'number' ? item.price : null,
+      target: typeof item?.target === 'number' ? item.target : null,
+      stop: typeof item?.stop === 'number' ? item.stop : null,
+      note: String(item?.note || '').trim(),
+      importance: String(item?.importance || 'normal').trim(),
+      flags: Array.isArray(item?.flags) ? item.flags.map((flag) => String(flag || '').trim()).filter(Boolean) : [],
+      checkedAt: String(item?.checkedAt || '').trim(),
+    }))
+    : []
+
+  const matchedTickers = new Set(watchlistStatus.map((item) => item.ticker).filter(Boolean))
+  const derivedMatches = globalItems.filter((item) => item.affectedNames.some((name) => matchedTickers.has(name)))
+
+  return {
+    userId: String(userDigest?.userId || '').trim(),
+    displayName: String(userDigest?.displayName || userDigest?.userId || '').trim(),
+    watchlist: Array.isArray(userDigest?.watchlist) ? userDigest.watchlist.map((value) => String(value || '').trim()).filter(Boolean) : [],
+    watchlistStatus,
+    watchFlags: typeof userDigest?.watchFlags === 'number' ? userDigest.watchFlags : watchlistStatus.reduce((sum, item) => sum + item.flags.length, 0),
+    priceError: String(userDigest?.priceError || '').trim(),
+    matchedItemCount: typeof userDigest?.matchedItemCount === 'number' ? userDigest.matchedItemCount : matchedItems.length,
+    matchedItems,
+    derivedMatches,
+    raw: {
+      kind: String(userDigest?.kind || '').trim(),
+      generatedAt: String(userDigest?.generatedAt || '').trim(),
+      globalGeneratedAt: String(userDigest?.globalGeneratedAt || '').trim(),
+      globalDigestPathJson: String(userDigest?.globalDigestPathJson || '').trim(),
+      globalDigestPathMd: String(userDigest?.globalDigestPathMd || '').trim(),
+    },
+  }
+}
+
+async function readDigestJsonIfExists(filePath) {
+  try {
+    const raw = await fs.readFile(filePath, 'utf8')
+    return JSON.parse(raw)
+  } catch {
+    return null
+  }
+}
+
+async function readMarketJournal() {
+  const [usersConfig, dayNames] = await Promise.all([
+    readJsonFile(DIGEST_USERS_PATH, { users: [] }),
+    fs.readdir(DIGESTS_DIR).catch(() => []),
+  ])
+
+  const days = dayNames.filter((name) => /^\d{4}-\d{2}-\d{2}$/.test(name)).sort().reverse()
+  const windows = ['morning', 'midday', 'evening', 'close']
+  const enabledUsers = Array.isArray(usersConfig?.users)
+    ? usersConfig.users
+      .filter((user) => user?.enabled !== false)
+      .map((user) => ({
+        userId: String(user?.userId || '').trim(),
+        displayName: String(user?.displayName || user?.userId || '').trim(),
+      }))
+      .filter((user) => user.userId)
+    : []
+
+  const entries = []
+  for (const day of days) {
+    const dayDir = path.join(DIGESTS_DIR, day)
+    const dayEntry = { date: day, windows: [] }
+
+    for (const windowId of windows) {
+      const globalPath = path.join(dayDir, `${windowId}.json`)
+      const globalDigest = await readDigestJsonIfExists(globalPath)
+      if (!globalDigest) continue
+
+      const globalItems = Array.isArray(globalDigest?.items)
+        ? globalDigest.items.map((item, index) => normalizeJournalItem(item, index))
+        : []
+
+      const userEntries = {}
+      for (const user of enabledUsers) {
+        const userPath = path.join(dayDir, `${windowId}--user--${user.userId}.json`)
+        const userDigest = await readDigestJsonIfExists(userPath)
+        userEntries[user.userId] = normalizeUserDigest(userDigest, globalItems)
+      }
+
+      dayEntry.windows.push({
+        id: windowId,
+        label: String(globalDigest?.label || windowId).trim(),
+        generatedAt: String(globalDigest?.generatedAt || '').trim(),
+        windowStart: String(globalDigest?.windowStart || '').trim(),
+        windowEnd: String(globalDigest?.windowEnd || '').trim(),
+        global: {
+          overview: buildGlobalOverview(globalDigest, globalItems),
+          stockImpactBoard: buildStockImpactBoard(globalItems),
+          items: globalItems,
+          raw: {
+            timezone: String(globalDigest?.timezone || '').trim(),
+            pathJson: path.relative(WORKSPACE, globalPath),
+          },
+        },
+        users: userEntries,
+      })
+    }
+
+    if (dayEntry.windows.length) entries.push(dayEntry)
+  }
+
+  return {
+    users: enabledUsers,
+    availableDates: entries.map((entry) => entry.date),
+    latestDate: entries[0]?.date || null,
+    days: entries,
+  }
+}
+
 app.get('/api/health', (_req, res) => {
   res.json({ ok: true, sessionId: SESSION_ID, mode: 'single-server', host: HOST, port: PORT })
 })
@@ -388,6 +570,15 @@ app.get('/api/skills', async (_req, res) => {
     res.json({ ok: true, skills, fetchedAt: new Date().toISOString() })
   } catch (error) {
     res.status(500).json({ ok: false, error: error.message || 'Failed to load skills.' })
+  }
+})
+
+app.get('/api/market-journal', async (_req, res) => {
+  try {
+    const journal = await readMarketJournal()
+    res.json({ ok: true, ...journal, fetchedAt: new Date().toISOString() })
+  } catch (error) {
+    res.status(500).json({ ok: false, error: error.message || 'Failed to load market journal.' })
   }
 })
 

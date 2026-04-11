@@ -17,6 +17,8 @@ export const storageKeys = {
   selectedSkillId: 'mission-control:selected-skill-id',
   scheduleDraft: 'mission-control:schedule-draft',
   scheduleMessages: 'mission-control:schedule-messages',
+  marketJournalDate: 'mission-control:market-journal-date',
+  marketJournalLens: 'mission-control:market-journal-lens',
 }
 
 export function readStorage(key, fallback) {

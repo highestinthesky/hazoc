@@ -1304,6 +1304,245 @@ function SkillsView({ error, loading, selectedSkill, selectedSkillId, setSelecte
   )
 }
 
+function formatJournalNumber(value, digits = 1) {
+  return typeof value === 'number' && Number.isFinite(value) ? value.toFixed(digits) : '—'
+}
+
+function formatJournalDateLabel(dateString) {
+  if (!dateString) return 'Unknown day'
+  const date = new Date(`${dateString}T12:00:00`)
+  return date.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' })
+}
+
+function MarketJournalView({
+  error,
+  journal,
+  journalLoaded,
+  journalLens,
+  journalDate,
+  setJournalDate,
+  setJournalLens,
+}) {
+  const selectedDay = journal.days.find((day) => day.date === journalDate) || journal.days[0] || null
+  const lensOptions = [{ value: 'global', label: 'Global' }, ...journal.users.map((user) => ({ value: user.userId, label: user.displayName })), { value: 'all-users', label: 'All users' }]
+
+  return (
+    <section className="tasks-layout market-journal-layout">
+      <div className="hero-row">
+        <HeroCard label="Archive days" title={String(journal.availableDates.length)} primary />
+        <HeroCard label="Selected day" title={selectedDay ? formatJournalDateLabel(selectedDay.date) : 'No digests'}>
+          {selectedDay?.date || 'No market digest artifacts found yet.'}
+        </HeroCard>
+        <HeroCard label="Lens" title={lensOptions.find((option) => option.value === journalLens)?.label || 'Global'} />
+      </div>
+
+      {error ? <div className="error-banner">{error}</div> : null}
+
+      <section className="workspace-grid market-journal-grid">
+        <aside className="panel market-journal-sidebar">
+          <div className="panel-header sticky-panel-header">
+            <div>
+              <p className="panel-kicker">archive</p>
+              <h2>Market journal</h2>
+            </div>
+          </div>
+
+          <div className="form-section form-section-soft market-journal-filter-block">
+            <label className="field-block">
+              <span>Day</span>
+              <select value={journalDate} onChange={(event) => setJournalDate(event.target.value)}>
+                {journal.availableDates.map((date) => <option key={date} value={date}>{formatJournalDateLabel(date)} · {date}</option>)}
+              </select>
+            </label>
+            <div className="field-block">
+              <span>User lens</span>
+              <SegmentedControl ariaLabel="Market journal user lens" value={journalLens} options={lensOptions} onChange={setJournalLens} />
+            </div>
+          </div>
+
+          <div className="market-journal-day-list">
+            {journal.availableDates.map((date) => (
+              <button key={date} type="button" className={`market-journal-day-card ${date === journalDate ? 'active' : ''}`} onClick={() => setJournalDate(date)}>
+                <strong>{formatJournalDateLabel(date)}</strong>
+                <span>{date}</span>
+              </button>
+            ))}
+          </div>
+        </aside>
+
+        <section className="market-journal-main">
+          {!journalLoaded && !selectedDay ? <div className="panel lane-empty">Loading market journal…</div> : null}
+          {journalLoaded && !selectedDay ? <div className="panel lane-empty">No digest artifacts found yet.</div> : null}
+          {selectedDay ? selectedDay.windows.map((windowEntry) => {
+            const activeUser = journalLens === 'global' || journalLens === 'all-users' ? null : windowEntry.users?.[journalLens] || null
+            const allUsers = journal.users
+              .map((user) => ({ user, entry: windowEntry.users?.[user.userId] || null }))
+              .filter(({ entry }) => entry)
+
+            return (
+              <article key={`${selectedDay.date}-${windowEntry.id}`} className="panel market-window-card">
+                <div className="market-window-header">
+                  <div>
+                    <p className="panel-kicker">{windowEntry.id}</p>
+                    <h2>{windowEntry.label}</h2>
+                  </div>
+                  <div className="detail-chip-row">
+                    <span className="meta-chip">{windowEntry.generatedAt ? formatDateTime(windowEntry.generatedAt) : 'No timestamp'}</span>
+                    <span className="meta-chip">{windowEntry.global.overview.totalItems} items</span>
+                    <span className="meta-chip">{windowEntry.global.overview.highPriorityCount} high priority</span>
+                    <span className="meta-chip">Score {formatJournalNumber(windowEntry.global.overview.totalScore)}</span>
+                  </div>
+                </div>
+
+                <div className="market-window-sections">
+                  <section className="form-section form-section-soft">
+                    <div className="section-heading">
+                      <p className="panel-kicker">shared overview</p>
+                      <h3>Global market read</h3>
+                    </div>
+                    <div className="market-summary-grid">
+                      <div className="schedule-preview-card">
+                        <span className="schedule-preview-label">Top categories</span>
+                        <strong>{windowEntry.global.overview.topCategories.length ? windowEntry.global.overview.topCategories.map((item) => `${item.category} (${item.count})`).join(' · ') : 'No category rollup'}</strong>
+                      </div>
+                      <div className="schedule-preview-card">
+                        <span className="schedule-preview-label">Unresolved / open questions</span>
+                        <strong>{windowEntry.global.overview.unresolvedUncertainties.length || 0}</strong>
+                      </div>
+                    </div>
+                    {windowEntry.global.overview.unresolvedUncertainties.length ? (
+                      <ul className="market-bullet-list">
+                        {windowEntry.global.overview.unresolvedUncertainties.map((item) => <li key={item}>{item}</li>)}
+                      </ul>
+                    ) : <p className="market-muted-copy">No unresolved uncertainty list was stored for this window.</p>}
+                  </section>
+
+                  <section className="form-section form-section-accent">
+                    <div className="section-heading">
+                      <p className="panel-kicker">stock-impact board</p>
+                      <h3>Names and narrower slices worth watching</h3>
+                    </div>
+                    {!windowEntry.global.stockImpactBoard.length ? <p className="market-muted-copy">No name-level or narrower-scope items were captured in this window.</p> : (
+                      <div className="market-impact-list">
+                        {windowEntry.global.stockImpactBoard.map((item) => (
+                          <article key={item.id} className="upcoming-card market-impact-card">
+                            <div className="task-card-header">
+                              <strong>{item.headline}</strong>
+                              <span>{item.highPriority ? 'High priority' : item.scope}</span>
+                            </div>
+                            <div className="task-card-meta-row">
+                              {item.affectedNames.length ? <span className="meta-chip">Names: {item.affectedNames.join(', ')}</span> : null}
+                              {item.affectedSectors.length ? <span className="meta-chip">Sectors: {item.affectedSectors.slice(0, 2).join(', ')}</span> : null}
+                              {item.themes.length ? <span className="meta-chip">Themes: {item.themes.join(', ')}</span> : null}
+                            </div>
+                            {item.whyItMatters ? <p>{item.whyItMatters}</p> : null}
+                          </article>
+                        ))}
+                      </div>
+                    )}
+                  </section>
+
+                  {journalLens !== 'global' ? (
+                    <section className="form-section form-section-memory">
+                      <div className="section-heading">
+                        <p className="panel-kicker">user lens</p>
+                        <h3>{journalLens === 'all-users' ? 'All user watchlists' : `${activeUser?.displayName || journalLens} watchlist view`}</h3>
+                      </div>
+
+                      {journalLens === 'all-users' ? (
+                        <div className="market-user-grid">
+                          {allUsers.length ? allUsers.map(({ user, entry }) => (
+                            <article key={`${windowEntry.id}-${user.userId}`} className="upcoming-card market-user-card">
+                              <div className="task-card-header">
+                                <strong>{entry?.displayName || user.displayName}</strong>
+                                <span>{entry?.matchedItemCount || 0} matched items</span>
+                              </div>
+                              <div className="task-card-meta-row">
+                                <span className="meta-chip">Watchlist: {(entry?.watchlist || []).join(', ') || 'None stored'}</span>
+                                <span className="meta-chip">Flags: {entry?.watchFlags || 0}</span>
+                              </div>
+                              {entry?.priceError ? <p>{entry.priceError}</p> : null}
+                            </article>
+                          )) : <p className="market-muted-copy">No user digests were stored for this window.</p>}
+                        </div>
+                      ) : activeUser ? (
+                        <>
+                          <div className="task-card-meta-row">
+                            <span className="meta-chip">Watchlist: {activeUser.watchlist.join(', ') || 'None stored'}</span>
+                            <span className="meta-chip">Matches: {activeUser.matchedItemCount}</span>
+                            <span className="meta-chip">Flags: {activeUser.watchFlags}</span>
+                          </div>
+                          {activeUser.priceError ? <p className="market-muted-copy">Price note: {activeUser.priceError}</p> : null}
+                          <div className="market-watch-status-list">
+                            {activeUser.watchlistStatus.map((item) => (
+                              <article key={`${windowEntry.id}-${activeUser.userId}-${item.ticker}`} className="task-card market-watch-status-card">
+                                <div className="task-card-header">
+                                  <strong>{item.ticker}</strong>
+                                  <span>{item.price == null ? 'Price unavailable' : `$${item.price}`}</span>
+                                </div>
+                                <div className="task-card-meta-row">
+                                  <span className="meta-chip">Importance: {item.importance}</span>
+                                  {item.flags.length ? <span className="meta-chip">Flags: {item.flags.join(', ')}</span> : null}
+                                </div>
+                                {item.note ? <p>{item.note}</p> : null}
+                              </article>
+                            ))}
+                          </div>
+                          {(activeUser.matchedItems.length || activeUser.derivedMatches.length) ? (
+                            <details className="market-details-block" open={activeUser.matchedItems.length > 0}>
+                              <summary>Matched / derived watchlist relevance</summary>
+                              <div className="market-evidence-list">
+                                {[...activeUser.matchedItems, ...activeUser.derivedMatches.filter((item) => !activeUser.matchedItems.some((matched) => matched.id === item.id))].map((item) => (
+                                  <article key={`match-${item.id}`} className="upcoming-card compact">
+                                    <div className="task-card-header">
+                                      <strong>{item.headline}</strong>
+                                      <span>{item.highPriority ? 'High priority' : item.scope}</span>
+                                    </div>
+                                    {item.whyItMatters ? <p>{item.whyItMatters}</p> : null}
+                                  </article>
+                                ))}
+                              </div>
+                            </details>
+                          ) : <p className="market-muted-copy">No direct watchlist matches were stored or derived for this window.</p>}
+                        </>
+                      ) : <p className="market-muted-copy">No user digest stored for this lens in this window.</p>}
+                    </section>
+                  ) : null}
+
+                  <details className="market-details-block">
+                    <summary>Everything collected / evidence</summary>
+                    <div className="market-evidence-list">
+                      {windowEntry.global.items.length ? windowEntry.global.items.map((item) => (
+                        <article key={item.id} className="upcoming-card market-evidence-card">
+                          <div className="task-card-header">
+                            <strong>{item.headline}</strong>
+                            <span>{item.source || item.category || 'Item'}</span>
+                          </div>
+                          <div className="task-card-meta-row">
+                            {item.highPriority ? <span className="meta-chip">High priority</span> : null}
+                            {item.scope ? <span className="meta-chip">Scope: {item.scope}</span> : null}
+                            {item.direction ? <span className="meta-chip">Direction: {item.direction}</span> : null}
+                            {item.confidenceLabel ? <span className="meta-chip">Confidence: {item.confidenceLabel}</span> : null}
+                            {item.affectedNames.length ? <span className="meta-chip">Names: {item.affectedNames.join(', ')}</span> : null}
+                            {item.themes.length ? <span className="meta-chip">Themes: {item.themes.join(', ')}</span> : null}
+                          </div>
+                          {item.summary ? <p>{item.summary}</p> : null}
+                          {item.whyItMatters ? <p>{item.whyItMatters}</p> : null}
+                          {item.url ? <a className="market-link" href={item.url} target="_blank" rel="noreferrer">Open source ↗</a> : null}
+                        </article>
+                      )) : <p className="market-muted-copy">No global items were stored for this window.</p>}
+                    </div>
+                  </details>
+                </div>
+              </article>
+            )
+          }) : null}
+        </section>
+      </section>
+    </section>
+  )
+}
+
 function parseStoredMessages(raw) {
   try {
     const parsed = JSON.parse(raw)
@@ -1337,11 +1576,13 @@ export default function App() {
   const [skills, setSkills] = useState([])
   const [recurring, setRecurring] = useState([])
   const [protocolItems, setProtocolItems] = useState([])
+  const [marketJournal, setMarketJournal] = useState({ users: [], availableDates: [], days: [], latestDate: null })
   const [loading, setLoading] = useState(true)
   const [memoryLoaded, setMemoryLoaded] = useState(false)
   const [skillsLoaded, setSkillsLoaded] = useState(false)
   const [scheduleLoaded, setScheduleLoaded] = useState(false)
   const [protocolLoaded, setProtocolLoaded] = useState(false)
+  const [marketJournalLoaded, setMarketJournalLoaded] = useState(false)
   const [detailSaving, setDetailSaving] = useState(false)
   const [error, setError] = useState('')
   const [selectedTaskId, setSelectedTaskId] = useState(() => readStorage(storageKeys.selectedTaskId, ''))
@@ -1366,6 +1607,8 @@ export default function App() {
   const [scheduleDraft, setScheduleDraft] = useState(() => readStorage(storageKeys.scheduleDraft, ''))
   const [scheduleMessages, setScheduleMessages] = useState(() => parseStoredMessages(readStorage(storageKeys.scheduleMessages, '')) || defaultScheduleMessages)
   const [scheduleSending, setScheduleSending] = useState(false)
+  const [journalDate, setJournalDate] = useState(() => readStorage(storageKeys.marketJournalDate, ''))
+  const [journalLens, setJournalLens] = useState(() => readStorage(storageKeys.marketJournalLens, 'global'))
   const scheduleThreadRef = useRef(null)
   const [calendarMonth, setCalendarMonth] = useState(() => {
     const stored = readStorage(storageKeys.calendarMonth, '')
@@ -1433,6 +1676,22 @@ export default function App() {
     }
   }, [])
 
+  const loadMarketJournal = useCallback(async () => {
+    try {
+      const result = await requestJson('/api/market-journal')
+      setMarketJournal({
+        users: result.users || [],
+        availableDates: result.availableDates || [],
+        days: result.days || [],
+        latestDate: result.latestDate || '',
+      })
+      setMarketJournalLoaded(true)
+      setJournalDate((current) => (current && (result.availableDates || []).includes(current) ? current : (result.latestDate || '')))
+    } catch (err) {
+      setError(err.message)
+    }
+  }, [])
+
   const loadScheduleExtras = useCallback(async () => {
     try {
       await requestJson('/api/schedule')
@@ -1448,7 +1707,8 @@ export default function App() {
     if (page === 'skills') await loadSkills()
     if (page === 'protocol') await loadProtocol()
     if (page === 'schedule') await loadScheduleExtras()
-  }, [loadEvents, loadMemory, loadProtocol, loadScheduleExtras, loadSkills, loadTasks, page])
+    if (page === 'market-journal') await loadMarketJournal()
+  }, [loadEvents, loadMarketJournal, loadMemory, loadProtocol, loadScheduleExtras, loadSkills, loadTasks, page])
 
   useEffect(() => {
     loadTasks()
@@ -1461,7 +1721,8 @@ export default function App() {
     if (page === 'skills' && !skillsLoaded) loadSkills()
     if (page === 'protocol' && !protocolLoaded) loadProtocol()
     if (page === 'schedule' && !scheduleLoaded) loadScheduleExtras()
-  }, [loadMemory, loadProtocol, loadScheduleExtras, loadSkills, memoryLoaded, page, protocolLoaded, scheduleLoaded, skillsLoaded])
+    if (page === 'market-journal' && !marketJournalLoaded) loadMarketJournal()
+  }, [loadMarketJournal, loadMemory, loadProtocol, loadScheduleExtras, loadSkills, marketJournalLoaded, memoryLoaded, page, protocolLoaded, scheduleLoaded, skillsLoaded])
 
   useEffect(() => { writeStorage(storageKeys.selectedTaskId, selectedTaskId) }, [selectedTaskId])
   useEffect(() => { writeStorage(storageKeys.selectedEventId, selectedEventId) }, [selectedEventId])
@@ -1471,6 +1732,8 @@ export default function App() {
   useEffect(() => { writeStorage(storageKeys.scheduleDraft, scheduleDraft) }, [scheduleDraft])
   useEffect(() => { writeStorage(storageKeys.scheduleMessages, JSON.stringify(scheduleMessages)) }, [scheduleMessages])
   useEffect(() => { writeStorage(storageKeys.calendarMonth, calendarMonth.toISOString()) }, [calendarMonth])
+  useEffect(() => { writeStorage(storageKeys.marketJournalDate, journalDate) }, [journalDate])
+  useEffect(() => { writeStorage(storageKeys.marketJournalLens, journalLens) }, [journalLens])
 
   const sortedTasks = useMemo(() => [...tasks].sort(sortTasks), [tasks])
   const sortedEvents = useMemo(() => [...events].sort(sortTasks), [events])
@@ -1521,6 +1784,11 @@ export default function App() {
   useEffect(() => {
     if (!lanes.some((lane) => lane.id === activeLaneId)) setActiveLaneId('workbench')
   }, [activeLaneId])
+
+  useEffect(() => {
+    const validLens = journalLens === 'global' || journalLens === 'all-users' || marketJournal.users.some((user) => user.userId === journalLens)
+    if (!validLens) setJournalLens('global')
+  }, [journalLens, marketJournal.users])
 
   const laneCounts = useMemo(() => {
     const map = new Map(lanes.map((lane) => [lane.id, 0]))
@@ -1756,6 +2024,7 @@ User request:\n\n${message}`,
           <p className="nav-label">Dashboard</p>
           <div className="nav-items">
             <button className={`nav-item ${page === 'tasks' ? 'active' : ''}`} type="button" onClick={() => setPage('tasks')}><span className="nav-dot" />Tasks</button>
+            <button className={`nav-item ${page === 'market-journal' ? 'active' : ''}`} type="button" onClick={() => setPage('market-journal')}><span className="nav-dot" />Market Journal</button>
             <button className={`nav-item ${page === 'protocol' ? 'active' : ''}`} type="button" onClick={() => setPage('protocol')}><span className="nav-dot" />Protocol</button>
             <button className={`nav-item ${page === 'schedule' ? 'active' : ''}`} type="button" onClick={() => setPage('schedule')}><span className="nav-dot" />Schedule</button>
             <button className={`nav-item ${page === 'events' ? 'active' : ''}`} type="button" onClick={() => setPage('events')}><span className="nav-dot" />Events</button>
@@ -1772,9 +2041,9 @@ User request:\n\n${message}`,
 
       <main className="main-panel">
         <header className="topbar">
-          <div className="breadcrumbs">Mission Control &nbsp;›&nbsp; <strong>{page === 'protocol' ? 'Protocol' : page === 'schedule' ? 'Schedule' : page === 'events' ? 'Events' : page === 'memory' ? 'Memory' : page === 'skills' ? 'Skills' : 'Tasks'}</strong></div>
+          <div className="breadcrumbs">Mission Control &nbsp;›&nbsp; <strong>{page === 'market-journal' ? 'Market Journal' : page === 'protocol' ? 'Protocol' : page === 'schedule' ? 'Schedule' : page === 'events' ? 'Events' : page === 'memory' ? 'Memory' : page === 'skills' ? 'Skills' : 'Tasks'}</strong></div>
           <div className="topbar-actions">
-            <div className="search-pill">{page === 'protocol' ? 'Standing rules and recurring operational rhythm' : page === 'schedule' ? 'Calendar for scheduled events' : page === 'events' ? 'Stored and archived events' : page === 'memory' ? 'Journal and memory context' : page === 'skills' ? 'Concise skill summaries and workflow notes' : 'Shared memory for active project work'}</div>
+            <div className="search-pill">{page === 'market-journal' ? 'Artifact-backed market archive with global and user lenses' : page === 'protocol' ? 'Standing rules and recurring operational rhythm' : page === 'schedule' ? 'Calendar for scheduled events' : page === 'events' ? 'Stored and archived events' : page === 'memory' ? 'Journal and memory context' : page === 'skills' ? 'Concise skill summaries and workflow notes' : 'Shared memory for active project work'}</div>
             <button type="button" className="icon-button accent" onClick={refreshCurrentPage} disabled={loading}>{loading ? '…' : '⟳'}</button>
           </div>
         </header>
@@ -1807,6 +2076,18 @@ User request:\n\n${message}`,
             setSelectedTaskId={setSelectedTaskId}
             sortedTasks={sortedTasks}
             unscheduledActiveTasks={unscheduledActiveTasks}
+          />
+        ) : null}
+
+        {page === 'market-journal' ? (
+          <MarketJournalView
+            error={error}
+            journal={marketJournal}
+            journalLoaded={marketJournalLoaded}
+            journalLens={journalLens}
+            journalDate={journalDate}
+            setJournalDate={setJournalDate}
+            setJournalLens={setJournalLens}
           />
         ) : null}
 
