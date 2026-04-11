@@ -11,3 +11,7 @@
 
 - Keep `.learnings/snapshots/*.bak` out of git.
 - If `scripts/git-auto-sync.sh` reports `push_failed`, inspect `detail=` before assuming SSH/auth is broken.
+
+## Mission control / LAN
+
+- If a Mac browser says a local mission-control URL is unreachable while `curl` to the same `http://<LAN-IP>:<port>/` works, check macOS **System Settings → Privacy & Security → Local Network** for that browser before changing the server or Windows/WSL bridge.

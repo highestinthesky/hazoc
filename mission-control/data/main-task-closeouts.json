@@ -685,5 +685,65 @@
     },
     "error": null,
     "enqueueRequestedAt": "2026-04-10T10:41:04-04:00"
+  },
+  {
+    "id": "closeout-20260410-002",
+    "createdAt": "2026-04-10T14:32:43-04:00",
+    "status": "send-enqueued",
+    "result": "mission-control LAN fix",
+    "analogy": "opening the browser's side gate",
+    "notificationLine": "<@1049450008505757706> hazoc finished: mission-control LAN fix. Like opening the browser's side gate. Full report is in the control UI.",
+    "taskRef": "mission-control LAN/browser debug",
+    "note": "Root cause was macOS browser Local Network permission; temporary 4173 alias removed. Next mission is digest website display.",
+    "sourceSession": "agent:main:main",
+    "delivery": {
+      "mode": "cron-announce",
+      "channel": "discord",
+      "to": "channel:1487645227421536327",
+      "desiredServer": "hzwp",
+      "desiredChannel": "#main_updates",
+      "fallbackTo": "channel:1485016833819021495",
+      "fallbackChannelLabel": "#control-center",
+      "fallbackPolicy": "manual-only",
+      "bestEffort": true
+    },
+    "policy": {
+      "bestEffort": true,
+      "blocksTaskClosure": false,
+      "missedPingTolerance": "acceptable"
+    },
+    "cronJobId": "fa2cea1a-48b0-4882-9b53-afbbcd144aa1",
+    "enqueueResponse": {
+      "id": "fa2cea1a-48b0-4882-9b53-afbbcd144aa1",
+      "name": "main-task-closeout-closeout-20260410-002",
+      "enabled": true,
+      "deleteAfterRun": true,
+      "createdAtMs": 1775845964924,
+      "updatedAtMs": 1775845964924,
+      "schedule": {
+        "kind": "at",
+        "at": "2026-04-10T18:32:49.866Z"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "Reply with EXACTLY the following one-line text and nothing else:\n<@1049450008505757706> hazoc finished: mission-control LAN fix. Like opening the browser's side gate. Full report is in the control UI.\nNo preface. No markdown fences. No extra text.",
+        "thinking": "minimal",
+        "timeoutSeconds": 20,
+        "lightContext": true
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "discord",
+        "to": "channel:1487645227421536327",
+        "bestEffort": true
+      },
+      "state": {
+        "nextRunAtMs": 1775845969866
+      }
+    },
+    "error": null,
+    "enqueueRequestedAt": "2026-04-10T14:32:45-04:00"
   }
 ]
