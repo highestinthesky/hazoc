@@ -19,6 +19,7 @@ export const storageKeys = {
   scheduleMessages: 'mission-control:schedule-messages',
   marketJournalDate: 'mission-control:market-journal-date',
   marketJournalLens: 'mission-control:market-journal-lens',
+  marketJournalWindow: 'mission-control:market-journal-window',
 }
 
 export function readStorage(key, fallback) {

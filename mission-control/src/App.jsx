@@ -1314,17 +1314,34 @@ function formatJournalDateLabel(dateString) {
   return date.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' })
 }
 
+function formatJournalWindowLabel(windowEntry) {
+  const rawId = String(windowEntry?.id || '').trim().toLowerCase()
+  if (rawId === 'morning') return 'Morning'
+  if (rawId === 'midday') return 'Midday'
+  if (rawId === 'evening') return 'Evening'
+  if (rawId) return rawId.replace(/-/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase())
+
+  const rawLabel = String(windowEntry?.label || '').trim()
+  return rawLabel || 'Window'
+}
+
 function MarketJournalView({
   error,
   journal,
   journalLoaded,
   journalLens,
   journalDate,
+  journalWindow,
   setJournalDate,
   setJournalLens,
+  setJournalWindow,
 }) {
   const selectedDay = journal.days.find((day) => day.date === journalDate) || journal.days[0] || null
   const lensOptions = [{ value: 'global', label: 'Global' }, ...journal.users.map((user) => ({ value: user.userId, label: user.displayName })), { value: 'all-users', label: 'All users' }]
+  const windowOptions = [{ value: 'all', label: 'All' }, ...((selectedDay?.windows || []).map((windowEntry) => ({ value: windowEntry.id, label: formatJournalWindowLabel(windowEntry) })))]
+  const visibleWindows = selectedDay
+    ? (journalWindow === 'all' ? selectedDay.windows : selectedDay.windows.filter((windowEntry) => windowEntry.id === journalWindow))
+    : []
 
   return (
     <section className="tasks-layout market-journal-layout">
@@ -1334,6 +1351,7 @@ function MarketJournalView({
           {selectedDay?.date || 'No market digest artifacts found yet.'}
         </HeroCard>
         <HeroCard label="Lens" title={lensOptions.find((option) => option.value === journalLens)?.label || 'Global'} />
+        <HeroCard label="Window" title={windowOptions.find((option) => option.value === journalWindow)?.label || 'All'} />
       </div>
 
       {error ? <div className="error-banner">{error}</div> : null}
@@ -1354,6 +1372,12 @@ function MarketJournalView({
                 {journal.availableDates.map((date) => <option key={date} value={date}>{formatJournalDateLabel(date)} · {date}</option>)}
               </select>
             </label>
+            {selectedDay?.windows?.length ? (
+              <div className="field-block">
+                <span>Window</span>
+                <SegmentedControl ariaLabel="Market journal window filter" value={journalWindow} options={windowOptions} onChange={setJournalWindow} />
+              </div>
+            ) : null}
             <div className="field-block">
               <span>User lens</span>
               <SegmentedControl ariaLabel="Market journal user lens" value={journalLens} options={lensOptions} onChange={setJournalLens} />
@@ -1373,11 +1397,16 @@ function MarketJournalView({
         <section className="market-journal-main">
           {!journalLoaded && !selectedDay ? <div className="panel lane-empty">Loading market journal…</div> : null}
           {journalLoaded && !selectedDay ? <div className="panel lane-empty">No digest artifacts found yet.</div> : null}
-          {selectedDay ? selectedDay.windows.map((windowEntry) => {
+          {journalLoaded && selectedDay && !visibleWindows.length ? <div className="panel lane-empty">No stored {journalWindow === 'all' ? 'windows' : `${windowOptions.find((option) => option.value === journalWindow)?.label || 'window'}`} for this day.</div> : null}
+          {selectedDay ? visibleWindows.map((windowEntry) => {
             const activeUser = journalLens === 'global' || journalLens === 'all-users' ? null : windowEntry.users?.[journalLens] || null
             const allUsers = journal.users
               .map((user) => ({ user, entry: windowEntry.users?.[user.userId] || null }))
               .filter(({ entry }) => entry)
+            const showGlobalSections = journalLens === 'global'
+            const showSpecificUserScope = journalLens !== 'global'
+            const allUserMatchCount = allUsers.reduce((sum, { entry }) => sum + (entry?.matchedItemCount || 0), 0)
+            const allUserFlagCount = allUsers.reduce((sum, { entry }) => sum + (entry?.watchFlags || 0), 0)
 
             return (
               <article key={`${selectedDay.date}-${windowEntry.id}`} className="panel market-window-card">
@@ -1388,94 +1417,116 @@ function MarketJournalView({
                   </div>
                   <div className="detail-chip-row">
                     <span className="meta-chip">{windowEntry.generatedAt ? formatDateTime(windowEntry.generatedAt) : 'No timestamp'}</span>
-                    <span className="meta-chip">{windowEntry.global.overview.totalItems} items</span>
-                    <span className="meta-chip">{windowEntry.global.overview.highPriorityCount} high priority</span>
-                    <span className="meta-chip">Score {formatJournalNumber(windowEntry.global.overview.totalScore)}</span>
+                    {journalLens === 'global' ? (
+                      <>
+                        <span className="meta-chip">{windowEntry.global.overview.totalItems} items</span>
+                        <span className="meta-chip">{windowEntry.global.overview.highPriorityCount} high priority</span>
+                        <span className="meta-chip">Score {formatJournalNumber(windowEntry.global.overview.totalScore)}</span>
+                      </>
+                    ) : journalLens === 'all-users' ? (
+                      <>
+                        <span className="meta-chip">{allUsers.length} user digests</span>
+                        <span className="meta-chip">{allUserMatchCount} matches</span>
+                        <span className="meta-chip">{allUserFlagCount} flags</span>
+                      </>
+                    ) : activeUser ? (
+                      <>
+                        <span className="meta-chip">{activeUser.watchlist.length} watched</span>
+                        <span className="meta-chip">{activeUser.matchedItemCount} matches</span>
+                        <span className="meta-chip">{activeUser.watchFlags} flags</span>
+                      </>
+                    ) : (
+                      <span className="meta-chip">No user digest stored</span>
+                    )}
                   </div>
                 </div>
 
                 <div className="market-window-sections">
-                  <section className="form-section form-section-soft">
-                    <div className="section-heading">
-                      <p className="panel-kicker">shared overview</p>
-                      <h3>Global market read</h3>
-                    </div>
-                    {windowEntry.global.overview.headlineSummary ? <p>{windowEntry.global.overview.headlineSummary}</p> : null}
-                    <div className="market-summary-grid">
-                      <div className="schedule-preview-card">
-                        <span className="schedule-preview-label">Top categories</span>
-                        <strong>{windowEntry.global.overview.topCategories.length ? windowEntry.global.overview.topCategories.map((item) => `${item.category} (${item.count})`).join(' · ') : 'No category rollup'}</strong>
-                      </div>
-                      <div className="schedule-preview-card">
-                        <span className="schedule-preview-label">Delta vs last run</span>
-                        <strong>{windowEntry.global.overview.deltaVsLastRun.summary || 'No prior digest comparison stored'}</strong>
-                      </div>
-                    </div>
-                    {windowEntry.global.overview.overviewBoard.length ? (
-                      <div className="market-impact-list">
-                        {windowEntry.global.overview.overviewBoard.map((item) => (
-                          <article key={item.id} className="upcoming-card market-impact-card">
-                            <div className="task-card-header">
-                              <strong>{item.label}</strong>
-                              <span>{item.supportingCount ? `${item.supportingCount} headlines` : item.scope || 'theme'}</span>
-                            </div>
-                            {item.headline ? <p><strong>{item.headline}</strong></p> : null}
-                            {item.summary ? <p>{item.summary}</p> : null}
-                            {item.impactRead ? <p>{item.impactRead}</p> : null}
-                            {item.supportingHeadlines.length ? (
-                              <div className="task-card-meta-row">
-                                {item.supportingHeadlines.slice(0, 3).map((headline) => <span key={headline} className="meta-chip">{headline}</span>)}
-                              </div>
-                            ) : null}
-                          </article>
-                        ))}
-                      </div>
-                    ) : <p className="market-muted-copy">No shared overview board was stored for this window.</p>}
-                    {windowEntry.global.overview.watchNext.length ? (
-                      <>
-                        <h4>Watch next</h4>
-                        <ul className="market-bullet-list">
-                          {windowEntry.global.overview.watchNext.map((item) => <li key={item}>{item}</li>)}
-                        </ul>
-                      </>
-                    ) : null}
-                    {windowEntry.global.overview.unresolvedUncertainties.length ? (
-                      <>
-                        <h4>Open questions</h4>
-                        <ul className="market-bullet-list">
-                          {windowEntry.global.overview.unresolvedUncertainties.map((item) => <li key={item}>{item}</li>)}
-                        </ul>
-                      </>
-                    ) : <p className="market-muted-copy">No unresolved uncertainty list was stored for this window.</p>}
-                  </section>
+                  {showGlobalSections ? (
+                    <>
+                      <section className="form-section form-section-soft">
+                        <div className="section-heading">
+                          <p className="panel-kicker">shared overview</p>
+                          <h3>Global market read</h3>
+                        </div>
+                        {windowEntry.global.overview.headlineSummary ? <p>{windowEntry.global.overview.headlineSummary}</p> : null}
+                        <div className="market-summary-grid">
+                          <div className="schedule-preview-card">
+                            <span className="schedule-preview-label">Top categories</span>
+                            <strong>{windowEntry.global.overview.topCategories.length ? windowEntry.global.overview.topCategories.map((item) => `${item.category} (${item.count})`).join(' · ') : 'No category rollup'}</strong>
+                          </div>
+                          <div className="schedule-preview-card">
+                            <span className="schedule-preview-label">Delta vs last run</span>
+                            <strong>{windowEntry.global.overview.deltaVsLastRun.summary || 'No prior digest comparison stored'}</strong>
+                          </div>
+                        </div>
+                        {windowEntry.global.overview.overviewBoard.length ? (
+                          <div className="market-impact-list">
+                            {windowEntry.global.overview.overviewBoard.map((item) => (
+                              <article key={item.id} className="upcoming-card market-impact-card">
+                                <div className="task-card-header">
+                                  <strong>{item.label}</strong>
+                                  <span>{item.supportingCount ? `${item.supportingCount} headlines` : item.scope || 'theme'}</span>
+                                </div>
+                                {item.headline ? <p><strong>{item.headline}</strong></p> : null}
+                                {item.summary ? <p>{item.summary}</p> : null}
+                                {item.impactRead ? <p>{item.impactRead}</p> : null}
+                                {item.supportingHeadlines.length ? (
+                                  <div className="task-card-meta-row">
+                                    {item.supportingHeadlines.slice(0, 3).map((headline) => <span key={headline} className="meta-chip">{headline}</span>)}
+                                  </div>
+                                ) : null}
+                              </article>
+                            ))}
+                          </div>
+                        ) : <p className="market-muted-copy">No shared overview board was stored for this window.</p>}
+                        {windowEntry.global.overview.watchNext.length ? (
+                          <>
+                            <h4>Watch next</h4>
+                            <ul className="market-bullet-list">
+                              {windowEntry.global.overview.watchNext.map((item) => <li key={item}>{item}</li>)}
+                            </ul>
+                          </>
+                        ) : null}
+                        {windowEntry.global.overview.unresolvedUncertainties.length ? (
+                          <>
+                            <h4>Open questions</h4>
+                            <ul className="market-bullet-list">
+                              {windowEntry.global.overview.unresolvedUncertainties.map((item) => <li key={item}>{item}</li>)}
+                            </ul>
+                          </>
+                        ) : <p className="market-muted-copy">No unresolved uncertainty list was stored for this window.</p>}
+                      </section>
 
-                  <section className="form-section form-section-accent">
-                    <div className="section-heading">
-                      <p className="panel-kicker">stock-impact board</p>
-                      <h3>Names and narrower slices worth watching</h3>
-                    </div>
-                    {!windowEntry.global.stockImpactBoard.length ? <p className="market-muted-copy">No name-level or narrower-scope items were captured in this window.</p> : (
-                      <div className="market-impact-list">
-                        {windowEntry.global.stockImpactBoard.map((item) => (
-                          <article key={item.id} className="upcoming-card market-impact-card">
-                            <div className="task-card-header">
-                              <strong>{item.headline}</strong>
-                              <span>{item.highPriority ? 'High priority' : item.scope}</span>
-                            </div>
-                            <div className="task-card-meta-row">
-                              {item.affectedNames.length ? <span className="meta-chip">Names: {item.affectedNames.join(', ')}</span> : null}
-                              {item.affectedSectors.length ? <span className="meta-chip">Sectors: {item.affectedSectors.slice(0, 2).join(', ')}</span> : null}
-                              {item.themes.length ? <span className="meta-chip">Themes: {item.themes.join(', ')}</span> : null}
-                            </div>
-                            {item.impactRead ? <p>{item.impactRead}</p> : null}
-                            {item.whyItMatters ? <p>{item.whyItMatters}</p> : null}
-                          </article>
-                        ))}
-                      </div>
-                    )}
-                  </section>
+                      <section className="form-section form-section-accent">
+                        <div className="section-heading">
+                          <p className="panel-kicker">stock-impact board</p>
+                          <h3>Names and narrower slices worth watching</h3>
+                        </div>
+                        {!windowEntry.global.stockImpactBoard.length ? <p className="market-muted-copy">No name-level or narrower-scope items were captured in this window.</p> : (
+                          <div className="market-impact-list">
+                            {windowEntry.global.stockImpactBoard.map((item) => (
+                              <article key={item.id} className="upcoming-card market-impact-card">
+                                <div className="task-card-header">
+                                  <strong>{item.headline}</strong>
+                                  <span>{item.highPriority ? 'High priority' : item.scope}</span>
+                                </div>
+                                <div className="task-card-meta-row">
+                                  {item.affectedNames.length ? <span className="meta-chip">Names: {item.affectedNames.join(', ')}</span> : null}
+                                  {item.affectedSectors.length ? <span className="meta-chip">Sectors: {item.affectedSectors.slice(0, 2).join(', ')}</span> : null}
+                                  {item.themes.length ? <span className="meta-chip">Themes: {item.themes.join(', ')}</span> : null}
+                                </div>
+                                {item.impactRead ? <p>{item.impactRead}</p> : null}
+                                {item.whyItMatters ? <p>{item.whyItMatters}</p> : null}
+                              </article>
+                            ))}
+                          </div>
+                        )}
+                      </section>
+                    </>
+                  ) : null}
 
-                  {journalLens !== 'global' ? (
+                  {showSpecificUserScope ? (
                     <section className="form-section form-section-memory">
                       <div className="section-heading">
                         <p className="panel-kicker">user lens</p>
@@ -1554,31 +1605,33 @@ function MarketJournalView({
                     </section>
                   ) : null}
 
-                  <details className="market-details-block">
-                    <summary>Everything collected / evidence</summary>
-                    <div className="market-evidence-list">
-                      {windowEntry.global.items.length ? windowEntry.global.items.map((item) => (
-                        <article key={item.id} className="upcoming-card market-evidence-card">
-                          <div className="task-card-header">
-                            <strong>{item.headline}</strong>
-                            <span>{item.source || item.category || 'Item'}</span>
-                          </div>
-                          <div className="task-card-meta-row">
-                            {item.highPriority ? <span className="meta-chip">High priority</span> : null}
-                            {item.scope ? <span className="meta-chip">Scope: {item.scope}</span> : null}
-                            {item.direction ? <span className="meta-chip">Direction: {item.direction}</span> : null}
-                            {item.confidenceLabel ? <span className="meta-chip">Confidence: {item.confidenceLabel}</span> : null}
-                            {item.affectedNames.length ? <span className="meta-chip">Names: {item.affectedNames.join(', ')}</span> : null}
-                            {item.themes.length ? <span className="meta-chip">Themes: {item.themes.join(', ')}</span> : null}
-                          </div>
-                          {item.summary ? <p>{item.summary}</p> : null}
-                          {item.impactRead ? <p>{item.impactRead}</p> : null}
-                          {item.whyItMatters ? <p>{item.whyItMatters}</p> : null}
-                          {item.url ? <a className="market-link" href={item.url} target="_blank" rel="noreferrer">Open source ↗</a> : null}
-                        </article>
-                      )) : <p className="market-muted-copy">No global items were stored for this window.</p>}
-                    </div>
-                  </details>
+                  {showGlobalSections ? (
+                    <details className="market-details-block">
+                      <summary>Everything collected / evidence</summary>
+                      <div className="market-evidence-list">
+                        {windowEntry.global.items.length ? windowEntry.global.items.map((item) => (
+                          <article key={item.id} className="upcoming-card market-evidence-card">
+                            <div className="task-card-header">
+                              <strong>{item.headline}</strong>
+                              <span>{item.source || item.category || 'Item'}</span>
+                            </div>
+                            <div className="task-card-meta-row">
+                              {item.highPriority ? <span className="meta-chip">High priority</span> : null}
+                              {item.scope ? <span className="meta-chip">Scope: {item.scope}</span> : null}
+                              {item.direction ? <span className="meta-chip">Direction: {item.direction}</span> : null}
+                              {item.confidenceLabel ? <span className="meta-chip">Confidence: {item.confidenceLabel}</span> : null}
+                              {item.affectedNames.length ? <span className="meta-chip">Names: {item.affectedNames.join(', ')}</span> : null}
+                              {item.themes.length ? <span className="meta-chip">Themes: {item.themes.join(', ')}</span> : null}
+                            </div>
+                            {item.summary ? <p>{item.summary}</p> : null}
+                            {item.impactRead ? <p>{item.impactRead}</p> : null}
+                            {item.whyItMatters ? <p>{item.whyItMatters}</p> : null}
+                            {item.url ? <a className="market-link" href={item.url} target="_blank" rel="noreferrer">Open source ↗</a> : null}
+                          </article>
+                        )) : <p className="market-muted-copy">No global items were stored for this window.</p>}
+                      </div>
+                    </details>
+                  ) : null}
                 </div>
               </article>
             )
@@ -1655,6 +1708,7 @@ export default function App() {
   const [scheduleSending, setScheduleSending] = useState(false)
   const [journalDate, setJournalDate] = useState(() => readStorage(storageKeys.marketJournalDate, ''))
   const [journalLens, setJournalLens] = useState(() => readStorage(storageKeys.marketJournalLens, 'global'))
+  const [journalWindow, setJournalWindow] = useState(() => readStorage(storageKeys.marketJournalWindow, 'all'))
   const scheduleThreadRef = useRef(null)
   const [calendarMonth, setCalendarMonth] = useState(() => {
     const stored = readStorage(storageKeys.calendarMonth, '')
@@ -1780,6 +1834,7 @@ export default function App() {
   useEffect(() => { writeStorage(storageKeys.calendarMonth, calendarMonth.toISOString()) }, [calendarMonth])
   useEffect(() => { writeStorage(storageKeys.marketJournalDate, journalDate) }, [journalDate])
   useEffect(() => { writeStorage(storageKeys.marketJournalLens, journalLens) }, [journalLens])
+  useEffect(() => { writeStorage(storageKeys.marketJournalWindow, journalWindow) }, [journalWindow])
 
   const sortedTasks = useMemo(() => [...tasks].sort(sortTasks), [tasks])
   const sortedEvents = useMemo(() => [...events].sort(sortTasks), [events])
@@ -1835,6 +1890,12 @@ export default function App() {
     const validLens = journalLens === 'global' || journalLens === 'all-users' || marketJournal.users.some((user) => user.userId === journalLens)
     if (!validLens) setJournalLens('global')
   }, [journalLens, marketJournal.users])
+
+  useEffect(() => {
+    const selectedDay = marketJournal.days.find((day) => day.date === journalDate) || marketJournal.days[0] || null
+    const validWindow = journalWindow === 'all' || (selectedDay?.windows || []).some((windowEntry) => windowEntry.id === journalWindow)
+    if (!validWindow) setJournalWindow('all')
+  }, [journalDate, journalWindow, marketJournal.days])
 
   const laneCounts = useMemo(() => {
     const map = new Map(lanes.map((lane) => [lane.id, 0]))
@@ -2132,8 +2193,10 @@ User request:\n\n${message}`,
             journalLoaded={marketJournalLoaded}
             journalLens={journalLens}
             journalDate={journalDate}
+            journalWindow={journalWindow}
             setJournalDate={setJournalDate}
             setJournalLens={setJournalLens}
+            setJournalWindow={setJournalWindow}
           />
         ) : null}
 
